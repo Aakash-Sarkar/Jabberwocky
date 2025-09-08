@@ -80,14 +80,14 @@ CONSTRUCTOR					(	Mesh_t,
 
 	mesh->num_points		=	num_points;
 
-	for_each_point_in_mesh	(	point,	i,			mesh	)
-		COPY				(	vec3_t,	&point->v,	points + i	);
+	for_each_point_in_mesh	(	point,		i,			mesh	)
+		COPY				(	Point3d_t,	point,		points + i	);
 
 
 	mesh->num_faces			=	num_faces;
 
-	for_each_face_in_mesh	(	face,	i,			mesh	)
-		COPY				(	Face_t,	face,		faces + i	);
+	for_each_face_in_mesh	(	face,		i,			mesh	)
+		COPY				(	Face_t,		face,		faces + i	);
 
 	RETURN					(	mesh	);
 }

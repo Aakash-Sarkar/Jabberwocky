@@ -44,8 +44,6 @@ HOWTO_DRAW(class, obj, ...)							void												\
 													painter(class) (	class* obj,						\
 																		__VA_ARGS__		)
 
-#define	DRAW(class, obj, origin, color, colorbuf)	painter(class) (	obj,							\
-																		origin,							\
-																		color,							\
-																		colorbuf	)
+#define	DRAW(class, obj, ...)						painter(class) (	obj,							\
+																		__VA_ARGS__		)
 

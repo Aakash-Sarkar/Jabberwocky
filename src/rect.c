@@ -2,10 +2,7 @@
  * SPDX-License-Identifier: MIT
  */
 
-#include <stdbool.h>
-
 #include "rect.h"
-#include "util.h"
 
 
 /*
@@ -19,13 +16,13 @@ pixel_at_border				(	Rect_t*		rect,
 {
 
 	bool						is_border = (((	posX - rect->posX	)
-											< border_len	)
-										||	((	posY - rect->posY	)
-											< border_len	)
-										||	(( rect->posX + rect->width		- 1) - posX	)
-											< border_len
-										||	(( rect->posY + rect->height	- 1) - posY	)
-											< border_len	);
+												< border_len	)
+											||	((	posY - rect->posY	)
+												< border_len	)
+											||	(( rect->posX + rect->width - 1) - posX )
+												< border_len
+											||	(( rect->posY + rect->height - 1) - posY )
+												< border_len	);
 
 	RETURN					(	is_border	);
 }
@@ -52,6 +49,7 @@ normalize_rect				(	Rect_t*			rect,
 	return;
 }
 
+static
 bool
 paint_rect					(	Rect_t*			rect,
 								Color_t*		interior_color,
@@ -104,132 +102,36 @@ paint_rect					(	Rect_t*			rect,
 	return SUCCESS;
 }
 
-bool
-draw_rectangle				(	Color_buffer_t*		colorbuf,
-								Rect_t*				rect	)
+
+
+HOWTO_DRAW					(	Rect_t,
+								rect,
+								Color_t*			color,
+								Color_buffer_t*		colorbuf	)
 {
-
-	DECLARE_PTR				(	border,		Color_t,	NULL	);
-	DECLARE_PTR				(	interior,	Color_t,	NULL	);
-
-	bool						ret = FAIL;
-
-	// Construct border color
-	CONSTRUCT				(	border,
-								Color_t,
-								0xFF,
-								0xFF,
-								0x00,
-								0xFF,
-								PIXELFORMAT_ARGB8888	);
-
-	if						(	!border	)
-	{
-		LOG					(	"Failed to create border color"	);
-		RETURN				(	FAIL	);
-	}
-
-	// Construct interior color
-	CONSTRUCT				(	interior,
-								Color_t,
-								0xFF,
-								0xFF,
-								0x00,
-								0xFF,
-								PIXELFORMAT_ARGB8888	);
-
-	if						(	!interior	)
-	{
-		LOG					(	"Failed to create border color"	);
-		RETURN				(	FAIL	);
-	}
-
-	ret						=	paint_rect (	rect,
-												interior, border,
-												colorbuf, 1	);
-
-	if						(	ret != SUCCESS	)
-	{
-		LOG					(	"Failed to draw rectangle\n"	);
-		RETURN				(	FAIL	);
-	}
-
-	// Destroy border color
-	DESTRUCT				(	border, Color_t	);
-
-	// Destroy interior color
-	DESTRUCT				(	interior , Color_t	);
-
-	// Use the force, Luke!
-	return SUCCESS;
+	paint_rect				(	rect,	color,	color,	colorbuf,	1	);
 }
 
-bool
-draw_grid					(	Color_buffer_t* colorbuf	)
+
+
+HOWTO_DRAW					(	Grid_t,
+								grid,
+								Color_t*		color,
+								Color_buffer_t* colorbuf	)
 {
 	Rect_t						rect		= { 0 };
 
 	int							posX		= 0,
 								posY		= 0,
-								n			= 0,
-								border_len	= 1;
-
-	bool						ret			= FAIL;
-
-	Color_t						*border		= NULL,
-								*interior	= NULL;
-
-	// Create border color
-	CONSTRUCT				(	border,
-								Color_t,
-								0xF0,
-								0xF0,
-								0xF0,
-								0xFF,
-								PIXELFORMAT_ARGB8888	);
-
-	if						(	!border	)
-	{
-		LOG					(	"Failed to create border color\n"	);
-		RETURN				(	FAIL	);
-	}
-
-	// Create interior color
-	CONSTRUCT				(	interior,
-								Color_t,
-								0x20,
-								0x20,
-								0x20,
-								0xFF,
-								PIXELFORMAT_ARGB8888	);
-
-	if						(	!interior	)
-	{
-		LOG					(	"Failed to create interior color\n"	);
-		RETURN				(	FAIL	);
-	}
+								n			= 0;
 
 	rect.posX				=	posX;
 	rect.posY				=	posY;
-	rect.width				=	50;
-	rect.height				=	50;
+	rect.width				=	grid->width;
+	rect.height				=	grid->height;
 
-	for_each_rect_in_buffer	(	n, &rect, colorbuf	)
-	{
-		ret					=	paint_rect(	&rect,
-											interior, border,
-											colorbuf, 1	);
-
-		if					(	ret != SUCCESS	)
-		{
-			LOG				(	"Failed to draw rectangle\n"	);
-			RETURN			(	FAIL	);
-		}
-	}
-
-	// Destroy colors
-	DESTRUCT				(	border,		Color_t	);
-	DESTRUCT				(	interior,	Color_t	);
+	for_each_rect_in_buffer	(	n,		&rect,	colorbuf	)
+		DRAW				(	Rect_t,	&rect,	color,	colorbuf	);
 
 	// Use the force, Luke!
 	return SUCCESS;

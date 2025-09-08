@@ -94,9 +94,7 @@ HOWTO_DRAW				(	Point3d_t,
 
 
 
-HOWTO_PROJECT			(	Point2d_t,
-							Point3d_t,
-							to,
-							from,
-							Projection_type_t	type	);
+HOWTO_PROJECT			(	Point2d_t,			Point3d_t,
+							to,					from,
+							Projection_type_t	type		);
 
