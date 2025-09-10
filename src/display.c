@@ -16,12 +16,13 @@
 
 CONSTRUCTOR								(	Window_t	)
 {
-	DECLARE_PTR							(	window,	Window_t,	NULL	);
+	DECL_PTR							(	window,		Window_t,	NULL	);
+
 	SDL_DisplayMode							mode;
 	int										ret = -1;
 
 	// Allocate our window
-	ALLOC_ZEROED						(	1,	Window_t, window	);
+	ALLOC_ZEROED						(	1,			Window_t,	window	);
 
 	if									(	!window		)
 		RETURN							(	NULL	);
@@ -32,7 +33,8 @@ CONSTRUCTOR								(	Window_t	)
 											SDL,
 											GetCurrentDisplayMode,
 											0,
-											&mode	);
+											&mode
+										);
 
 	if									(	ret		)
 		RETURN							(	NULL	);
@@ -91,17 +93,18 @@ DESTRUCTOR								(	Window_t	)
  * 	2. attach the renderer to the window
  */
 CONSTRUCTOR								(	Renderer_t,
-											Window_t*	 window		)
+											Window_t*		window		)
 {
-	DECLARE_PTR							(	renderer,	Renderer_t,	NULL	);
+	DECL_PTR							(	renderer,		Renderer_t,		NULL	);
 
 	if									(	!window		)
 	{
 		LOG								(	"Invalid argument\n"	);
 		RETURN							(	NULL	);
 	}
+
 	// Allocate memory
-	ALLOC_ZEROED						(	1, Renderer_t,  renderer	);
+	ALLOC_ZEROED						(	1,				Renderer_t,		renderer	);
 
 	if									(	!renderer	)
 	{
@@ -115,7 +118,8 @@ CONSTRUCTOR								(	Renderer_t,
 											CreateRenderer,
 											window->sdl,
 		-									1,
-											0	);
+											0
+										);
 
 	if									(	!renderer->sdl	)
 	{
@@ -124,6 +128,8 @@ CONSTRUCTOR								(	Renderer_t,
 	}
 
 	renderer->window					=	window;
+	renderer->triangles_to_draw			=	NULL;
+
 	RETURN								(	renderer	);
 }
 
@@ -133,14 +139,14 @@ DESTRUCTOR								(	Renderer_t	)
 }
 
 CONSTRUCTOR								(	Texture_t,
-											Renderer_t*		renderer,
-											int				width,
-											int				height,
-											format_type_t	format_type	)
+											Renderer_t*				renderer,
+											int						width,
+											int						height,
+											format_type_t			format_type		)
 {
 
-	DECLARE_PTR							(	texture,	Texture_t,	NULL	);
-	DECLARE_PTR							(	format,		Format_t,	NULL	);
+	DECL_PTR							(	texture,	Texture_t,	NULL	);
+	DECL_PTR							(	format,		Format_t,	NULL	);
 
 	format								=	lookup_format (	format_type	);
 	if									(	!format	)
@@ -149,7 +155,7 @@ CONSTRUCTOR								(	Texture_t,
 		RETURN							(	NULL	);
 	}
 
-	ALLOC_ZEROED						(	1, Texture_t, texture	);
+	ALLOC_ZEROED						(	1,			Texture_t,	texture		);
 
 	if									(	!texture	)
 	{
@@ -161,7 +167,7 @@ CONSTRUCTOR								(	Texture_t,
 	texture->height						=	height;
 	texture->format_type				=	format_type;
 
-	texture->pitch						=	(	width * BITS_TO_BYTES (format->bpp)	);
+	texture->pitch						=	(	width	*	BITS_TO_BYTES ( format->bpp )	);
 
 	CALL								(	texture->sdl,
 											SDL,
@@ -170,7 +176,8 @@ CONSTRUCTOR								(	Texture_t,
 											format->sdl_type,
 											SDL_TEXTUREACCESS_STREAMING,
 											texture->width,
-											texture->height	);
+											texture->height
+										);
 
 	if									(	!texture->sdl	)
 	{
@@ -188,7 +195,7 @@ DESTRUCTOR								(	Texture_t	)
 
 CONSTRUCTOR								(	Choreographer_t	)
 {
-	DECLARE_PTR							(	c,	Choreographer_t,	NULL	);
+	DECL_PTR							(	c,	Choreographer_t,	NULL	);
 
 	ALLOC_ZEROED						(	1, Choreographer_t, c	);
 	if									(	!c	)
@@ -208,8 +215,8 @@ bool
 render_color_buffer						(	Renderer_t* renderer	)
 {
 
-	DECLARE_PTR							(	texture,	Texture_t,		renderer->texture	);
-	DECLARE_PTR							(	bo,			Color_buffer_t,	renderer->buffer	);
+	DECL_PTR							(	texture,	Texture_t,		renderer->texture	);
+	DECL_PTR							(	bo,			Color_buffer_t,	renderer->buffer	);
 
 	int										ret	= -1;
 

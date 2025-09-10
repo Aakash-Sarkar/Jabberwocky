@@ -6,14 +6,14 @@
 
 vec3_t	mesh_vertices[ ]	=
 {
-	{	.x = -1,		.y = -1,		.z = -1			},
-	{	.x = -1,		.y =  1,		.z = -1			},
-	{	.x =  1,		.y =  1,		.z = -1			},
-	{	.x =  1,		.y = -1,		.z = -1			},
-	{	.x =  1,		.y =  1,		.z =  1			},
-	{	.x =  1,		.y = -1,		.z =  1			},
-	{	.x = -1,		.y =  1,		.z =  1			},
-	{	.x = -1,		.y = -1,		.z =  1			},
+	{	.x = -1,		.y = -1,		.z = -1		},
+	{	.x = -1,		.y =  1,		.z = -1		},
+	{	.x =  1,		.y =  1,		.z = -1		},
+	{	.x =  1,		.y = -1,		.z = -1		},
+	{	.x =  1,		.y =  1,		.z =  1		},
+	{	.x =  1,		.y = -1,		.z =  1		},
+	{	.x = -1,		.y =  1,		.z =  1		},
+	{	.x = -1,		.y = -1,		.z =  1		},
 };
 
 Face_t	mesh_faces[ ] =
@@ -46,9 +46,9 @@ CONSTRUCTOR					(	Mesh_t,
 								int					num_points,
 								int					num_faces		)
 {
-	DECLARE_PTR				(	mesh,	Mesh_t,		NULL	);
-	DECLARE_PTR				(	point,	Point3d_t,	NULL	);
-	DECLARE_PTR				(	face,	Face_t,		NULL	);
+	DECL_PTR				(	mesh,	Mesh_t,		NULL	);
+	DECL_PTR				(	point,	Point3d_t,	NULL	);
+	DECL_PTR				(	face,	Face_t,		NULL	);
 
 	int							i = 0;
 

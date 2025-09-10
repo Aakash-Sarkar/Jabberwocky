@@ -29,7 +29,7 @@ DESTRUCTOR					(	Mesh_t	);
 
 
 
-Triangle_t
+Triangle3d_t
 create_triangle_from_face	(	Face_t* face,	Mesh_t* mesh	);
 
 

@@ -101,8 +101,8 @@ Renderer_t*
 setup							(	void	)
 {
 
-	DECLARE_PTR					(	w,	Window_t,	NULL	);
-	DECLARE_PTR					(	r,	Renderer_t,	NULL	);
+	DECL_PTR					(	w,	Window_t,	NULL	);
+	DECL_PTR					(	r,	Renderer_t,	NULL	);
 
 	int								numbufs	= 1;
 
@@ -223,11 +223,11 @@ update							(	Renderer_t	*renderer	)
 									i	= 0,
 									j	= 0;
 
-	DECLARE_PTR					(	colorbuf,	Color_buffer_t,	renderer->buffer	);
-	DECLARE_PTR					(	point,		Point3d_t,		NULL	);
-	DECLARE_PTR					(	mesh,		Mesh_t,			NULL	);
-	DECLARE_PTR					(	face,		Face_t,			NULL	);
-	DECLARE_PTR					(	yellow,		Color_t,		NULL	);
+	DECL_PTR					(	colorbuf,	Color_buffer_t,	renderer->buffer	);
+	DECL_PTR					(	point,		Point3d_t,		NULL	);
+	DECL_PTR					(	mesh,		Mesh_t,			NULL	);
+	DECL_PTR					(	face,		Face_t,			NULL	);
+	DECL_PTR					(	yellow,		Color_t,		NULL	);
 
 
 	Point3d_t						p		= { 0 };
@@ -299,6 +299,7 @@ bool
 render							(	Renderer_t* renderer	)
 {
 	int								ret	= -1;
+	DECL_PTR					(	color,	Color_t,	NULL	);
 	ret							=	render_color_buffer	(	renderer	);
 
 	if							(	( !!ret ) != SUCCESS	)
@@ -326,7 +327,7 @@ render							(	Renderer_t* renderer	)
 int
 main							(	int argc, char** argv	)
 {
-	DECLARE_PTR					(	r,	Renderer_t,	NULL	);
+	DECL_PTR					(	r,	Renderer_t,	NULL	);
 
 	r							=	setup	(	);
 	if							(	!r	)

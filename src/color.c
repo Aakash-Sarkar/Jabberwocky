@@ -69,7 +69,7 @@ static
 bool
 update_color_val                (   Color_t* color   )
 {
-    DECLARE_PTR                 (   format,    Format_t,   NULL   );
+    DECL_PTR                    (   format,    Format_t,   NULL   );
 
     format                      =   lookup_format (   color->format_type   );
     if                          (   !format   )
@@ -106,7 +106,7 @@ CONSTRUCTOR                     (   Color_t,
                                     format_type_t   f_t   )
 {
 
-    DECLARE_PTR                 (   c,  Color_t,  NULL   );
+    DECL_PTR                   (   c,  Color_t,  NULL   );
 
     if                          (   f_t >= PIXELFORMAT_MAX   )
     {
@@ -207,8 +207,8 @@ CONSTRUCTOR                     (   Color_buffer_t,
                                     format_type_t       f_t    )
 {
 
-    DECLARE_PTR                 (   colorbuf,   Color_buffer_t,   NULL    );
-    DECLARE_PTR                 (   format,     Format_t,         NULL    );
+    DECL_PTR                    (   colorbuf,   Color_buffer_t,   NULL    );
+    DECL_PTR                    (   format,     Format_t,         NULL    );
 
     uint32_t                        *buf  = NULL,
                                     *prev = NULL;
@@ -395,7 +395,7 @@ bool
 clear_color_buffer              (   Color_buffer_t* buffer  )
 {
 
-    DECLARE_PTR                 (   black,  Color_t,    NULL   );
+    DECL_PTR                    (   black,  Color_t,    NULL   );
 
     bool                            ret = FAIL;
 

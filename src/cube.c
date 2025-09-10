@@ -12,8 +12,8 @@ CONSTRUCTOR							(	Cube_t,
 										int			height	)
 {
 
-	DECLARE_PTR						(	cube,		Cube_t,		NULL	);
-	DECLARE_PTR						(	point,		Point3d_t,	NULL	);
+	DECL_PTR						(	cube,		Cube_t,		NULL	);
+	DECL_PTR						(	point,		Point3d_t,	NULL	);
 
 	int									num_points	= 0;
 

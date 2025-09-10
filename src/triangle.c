@@ -11,15 +11,20 @@
 
 HOWTO_COPY					(	Face_t,			to,				from	)
 {
-
 	to->idx [ 0 ]			=	from->idx [ 0 ];
 	to->idx [ 1 ]			=	from->idx [ 1 ];
 	to->idx [ 2 ]			=	from->idx [ 2 ];
 }
 
+HOWTO_COPY					(	Triangle2d_t,	to,				from	)
+{
+	COPY					(	Point2d_t,		&to->p1,		&from->p1	);
+	COPY					(	Point2d_t,		&to->p2,		&from->p2	);
+	COPY					(	Point2d_t,		&to->p3,		&from->p3	);
+}
+
 HOWTO_COPY					(	Triangle3d_t,	to,				from	)
 {
-
 	COPY					(	Point3d_t,		&to->p1,		&from->p1	);
 	COPY					(	Point3d_t,		&to->p2,		&from->p2	);
 	COPY					(	Point3d_t,		&to->p3,		&from->p3	);

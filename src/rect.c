@@ -35,7 +35,7 @@ normalize_rect				(	Rect_t*			rect,
 
 	if						((	rect->posX + rect->width	) > colorbuf->width	)
 	{
-		int						del	= ((	rect->posX + rect->width	)
+		int						del	= ((	rect->posX	+	rect->width		)
 											- colorbuf->width + 1	);
 		rect->width			-=	del;
 	}
@@ -57,7 +57,7 @@ paint_rect					(	Rect_t*			rect,
 								Color_buffer_t*	colorbuf,
 								int				border_len	)
 {
-	DECLARE_PTR				(	color,	Color_t,	NULL	);
+	DECL_PTR				(	color,	Color_t,	NULL	);
 
 	bool						ret	= FAIL;
 
@@ -88,12 +88,14 @@ paint_rect					(	Rect_t*			rect,
 			ret				=	paint_color (	color,
 												colorbuf,
 												posX, posY,
-												0	);
+												0	
+											);
 
 			if				(	ret != SUCCESS	)
 			{
-				LOG			(	"Failed to paint color at posX : %d, posY : %d",
-								posX, posY	);
+				LOG			(	"Failed to paint color at posX : %d, posY : %d\n",
+								posX, posY
+							);
 				RETURN		(	FAIL	);
 			}
 		}
@@ -133,6 +135,5 @@ HOWTO_DRAW					(	Grid_t,
 	for_each_rect_in_buffer	(	n,		&rect,	colorbuf	)
 		DRAW				(	Rect_t,	&rect,	color,	colorbuf	);
 
-	// Use the force, Luke!
-	return SUCCESS;
 }
+
