@@ -11,26 +11,26 @@
 
 
 
-float					fov_scale = 256;
+float						fov_scale = 256;
 
-vec3_t					camera = {	.x = 0.0,
-									.y = 0.0,
-									.z = -5.0	};
-
-
+vec3_t						camera = {	.x = 0.0,
+										.y = 0.0,
+										.z = -5.0	};
 
 
-HOWTO_COPY				(	vec2_t, to,	from	)
+
+
+HOWTO_COPY				(	vec2_t,	to,	from	)
 {
-	to->x				= from->x;
-	to->y				= from->y;
+	to->x				=	from->x;
+	to->y				=	from->y;
 }
 
 HOWTO_COPY				(	vec3_t, to,	from	)
 {
-	to->x				= from->x;
-	to->y				= from->y;
-	to->z				= from->z;
+	to->x				=	from->x;
+	to->y				=	from->y;
+	to->z				=	from->z;
 }
 
 
@@ -40,47 +40,47 @@ static
 vec3_t
 rotate_vector_x			(	vec3_t v, float angle	)
 {
-	vec3_t				transform_v = { 0 };
+	vec3_t					transform_v = { 0 };
 
 	// X component remains same
-	transform_v.x		= v.x;
-	transform_v.y		= v.y * cos(	angle	)	-	v.z * sin(	angle	);
-	transform_v.z		= v.z * cos(	angle	)	+	v.y * sin(	angle	);
+	transform_v.x		=	v.x;
+	transform_v.y		=	v.y * cos(	angle	)	-	v.z * sin(	angle	);
+	transform_v.z		=	v.z * cos(	angle	)	+	v.y * sin(	angle	);
 
-	RETURN				(	transform_v		);
+	RETURN				(	transform_v	);
 }
 
 static
 vec3_t
 rotate_vector_y			(	vec3_t v, float angle	)
 {
-	vec3_t				transform_v = { 0 };
+	vec3_t					transform_v = { 0 };
 
 	// Y component remains same
-	transform_v.x		= v.x * cos(	angle	)	-	v.z * sin(	angle	);
-	transform_v.y		= v.y;
-	transform_v.z		= v.z * cos(	angle	)	+	v.x * sin(	angle	);
+	transform_v.x		=	v.x * cos(	angle	)	-	v.z * sin(	angle	);
+	transform_v.y		=	v.y;
+	transform_v.z		=	v.z * cos(	angle	)	+	v.x * sin(	angle	);
 
-	RETURN				(	transform_v		);
+	RETURN				(	transform_v	);
 }
 
 
 static
 vec3_t
-rotate_vector_z			(	vec3_t v, float angle	)
+rotate_vector_z			(	vec3_t v,	float angle	)
 {
-	vec3_t				transform_v = { 0 };
+	vec3_t					transform_v = { 0 };
 
 	// Z component remains same
-	transform_v.x		= v.x * cos(	angle	)	-	v.y * sin(	angle	);
-	transform_v.y		= v.y * cos(	angle	)	+	v.x * sin(	angle	);
-	transform_v.z		= v.z;
+	transform_v.x		=	v.x * cos(	angle	)	-	v.y * sin(	angle	);
+	transform_v.y		=	v.y * cos(	angle	)	+	v.x * sin(	angle	);
+	transform_v.z		=	v.z;
 
-	RETURN				(	transform_v		);
+	RETURN				(	transform_v	);
 }
 
 
-HOWTO_ROTATE			(	vec3_t,	to,	from,	vec3_t angle	)
+HOWTO_ROTATE			(	vec3_t,		to,		from,	vec3_t angle	)
 {
 	if					(	angle.x != 0	)
 	{
@@ -105,19 +105,19 @@ static
 vec2_t
 project_orthographic	(	vec3_t	vector	)
 {
-	vec2_t				projection = { 0 };
+	vec2_t					projection = { 0 };
 
-	projection.x			= fov_scale * vector.x;
-	projection.y			= fov_scale * vector.y;
+	projection.x		=	fov_scale	*	vector.x;
+	projection.y		=	fov_scale	*	vector.y;
 
-	RETURN					(	projection	);
+	RETURN				(	projection	);
 }
 
 static
 vec2_t
 project_isometric		(	vec3_t	vector	)
 {
-	vec2_t				projection = { 0 };
+	vec2_t					projection = { 0 };
 	// TODO: Implement this
 	RETURN				(	projection	);
 }
@@ -126,12 +126,12 @@ static
 vec2_t
 project_perspective		(	vec3_t	vector	)
 {
-	vec2_t				projection = { 0 };
+	vec2_t					projection = { 0 };
 
 	float				z = (	vector.z + camera.z		);
 
-	projection.x		= ((	vector.x * fov_scale	) / z	)	*	camera.z;
-	projection.y		= ((	vector.y * fov_scale	) / z	)	*	camera.z;
+	projection.x		=	((	vector.x * fov_scale	) / z	)	*	camera.z;
+	projection.y		=	((	vector.y * fov_scale	) / z	)	*	camera.z;
 
 	RETURN				(	projection	);
 }
@@ -139,7 +139,7 @@ project_perspective		(	vec3_t	vector	)
 
 
 
-HOWTO_PROJECT			(	vec2_t,	vec3_t,	to,	from,	Projection_type_t	type	)
+HOWTO_PROJECT			(	vec2_t,	vec3_t,	to,		from,	Projection_type_t	type	)
 {
 	switch				(	type	)
 	{

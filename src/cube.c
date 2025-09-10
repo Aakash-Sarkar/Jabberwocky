@@ -12,8 +12,8 @@ CONSTRUCTOR							(	Cube_t,
 										int			height	)
 {
 
-	DECLARE_PTR						(	cube,	Cube_t,		NULL	);
-	DECLARE_PTR						(	point,	Point3d_t,	NULL	);
+	DECLARE_PTR						(	cube,		Cube_t,		NULL	);
+	DECLARE_PTR						(	point,		Point3d_t,	NULL	);
 
 	int									num_points	= 0;
 
@@ -21,7 +21,7 @@ CONSTRUCTOR							(	Cube_t,
 										step_w		= 0.0,
 										step_h		= 0.0;
 
-	ALLOC_ZEROED					(	1,	Cube_t,	cube	);
+	ALLOC_ZEROED					(	1,			Cube_t,		cube	);
 
 	if								(	!cube	)
 	{
@@ -33,7 +33,7 @@ CONSTRUCTOR							(	Cube_t,
 	cube->width						=	width;
 	cube->height					=	height;
 
-	num_points						=	(	len * width * height	);
+	num_points						=	(	len	*	width	*	height	);
 	cube->num_points				=	num_points;
 
 	ALLOC_ZEROED					(	num_points,	Point3d_t,	cube->points	);
