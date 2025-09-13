@@ -96,19 +96,19 @@ CONSTRUCTOR					(	Mesh_t,
 Triangle3d_t
 create_triangle_from_face	(	Face_t* face,	Mesh_t* mesh	)
 {
-	Triangle3d_t				triangle = {	0	};
+	MEM						(	Triangle3d_t,	triangle,	1	);
 
 	COPY					(	Point3d_t,
-								&triangle.p1,
+								&triangle->p1,
 								&mesh->points [ face->idx [ 0 ] - 1 ]	);
 
 	COPY					(	Point3d_t,
-								&triangle.p2,
+								&triangle->p2,
 								&mesh->points [ face->idx [ 1 ] - 1 ]	);
 
 	COPY					(	Point3d_t,
-								&triangle.p3,
+								&triangle->p3,
 								&mesh->points [ face->idx [ 2 ] - 1 ]	);
 
-	RETURN					(	triangle	);
+	RETURN					(	*triangle	);
 }

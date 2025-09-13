@@ -184,8 +184,9 @@ static
 void
 process_input					(	void	)
 {
-	SDL_Event						event	= { 0 };
 	int								ret		= -1;
+
+	MEM							(	SDL_Event,	event,	1	);
 
 	/*
 	 * Check for Keyboard inputs from the user
@@ -193,9 +194,9 @@ process_input					(	void	)
 	CALL						(	ret,
 									SDL,
 									PollEvent,
-									&event		);
+									event		);
 
-	switch						(	event.type	)
+	switch						(	event->type	)
 	{
 		// Window close
 		case					(	SDL_QUIT	):
@@ -204,7 +205,7 @@ process_input					(	void	)
 
 		// Escape key
 		case					(	SDL_KEYDOWN	):
-			if					(	event.key.keysym.sym == SDLK_ESCAPE	)
+			if					(	event->key.keysym.sym == SDLK_ESCAPE	)
 				LOOP_BREAK		(	GAME	);
 			break;
 		default:
@@ -216,22 +217,19 @@ static
 bool
 update							(	Renderer_t	*renderer	)
 {
-	static
-	vec3_t							angle = { 0.0, 0.0, 0.0 };
 
 	int								ret	= -1,
 									i	= 0,
 									j	= 0;
 
-	DECL_PTR					(	colorbuf,	Color_buffer_t,	renderer->buffer	);
-	DECL_PTR					(	point,		Point3d_t,		NULL	);
 	DECL_PTR					(	mesh,		Mesh_t,			NULL	);
 	DECL_PTR					(	face,		Face_t,			NULL	);
 	DECL_PTR					(	yellow,		Color_t,		NULL	);
 
+	static
+	MEM							(	vec3_t,		angle,	1	);
 
-	Point3d_t						p		= { 0 };
-	Point2d_t						origin	= { 0 };
+	MEM							(	Point2d_t,	origin,	1	);
 
 	CONSTRUCT					(	yellow,
 									Color_t,
@@ -252,7 +250,8 @@ update							(	Renderer_t	*renderer	)
 									mesh_vertices,
 									mesh_faces,
 									8,
-									12		);
+									12
+								);
 
 	if							(	!mesh	)
 	{
@@ -260,29 +259,36 @@ update							(	Renderer_t	*renderer	)
 		RETURN					(	FAIL	);
 	}
 
-	origin.v.x					=	(float)	renderer->window->width / 2;
-	origin.v.y					=	(float)	renderer->window->height / 2;
+	origin->v.x					=	(float)	renderer->window->width  / 2;
+	origin->v.y					=	(float)	renderer->window->height / 2;
 
-	for_each_face_in_mesh		(	face,	i,	mesh	)
+	for_each_face_in_mesh		(	face,	i,		mesh	)
 	{
-		Triangle_t					triangle,
-									new_triangle;
+		printf					(	"Update start: %d\n",	i	);
 
-		triangle				= create_triangle_from_face	(	face,
-																mesh	);
+		MEM						(	Triangle3d_t,		triangle,		1	);
 
-		ROTATE					(	Triangle_t,
-									&new_triangle,
-									&triangle,
-									angle		);
+		MEM						(	Triangle3d_t,		new_triangle,	1	);
 
-		DRAW					(	Triangle_t,
-									&new_triangle,
-									&origin,
-									yellow,
-									colorbuf	);
+		MEM						(	Triangle2d_t,		proj_triangle,	1	);
+
+
+		*triangle				=	create_triangle_from_face	(	face,		mesh	);
+
+		ROTATE					(	Triangle3d_t,	new_triangle,	triangle,		angle	);
+
+		PROJECT					(	Triangle2d_t,	Triangle3d_t,
+									proj_triangle,	new_triangle,	PERSPECTIVE		);
+
+		//array_push				(	renderer->triangles_to_draw,	*proj_triangle	);
+		
+		DRAW					(	Triangle3d_t,	new_triangle,
+									origin,	color,	renderer->buffer	);
+		printf					(	"Update end: %d\n",	i	);
+
 	}
-	angle.x						+=	0.01;
+
+	angle->x						+=	0.01;
 	//angle.y						+= 0.05;
 	//angle.z						+= 0.05;
 
@@ -298,7 +304,8 @@ static
 bool
 render							(	Renderer_t* renderer	)
 {
-	int								ret	= -1;
+	int								ret = -1;
+
 	DECL_PTR					(	color,	Color_t,	NULL	);
 	ret							=	render_color_buffer	(	renderer	);
 

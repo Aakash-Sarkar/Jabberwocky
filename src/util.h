@@ -59,7 +59,7 @@
 #define RETURN(x)						return x
 
 #define PTR(type)						type*
-#define DECLARE_PTR(name, type, val)	PTR(type) name = val
+#define DECL_PTR(name, type, val)		PTR(type) name = val
 
 
 
@@ -133,6 +133,7 @@
 												ptr = NULL;					\
 										}	while(0)
 
+#define MEM(class, x, n)				class x[n] = { 0 }
 
 
 

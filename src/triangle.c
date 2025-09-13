@@ -31,12 +31,14 @@ HOWTO_COPY					(	Triangle3d_t,	to,				from	)
 }
 
 
-HOWTO_ROTATE				(	Triangle2d_t,	to,	from,		vec3_t angle	)
+
+
+HOWTO_ROTATE				(	Triangle2d_t,	to,	from,		vec2_t* angle	)
 {
 
 }
 
-HOWTO_ROTATE				(	Triangle3d_t,	to,	from,		vec3_t angle	)
+HOWTO_ROTATE				(	Triangle3d_t,	to,	from,		vec3_t* angle	)
 {
 	ROTATE					(	Point3d_t,
 								&to->p1,		&from->p1,		angle	);
@@ -49,6 +51,8 @@ HOWTO_ROTATE				(	Triangle3d_t,	to,	from,		vec3_t angle	)
 }
 
 
+
+
 HOWTO_DRAW					(	Triangle2d_t,
 								triangle,
 								Point2d_t*			origin,
@@ -56,18 +60,23 @@ HOWTO_DRAW					(	Triangle2d_t,
 								Color_buffer_t*		colorbuf	)
 {
 
-	Line_t						line1 = { 0 },
-								line2 = { 0 },
-								line3 = { 0 };
+	MEM						(	Line_t,			line1,			1	);
+	MEM						(	Line_t,			line2,			1	);
+	MEM						(	Line_t,			line3,			1	);
 
-	COPY					(	Point2d_t,		&line1.p1,		&triangle->p1	);
-	COPY					(	Point2d_t,		&line1.p2,		&triangle->p2	);
 
-	COPY					(	Point2d_t,		&line2.p1,		&triangle->p2	);
-	COPY					(	Point2d_t,		&line2.p2,		&triangle->p3	);
 
-	COPY					(	Point2d_t,		&line3.p1,		&triangle->p1	);
-	COPY					(	Point2d_t,		&line3.p2,		&triangle->p3	);
+	COPY					(	Point2d_t,		&line1->p1,		&triangle->p1	);
+	COPY					(	Point2d_t,		&line1->p2,		&triangle->p2	);
+
+	COPY					(	Point2d_t,		&line2->p1,		&triangle->p2	);
+	COPY					(	Point2d_t,		&line2->p2,		&triangle->p3	);
+
+	COPY					(	Point2d_t,		&line3->p1,		&triangle->p1	);
+	COPY					(	Point2d_t,		&line3->p2,		&triangle->p3	);
+
+
+
 
 	// Draw the vertices
 	DRAW					(	Point2d_t,		&triangle->p1,
@@ -79,14 +88,17 @@ HOWTO_DRAW					(	Triangle2d_t,
 	DRAW					(	Point2d_t,		&triangle->p3,
 								origin,			color,			colorbuf	);
 
+
+
+
 	// Draw the edges
-	DRAW					(	Line_t,			&line1,
+	DRAW					(	Line_t,			line1,
 								origin,			color,			colorbuf	);
 
-	DRAW					(	Line_t,			&line2,
+	DRAW					(	Line_t,			line2,
 								origin,			color,			colorbuf	);
 
-	DRAW					(	Line_t,			&line3,
+	DRAW					(	Line_t,			line3,
 								origin,			color,			colorbuf	);
 }
 
@@ -97,24 +109,22 @@ HOWTO_DRAW					(	Triangle3d_t,
 								Color_buffer_t*		colorbuf	)
 {
 
-	Triangle2d_t				proj_triangle = { 0 };
+	MEM						(	Triangle2d_t,		proj_triangle,	1	);
 
 	PROJECT					(	Triangle2d_t,		Triangle3d_t,
-								&proj_triangle,		triangle,		PERSPECTIVE	);
+								proj_triangle,		triangle,		PERSPECTIVE	);
 
-	DRAW					(	Triangle2d_t,		&proj_triangle,
+	DRAW					(	Triangle2d_t,		proj_triangle,
 								origin,				color,			colorbuf	);
 }
 
 
+
+
 HOWTO_PROJECT				(	Triangle2d_t,		Triangle3d_t,
 								to,					from,
-								Projection_type_t	type		)
+								Projection_type_t					type	)
 {
-	Point2d_t					proj1 = { 0 },
-								proj2 = { 0 },
-								proj3 = { 0 };
-
 
 	PROJECT					(	Point2d_t,			Point3d_t,
 								&to->p1,			&from->p1,		type		);

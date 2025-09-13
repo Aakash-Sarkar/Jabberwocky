@@ -36,23 +36,28 @@ typedef					struct				Vec4	{	float x;
 
 typedef					enum		Projection_type	{	ORTHOGRAPHIC	= 0,
 														ISOMETRIC,
-														PERSPECTIVE		}		Projection_type_t;
+														PERSPECTIVE			}
+														Projection_type_t;
 
 
 
 
 
-HOWTO_COPY									(	vec2_t,	to,	from	);
+HOWTO_COPY							(	vec2_t,	to,	from	);
 
-HOWTO_COPY									(	vec3_t,	to,	from	);
-
-
-HOWTO_ROTATE								(	vec3_t,	to,	from,	vec3_t angle	);
+HOWTO_COPY							(	vec3_t,	to,	from	);
 
 
 
 
-HOWTO_PROJECT								(	vec2_t,	vec3_t,	to,	from,	Projection_type_t type	);
+HOWTO_ROTATE						(	vec3_t,	to,	from,	vec3_t* angle	);
+
+
+
+
+HOWTO_PROJECT						(	vec2_t,		vec3_t,
+										to,			from,
+										Projection_type_t			type	);
 
 
 

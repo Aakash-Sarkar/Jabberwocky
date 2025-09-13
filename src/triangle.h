@@ -20,14 +20,16 @@ typedef							struct Triangle2d	{	Point2d_t p1;
 														Point2d_t p3;	}	Triangle2d_t;
 
 
-HOWTO_COPY					(	Face_t,		to,	from	);
+HOWTO_COPY					(	Face_t,			to,	from	);
+
+HOWTO_COPY					(	Triangle2d_t,	to,	from	);
 
 HOWTO_COPY					(	Triangle3d_t,	to,	from	);
 
 
-HOWTO_ROTATE				(	Triangle3d_t,	to,	from,	vec3_t angle	);
+HOWTO_ROTATE				(	Triangle3d_t,	to,	from,	vec3_t* angle	);
 
-HOWTO_ROTATE				(	Triangle2d_t,	to,	from,	vec3_t angle	);
+HOWTO_ROTATE				(	Triangle2d_t,	to,	from,	vec2_t* angle	);
 
 
 HOWTO_DRAW					(	Triangle2d_t,

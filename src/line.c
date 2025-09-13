@@ -27,21 +27,21 @@ HOWTO_DRAW					(	Line_t,
 	float						delX		= ( delta_X / ( float ) side_len ),
 								delY		= ( delta_Y / ( float ) side_len );
 
-	Point2d_t					point		= { 0 };
+	MEM						(	Point2d_t,	point,	1	);
 
-	COPY					(	Point2d_t,	&point,			&line->p1	);
+	COPY					(	Point2d_t,	point,	&line->p1	);
 
 	for						(	int i = 0;	i <= side_len;	i++		)
 	{
 		paint_color			(	color,
 								colorbuf,
-								( int )	(	point.v.x	+	origin->v.x		),
-								( int )	(	point.v.y	+	origin->v.y		),
+								( int )	(	point->v.x	+	origin->v.x		),
+								( int )	(	point->v.y	+	origin->v.y		),
 								0
 							);
 
-		point.v.x			+=	delX;
-		point.v.y			+=	delY;
+		point->v.x			+=	delX;
+		point->v.y			+=	delY;
 	}
 }
 

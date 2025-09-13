@@ -121,19 +121,19 @@ HOWTO_DRAW					(	Grid_t,
 								Color_t*		color,
 								Color_buffer_t* colorbuf	)
 {
-	Rect_t						rect		= { 0 };
+	MEM						(	Rect_t,		rect,	1	);
 
 	int							posX		= 0,
 								posY		= 0,
 								n			= 0;
 
-	rect.posX				=	posX;
-	rect.posY				=	posY;
-	rect.width				=	grid->width;
-	rect.height				=	grid->height;
+	rect->posX				=	posX;
+	rect->posY				=	posY;
+	rect->width				=	grid->width;
+	rect->height			=	grid->height;
 
-	for_each_rect_in_buffer	(	n,		&rect,	colorbuf	)
-		DRAW				(	Rect_t,	&rect,	color,	colorbuf	);
+	for_each_rect_in_buffer	(	n,		rect,	colorbuf	)
+		DRAW				(	Rect_t,	rect,	color,	colorbuf	);
 
 }
 

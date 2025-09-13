@@ -71,9 +71,10 @@ HOWTO_COPY				(	Point3d_t,	to,		from	);
 
 
 
-HOWTO_ROTATE			(	Point2d_t,	to,		from,	vec3_t angle	);
 
-HOWTO_ROTATE			(	Point3d_t,	to,		from,	vec3_t angle	);
+HOWTO_ROTATE			(	Point2d_t,	to,		from,	vec3_t* angle	);
+
+HOWTO_ROTATE			(	Point3d_t,	to,		from,	vec3_t* angle	);
 
 
 
