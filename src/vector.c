@@ -13,9 +13,85 @@
 
 float						fov_scale = 256;
 
-vec3_t						camera[1] = { {	.x = 0.0,
+vec3_t						camera[1] = {{	.x = 0.0,
 											.y = 0.0,
-											.z = -5.0	} };
+											.z = -5.0	}};
+
+
+
+
+HOWTO_INIT_ARRAY			(	vec2_t,	array	)
+{
+	array->x				=	NULL;
+	array->y				=	NULL;
+	array->count			=	0;
+}
+
+HOWTO_INIT_ARRAY			(	vec3_t,	array	)
+{
+	array->x				=	NULL;
+	array->y				=	NULL;
+	array->z				=	NULL;
+	array->count			=	0;
+}
+
+
+HOWTO_RESET_ARRAY			(	vec2_t,	array	)
+{
+	array_free				(	array->x	);
+	array_free				(	array->y	);
+
+	array->x				=	NULL;
+	array->y				=	NULL;
+	array->count			=	0;
+}
+
+HOWTO_RESET_ARRAY			(	vec3_t,	array	)
+{
+	array_free				(	array->x	);
+	array_free				(	array->y	);
+	array_free				(	array->z	);
+
+
+	array->x				=	NULL;
+	array->y				=	NULL;
+	array->z				=	NULL;
+	array->count			=	0;
+}
+
+
+HOWTO_LOAD					(	vec2_t,		ptr,	array,	idx	)
+{
+	ptr->x					=	array->x [ idx ];
+	ptr->y					=	array->y [ idx ];
+}
+
+HOWTO_LOAD					(	vec3_t,		ptr,	array,	idx	)
+{
+	ptr->x					=	array->x [ idx ];
+	ptr->y					=	array->y [ idx ];
+	ptr->z					=	array->z [ idx ];
+}
+
+HOWTO_STORE					(	vec2_t,		ptr,	array	)
+{
+	array_push				(	array->x,	ptr->x	);
+
+	array_push				(	array->y,	ptr->y	);
+
+	array->count++;
+}
+
+HOWTO_STORE					(	vec3_t,		ptr,	array	)
+{
+	array_push				(	array->x,	ptr->x	);
+
+	array_push				(	array->y,	ptr->y	);
+
+	array_push				(	array->z,	ptr->z	);
+
+	array->count++;
+}
 
 
 

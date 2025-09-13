@@ -4,6 +4,7 @@
 
 #pragma once
 
+#include "array.h"
 #include "object.h"
 #include "geometry.h"
 
@@ -26,6 +27,25 @@ typedef					struct				Vec4	{	float x;
 
 
 
+
+typedef					DECL_ARRAY					(	vec2_t,
+														float*	x;
+														float*	y;	);
+
+typedef					DECL_ARRAY					(	vec3_t,
+														float*	x;
+														float*	y;
+														float*	z;	);
+
+typedef					DECL_ARRAY					(	vec4_t,
+														float*	x;
+														float*	y;
+														float*	z;
+														float*	w;	);
+
+
+
+
 /** PROJECTION:
  *
  * Projection is the method by which a 3D object is
@@ -34,10 +54,9 @@ typedef					struct				Vec4	{	float x;
  * viewed from a certain angle.
  */
 
-typedef					enum		Projection_type	{	ORTHOGRAPHIC	= 0,
-														ISOMETRIC,
-														PERSPECTIVE			}
-														Projection_type_t;
+typedef					enum			Projection_type	{	ORTHOGRAPHIC	= 0,
+															ISOMETRIC,
+															PERSPECTIVE				}	Projection_type_t;
 
 
 
@@ -46,6 +65,29 @@ typedef					enum		Projection_type	{	ORTHOGRAPHIC	= 0,
 HOWTO_COPY							(	vec2_t,	to,	from	);
 
 HOWTO_COPY							(	vec3_t,	to,	from	);
+
+
+
+
+HOWTO_INIT_ARRAY					(	vec2_t,	array	);
+
+HOWTO_INIT_ARRAY					(	vec3_t,	array	);
+
+
+HOWTO_RESET_ARRAY					(	vec2_t,	array	);
+
+HOWTO_RESET_ARRAY					(	vec3_t,	array	);
+
+
+HOWTO_LOAD							(	vec2_t,	ptr,	array,	idx	);
+
+HOWTO_LOAD							(	vec3_t,	ptr,	array,	idx	);
+
+HOWTO_STORE							(	vec2_t,	ptr,	array	);
+
+HOWTO_STORE							(	vec3_t,	ptr,	array	);
+
+
 
 
 

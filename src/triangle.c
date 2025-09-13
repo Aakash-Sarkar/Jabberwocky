@@ -2,6 +2,7 @@
  * SPDX-License-Identifier: MIT
  */
 
+#include "array.h"
 #include "line.h"
 #include "mesh.h"
 #include "triangle.h"
@@ -9,11 +10,125 @@
 
 
 
+HOWTO_INIT_ARRAY			(	Face_t,			array		)
+{
+	array->idx1				=	NULL;
+	array->idx2				=	NULL;
+	array->idx3				=	NULL;
+
+	array->count			=	0;
+}
+
+HOWTO_INIT_ARRAY			(	Triangle2d_t,	array		)
+{
+	INIT_ARRAY				(	Point2d_t,		&array->p1	);
+	INIT_ARRAY				(	Point2d_t,		&array->p2	);
+	INIT_ARRAY				(	Point2d_t,		&array->p3	);
+
+	array->count			=	0;
+}
+
+HOWTO_INIT_ARRAY			(	Triangle3d_t,	array		)
+{
+	INIT_ARRAY				(	Point3d_t,		&array->p1	);
+	INIT_ARRAY				(	Point3d_t,		&array->p2	);
+	INIT_ARRAY				(	Point3d_t,		&array->p3	);
+
+	array->count			=	0;
+}
+
+
+
+
+HOWTO_RESET_ARRAY			(	Face_t,			array		)
+{
+	array_free				(	array->idx1		);
+	array_free				(	array->idx2		);
+	array_free				(	array->idx3		);
+
+	array->count			=	0;
+}
+
+HOWTO_RESET_ARRAY			(	Triangle2d_t,	array		)
+{
+	RESET_ARRAY				(	Point2d_t,		&array->p1	);
+	RESET_ARRAY				(	Point2d_t,		&array->p2	);
+	RESET_ARRAY				(	Point2d_t,		&array->p3	);
+
+	array->count			=	0;
+}
+
+HOWTO_RESET_ARRAY			(	Triangle3d_t,	array		)
+{
+	RESET_ARRAY				(	Point3d_t,		&array->p1	);
+	RESET_ARRAY				(	Point3d_t,		&array->p2	);
+	RESET_ARRAY				(	Point3d_t,		&array->p3	);
+
+	array->count			=	0;
+}
+
+
+
+
+HOWTO_LOAD					(	Face_t,			ptr,		array,			idx	)
+{
+	ptr->idx1				=	array->idx1 [ idx ];
+	ptr->idx2				=	array->idx2 [ idx ];
+	ptr->idx3				=	array->idx3 [ idx ];
+}
+
+HOWTO_LOAD					(	Triangle2d_t,	ptr,		array,			idx	)
+{
+	LOAD					(	Point2d_t,		&ptr->p1,	&array->p1,		idx	);
+	LOAD					(	Point2d_t,		&ptr->p2,	&array->p2,		idx	);
+	LOAD					(	Point2d_t,		&ptr->p3,	&array->p3,		idx	);
+}
+
+HOWTO_LOAD					(	Triangle3d_t,	ptr,		array,			idx	)
+{
+	LOAD					(	Point3d_t,		&ptr->p1,	&array->p1,		idx	);
+	LOAD					(	Point3d_t,		&ptr->p2,	&array->p2,		idx	);
+	LOAD					(	Point3d_t,		&ptr->p3,	&array->p3,		idx	);
+}
+
+
+
+
+HOWTO_STORE					(	Face_t,			ptr,		array	)
+{
+	array_push				(	array->idx1,	ptr->idx1	);
+	array_push				(	array->idx2,	ptr->idx2	);
+	array_push				(	array->idx3,	ptr->idx3	);
+
+	array->count++;
+}
+
+HOWTO_STORE					(	Triangle2d_t,	ptr,		array	)
+{
+	STORE					(	Point2d_t,		&ptr->p1,	&array->p1		);
+	STORE					(	Point2d_t,		&ptr->p2,	&array->p2		);
+	STORE					(	Point2d_t,		&ptr->p3,	&array->p3		);
+
+	array->count++;
+}
+
+HOWTO_STORE					(	Triangle3d_t,	ptr,		array	)
+{
+	STORE					(	Point3d_t,		&ptr->p1,	&array->p1		);
+	STORE					(	Point3d_t,		&ptr->p2,	&array->p2		);
+	STORE					(	Point3d_t,		&ptr->p3,	&array->p3		);
+
+	array->count++;
+}
+
+
+
+
 HOWTO_COPY					(	Face_t,			to,				from	)
 {
-	to->idx [ 0 ]			=	from->idx [ 0 ];
-	to->idx [ 1 ]			=	from->idx [ 1 ];
-	to->idx [ 2 ]			=	from->idx [ 2 ];
+	to->idx1				=	from->idx1;
+	to->idx2				=	from->idx2;
+	to->idx3				=	from->idx3;
 }
 
 HOWTO_COPY					(	Triangle2d_t,	to,				from	)
@@ -135,4 +250,5 @@ HOWTO_PROJECT				(	Triangle2d_t,		Triangle3d_t,
 	PROJECT					(	Point2d_t,			Point3d_t,
 								&to->p3,			&from->p3,		type		);
 }
+
 

@@ -7,6 +7,7 @@
 
 #include <SDL.h>
 
+#include "array.h"
 #include "color.h"
 #include "cube.h"
 #include "display.h"
@@ -219,31 +220,24 @@ update							(	Renderer_t	*renderer	)
 {
 
 	int								ret	= -1,
-									i	= 0,
-									j	= 0;
+									i	= 0;
 
 	DECL_PTR					(	mesh,		Mesh_t,			NULL	);
-	DECL_PTR					(	face,		Face_t,			NULL	);
-	DECL_PTR					(	yellow,		Color_t,		NULL	);
+	DECL_PTR					(	color,		Color_t,		NULL	);
 
 	static
-	MEM							(	vec3_t,		angle,	1	);
+	MEM							(	vec3_t,		angle,			1		);
 
-	MEM							(	Point2d_t,	origin,	1	);
+	MEM							(	Point2d_t,	origin,			1		);
 
-	CONSTRUCT					(	yellow,
+	CONSTRUCT					(	color,
 									Color_t,
-									0xFF,
+									0x00,
 									0xFF,
 									0x00,
 									0xFF,
-									PIXELFORMAT_ARGB8888	);
-
-	if							(	!yellow	)
-	{
-		LOG						(	"Failed to create Color\n"	);
-		RETURN					(	FAIL	);
-	}
+									PIXELFORMAT_ARGB8888
+								);
 
 	CONSTRUCT					(	mesh,
 									Mesh_t,
@@ -262,30 +256,26 @@ update							(	Renderer_t	*renderer	)
 	origin->v.x					=	(float)	renderer->window->width  / 2;
 	origin->v.y					=	(float)	renderer->window->height / 2;
 
-	for_each_face_in_mesh		(	face,	i,		mesh	)
+	for_each_item_in_array		(	&mesh->faces,	i	)
 	{
-		printf					(	"Update start: %d\n",	i	);
+		MEM						(	Triangle3d_t,	triangle,		1	);
 
-		MEM						(	Triangle3d_t,		triangle,		1	);
+		MEM						(	Triangle3d_t,	new_triangle,	1	);
 
-		MEM						(	Triangle3d_t,		new_triangle,	1	);
+		MEM						(	Triangle2d_t,	proj_triangle,	1	);
 
-		MEM						(	Triangle2d_t,		proj_triangle,	1	);
+		MEM						(	Face_t,			face,			1	);
 
+		LOAD					(	Face_t,			face,			&mesh->faces,	i	);
 
 		*triangle				=	create_triangle_from_face	(	face,		mesh	);
 
-		ROTATE					(	Triangle3d_t,	new_triangle,	triangle,		angle	);
+		ROTATE					(	Triangle3d_t,	new_triangle,	triangle,	angle	);
 
 		PROJECT					(	Triangle2d_t,	Triangle3d_t,
 									proj_triangle,	new_triangle,	PERSPECTIVE		);
 
-		//array_push				(	renderer->triangles_to_draw,	*proj_triangle	);
-		
-		DRAW					(	Triangle3d_t,	new_triangle,
-									origin,	color,	renderer->buffer	);
-		printf					(	"Update end: %d\n",	i	);
-
+		STORE					(	Triangle2d_t,	proj_triangle,	&renderer->triangles_to_draw	);
 	}
 
 	angle->x						+=	0.01;
@@ -304,9 +294,39 @@ static
 bool
 render							(	Renderer_t* renderer	)
 {
-	int								ret = -1;
+	int								ret = -1,
+									i	= 0;
 
-	DECL_PTR					(	color,	Color_t,	NULL	);
+	DECL_PTR					(	color,		Color_t,	NULL	);
+
+	MEM							(	Point2d_t,	origin,		1	);
+
+	origin->v.x					=	(float) renderer->window->width  / 2;
+	origin->v.y					=	(float)	renderer->window->height / 2;
+
+	CONSTRUCT					(	color,
+									Color_t,
+									0x00,
+									0xFF,
+									0x00,
+									0xFF,
+									PIXELFORMAT_ARGB8888
+								);
+
+	for_each_item_in_array		(	&renderer->triangles_to_draw,	i	)
+	{
+		MEM						(	Triangle2d_t,	triangle,	1	);
+
+		LOAD					(	Triangle2d_t,	triangle,	&renderer->triangles_to_draw,	i	);
+
+		DRAW					(	Triangle2d_t,	triangle,
+									origin,			color,		renderer->buffer	);
+	}
+
+	DESTRUCT					(	color,			Color_t		);
+
+	RESET_ARRAY					(	Triangle2d_t,	&renderer->triangles_to_draw	);
+
 	ret							=	render_color_buffer	(	renderer	);
 
 	if							(	( !!ret ) != SUCCESS	)

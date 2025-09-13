@@ -8,6 +8,60 @@
 
 
 
+HOWTO_INIT_ARRAY					(	Point2d_t,		array		)
+{
+	INIT_ARRAY						(	vec2_t,			&array->v	);
+	array->count					=	0;
+}
+
+HOWTO_INIT_ARRAY					(	Point3d_t,		array		)
+{
+	INIT_ARRAY						(	vec3_t,			&array->v	);
+	array->count					=	0;
+}
+
+
+HOWTO_RESET_ARRAY					(	Point2d_t,		array		)
+{
+	RESET_ARRAY						(	vec2_t,			&array->v	);
+	array->count					=	0;
+}
+
+HOWTO_RESET_ARRAY					(	Point3d_t,		array		)
+{
+	RESET_ARRAY						(	vec3_t,			&array->v	);
+	array->count					=	0;
+}
+
+
+
+
+HOWTO_LOAD							(	Point2d_t,		ptr,		array,		idx	)
+{
+	LOAD							(	vec2_t,			&ptr->v,	&array->v,	idx	);
+}
+
+HOWTO_LOAD							(	Point3d_t,		ptr,		array,		idx	)
+{
+	LOAD							(	vec3_t,			&ptr->v,	&array->v,	idx	);
+}
+
+
+HOWTO_STORE							(	Point2d_t,		ptr,		array		)
+{
+	STORE							(	vec2_t,			&ptr->v,	&array->v	);
+	array->count++;
+}
+
+HOWTO_STORE							(	Point3d_t,		ptr,		array		)
+{
+	STORE							(	vec3_t,			&ptr->v,	&array->v	);
+	array->count++;
+}
+
+
+
+
 HOWTO_COPY				(	Point2d_t,		to,			from	)
 {
 	COPY				(	vec2_t,			&to->v,		&from->v	);

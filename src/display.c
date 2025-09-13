@@ -117,7 +117,7 @@ CONSTRUCTOR								(	Renderer_t,
 											SDL,
 											CreateRenderer,
 											window->sdl,
-		-									1,
+											-1,
 											0
 										);
 
@@ -127,8 +127,9 @@ CONSTRUCTOR								(	Renderer_t,
 		RETURN							(	NULL	);
 	}
 
+	INIT_ARRAY							(	Triangle2d_t,	&renderer->triangles_to_draw	);
+
 	renderer->window					=	window;
-	renderer->triangles_to_draw			=	NULL;
 
 	RETURN								(	renderer	);
 }

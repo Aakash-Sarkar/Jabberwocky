@@ -2,9 +2,9 @@
  * SPDX-License-Identifier: MIT
  */
 
-
 #pragma once
 
+#include "array.h"
 #include "vector.h"
 #include "object.h"
 #include "geometry.h"
@@ -53,14 +53,44 @@
 
 
 
-typedef					struct	{	vec2_t v;	}		Point2d_t;
+typedef					struct		{	vec2_t v;	}		Point2d_t;
 
 /* We could also do `typedef vec3_t point3d_t` here, but then someone would
  * certainly try to pass a position vector in a function for colors. Doing
  * it this way will at least give a compilation error.
  */
 
-typedef					struct	{	vec3_t v;	}		Point3d_t;
+typedef					struct		{	vec3_t v;	}		Point3d_t;
+
+
+
+
+typedef					DECL_ARRAY	(	Point2d_t,	ARRAY	(	vec2_t,	v	);	);
+
+typedef					DECL_ARRAY	(	Point3d_t,	ARRAY	(	vec3_t,	v	);	);
+
+
+
+
+HOWTO_INIT_ARRAY		(	Point2d_t,	array	);
+
+HOWTO_INIT_ARRAY		(	Point3d_t,	array	);
+
+
+HOWTO_RESET_ARRAY		(	Point2d_t,	array	);
+
+HOWTO_RESET_ARRAY		(	Point3d_t,	array	);
+
+
+
+HOWTO_LOAD				(	Point2d_t,	ptr,	array,	idx	);
+
+HOWTO_LOAD				(	Point3d_t,	ptr,	array,	idx	);
+
+
+HOWTO_STORE				(	Point2d_t,	ptr,	array	);
+
+HOWTO_STORE				(	Point3d_t,	ptr,	array	);
 
 
 
@@ -72,7 +102,7 @@ HOWTO_COPY				(	Point3d_t,	to,		from	);
 
 
 
-HOWTO_ROTATE			(	Point2d_t,	to,		from,	vec3_t* angle	);
+HOWTO_ROTATE			(	Point2d_t,	to,		from,	vec2_t* angle	);
 
 HOWTO_ROTATE			(	Point3d_t,	to,		from,	vec3_t* angle	);
 
