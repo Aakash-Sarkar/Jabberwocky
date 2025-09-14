@@ -11,6 +11,7 @@
 /**
  * OBJECTS:
  *
+ *
  * The concept of objects is so fundamental in Software Design that even C
  * programmers have found a way to emulate it in their programs. But why is it
  * needed? And can I get away with writing my program without having to know or
@@ -29,6 +30,7 @@
  * Imagine you're writing a commercial software and you start off with the
  * following approach:
  *
+ *
  * 1. My program will begin at the main function and inside that it'll have a
  *    for loop.
  *
@@ -39,6 +41,7 @@
  *
  * 4. Each function will in turn make some other function calls based on the
  *    arguments given and so on...
+ *
  *
  * This is the typical procedure oriented approach. We decompose the process
  * of determining the output from the given inputs into a sequence of function
@@ -56,6 +59,7 @@
  * and branches, it'll become like keeping track of each thread in a spider's
  * web!
  *
+ *
  * So, a more managable approach would be the following:
  *
  * 1. Our application will consist of N number of objects (structures)
@@ -70,6 +74,7 @@
  * 4. At the start of the application all these objects will be in their initial
  *    states. Inside the main loop we change the state of each object based on
  *    the user input.
+ *
  *
  * Now, we can easily check which objects our change is affecting and veify if
  * the objects are still consistent with the new change.
@@ -141,28 +146,38 @@ struct Object;
  * provided we can set each of the variables ourselves.
  */
 
-#define ctor(class)						concat(create, _, class)
-#define dtor(class)						concat(destroy, _, class)
+#define ctor(class)							concat(create, _, class)
+#define dtor(class)							concat(destroy, _, class)
 
 
 
 
-#define CONSTRUCTOR(class, ...)			class* ctor(class) (__VA_ARGS__)
+#define CONSTRUCTOR(class, ...)				class* ctor(class) (__VA_ARGS__)
 
-#define DESTRUCTOR(class)				void dtor(class) (class* object)
-
-#define CONSTRUCT(ptr, class, ...)		ptr = ctor(class) (__VA_ARGS__)
-
-#define DESTRUCT(ptr, class)			dtor(class) (ptr)
+#define DESTRUCTOR(class)					void dtor(class) (class* object)
 
 
+#define CONSTRUCT(ptr, class, ...)			ptr = ctor(class) (__VA_ARGS__)
+
+#define DESTRUCT(ptr, class)				dtor(class) (ptr)
 
 
-#define copy_ctor(class)				concat(copy, _, class)
 
-#define HOWTO_COPY(class, to, from)		void copy_ctor(class) (class* to, class* from)
 
-#define COPY(class, to , from)			copy_ctor(class) (to, from)
+#define copy_ctor(class)					concat(copy, _, class)
+
+#define HOWTO_COPY(class, to, from)			void copy_ctor(class) (class* to, class* from)
+
+#define COPY(class, to , from)				copy_ctor(class) (to, from)
+
+
+
+
+#define	maker(class)						concat(make, _, class)
+
+#define HOWTO_MAKE(class, ptr, ...)			void maker(class) (class* ptr, __VA_ARGS__)
+
+#define MAKE(class, ptr, ...)				maker(class) (ptr, __VA_ARGS__)
 
 
 
@@ -174,10 +189,10 @@ struct Object;
  *
  */
 
-#define baseclass(module, class)		concat(module, _, class)
+#define baseclass(module, class)			concat(module, _, class)
 
-#define INHERIT(module, class, ...)		struct class {						\
-											baseclass(module, class) *sdl;	\
-											__VA_ARGS__						\
-										}
+#define INHERIT(module, class, ...)			struct class	{					\
+												baseclass(module, class) *sdl;	\
+												__VA_ARGS__						\
+											}
 

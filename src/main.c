@@ -3,8 +3,6 @@
  */
 
 
-
-
 #include <SDL.h>
 
 #include "array.h"
@@ -216,28 +214,19 @@ process_input					(	void	)
 
 static
 bool
-update							(	Renderer_t	*renderer	)
+update							(	Renderer_t*				renderer	)
 {
 
 	int								ret	= -1,
 									i	= 0;
 
-	DECL_PTR					(	mesh,		Mesh_t,			NULL	);
-	DECL_PTR					(	color,		Color_t,		NULL	);
+	DECL_PTR					(	mesh,		Mesh_t,		NULL	);
 
 	static
-	MEM							(	vec3_t,		angle,			1		);
+	MEM							(	vec3_t,		angle,		1		);
 
-	MEM							(	Point2d_t,	origin,			1		);
+	MEM							(	Point2d_t,	origin,		1		);
 
-	CONSTRUCT					(	color,
-									Color_t,
-									0x00,
-									0xFF,
-									0x00,
-									0xFF,
-									PIXELFORMAT_ARGB8888
-								);
 
 	CONSTRUCT					(	mesh,
 									Mesh_t,
@@ -265,6 +254,7 @@ update							(	Renderer_t	*renderer	)
 		MEM						(	Triangle2d_t,	proj_triangle,	1	);
 
 		MEM						(	Face_t,			face,			1	);
+
 
 		LOAD					(	Face_t,			face,			&mesh->faces,	i	);
 
@@ -294,24 +284,26 @@ static
 bool
 render							(	Renderer_t* renderer	)
 {
+
 	int								ret = -1,
 									i	= 0;
 
-	DECL_PTR					(	color,		Color_t,	NULL	);
+	MEM							(	Color_t,	color,	1	);
+	MEM							(	Point2d_t,	origin,	1	);
 
-	MEM							(	Point2d_t,	origin,		1	);
 
 	origin->v.x					=	(float) renderer->window->width  / 2;
 	origin->v.y					=	(float)	renderer->window->height / 2;
 
-	CONSTRUCT					(	color,
-									Color_t,
+
+	MAKE						(	Color_t,
+									color,
 									0x00,
 									0xFF,
 									0x00,
-									0xFF,
-									PIXELFORMAT_ARGB8888
+									0xFF
 								);
+
 
 	for_each_item_in_array		(	&renderer->triangles_to_draw,	i	)
 	{
@@ -319,11 +311,9 @@ render							(	Renderer_t* renderer	)
 
 		LOAD					(	Triangle2d_t,	triangle,	&renderer->triangles_to_draw,	i	);
 
-		DRAW					(	Triangle2d_t,	triangle,
-									origin,			color,		renderer->buffer	);
+		DRAW					(	Triangle2d_t,	triangle,	origin,	color,	renderer->buffer	);
 	}
 
-	DESTRUCT					(	color,			Color_t		);
 
 	RESET_ARRAY					(	Triangle2d_t,	&renderer->triangles_to_draw	);
 

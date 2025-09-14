@@ -12,8 +12,12 @@
 
 
 
+
 /**
  * COLORS:
+ *
+ *
+ *
  *
  * Computer Graphics is primarily about three things: Images, Colors and Light!
  * If you're working on Graphics, then you should have a more concrete
@@ -56,13 +60,17 @@
  */
 
 
-typedef             enum Format_type  {
-                            PIXELFORMAT_ARGB8888 = 0,
-                            PIXELFORMAT_RGBA8888,
-                            PIXELFORMAT_XRGB4444,
-                            PIXELFORMAT_MAX         }   format_type_t;
+
+
+typedef                     enum Format_type  {
+                                    PIXELFORMAT_ARGB8888 = 0,
+                                    PIXELFORMAT_RGBA8888,
+                                    PIXELFORMAT_XRGB4444,
+                                    PIXELFORMAT_MAX         }   Format_type_t;
+
 
 /*
+ *
  * On modern day systems we always represent a color value as a 32-bit integer.
  * Each color component (R, G and B) is packed into the successive 8-bits of
  * the 32-bit int value (with the last 8-bits reserved for other purposes).
@@ -91,46 +99,44 @@ typedef             enum Format_type  {
  * component while keeping the number of bits for Green and Blue same as before.
  */
 
-typedef             struct Color {
-                            union {
-                                struct {
-                                    uint8_t    r;
-                                    uint8_t    g;
-                                    uint8_t    b;
-                                    uint8_t    a;
-                                }   rgb;
-                                // TODO: Support YUV formats
-                                uint32_t       yuv;
-                            };
-                            format_type_t      format_type;
-                            uint32_t           val;
-                            bool               dirty;  }  Color_t;
+typedef                     struct Color {
+                                    union {
+                                        struct   {
+                                            uint8_t    r;
+                                            uint8_t    g;
+                                            uint8_t    b;
+                                            uint8_t    a;
+                                        }   rgba;
+                                        // TODO: Support YUV formats
+                                        uint32_t       yuv;
+                                    };
+                            }  Color_t;
 
 
 
 
-typedef             struct Format {
-                            SDL_PixelFormatEnum   sdl_type;
-                            int        r_shft;
-                            int        g_shft;
-                            int        b_shft;
-                            int        a_shft;
-                            int        bpp;
-                            int        planes;
-                            struct {
-                                bool   has_alpha;
-                                bool   has_modifiers;
-                            }   flags;                 }  Format_t;
+typedef                     struct Format   {
+                                    SDL_PixelFormatEnum   sdl_type;
+                                    int        r_shft;
+                                    int        g_shft;
+                                    int        b_shft;
+                                    int        a_shft;
+                                    int        bpp;
+                                    int        planes;
+                                    struct {
+                                        bool   has_alpha;
+                                        bool   has_modifiers;
+                                    }   flags;                 }    Format_t;
 
 
 
 
-typedef             struct color_buffer {
-                            int        width;
-                            int        height;
-                            int        pitch;
-                            int        num_buffers;
-                            uint32_t*  buffer[4];      }  Color_buffer_t;
+typedef                     struct color_buffer   {
+                                    int        width;
+                                    int        height;
+                                    int        pitch;
+                                    int        num_buffers;
+                                    uint32_t*  buffer[4];      }    Color_buffer_t;
 
 
 
@@ -147,37 +153,33 @@ typedef             struct color_buffer {
  *
  * @return: pointer to object of type color_t
  */
-CONSTRUCTOR         (   Color_t,
-                        uint8_t         red,
-                        uint8_t         green,
-                        uint8_t         blue,
-                        uint8_t         alpha,
-                        format_type_t   format_type  );
 
-/**
- * @brief destructor for color object
- *
- * @param color:                 object of type color_t
- *
- * @return void
- */
-DESTRUCTOR          (  Color_t  );
+HOWTO_MAKE                      (   Color_t,
+                                    color,
+                                    uint8_t         r,
+                                    uint8_t         g,
+                                    uint8_t         b,
+                                    uint8_t         a    );
+
+
+
 
 /**
  * @brief: constructor for color buffer object
  *
- * @type:                        color_buffer_t
+ * @type:                           color_buffer_t
  *
- * @param width:                 width of buffer in pixels
- * @param height:                height of buffer in pixels
- * @param format_type:           pixel format
+ * @param width:                    width of buffer in pixels
+ * @param height:                   height of buffer in pixels
+ * @param format_type:              pixel format
  *
  * @return: pointer to object of type color_buffer_t
  */
-CONSTRUCTOR         (   Color_buffer_t,
-                        int             width,
-                        int             height,
-                        format_type_t   format_type     );
+
+CONSTRUCTOR                     (   Color_buffer_t,
+                                    int                 width,
+                                    int                 height,
+                                    Format_type_t       format_type   );
 
 /**
  * @brief destructor for color buffer object
@@ -186,7 +188,7 @@ CONSTRUCTOR         (   Color_buffer_t,
  *
  * @return void
  */
-DESTRUCTOR          (   Color_buffer_t  );
+DESTRUCTOR                      (   Color_buffer_t  );
 
 /**
  * @brief paint color at pixel location (x, y)
@@ -200,15 +202,16 @@ DESTRUCTOR          (   Color_buffer_t  );
  * @return: SUCCESS if the operation succeeds, FAIL otherwise
  */
 bool
-paint_color         (   Color_t*            color,
-                        Color_buffer_t*     color_buffer,
-                        int                 posX,
-                        int                 posY,
-                        int                 plane       );
+paint_color                     (   Color_t*            color,
+                                    Color_buffer_t*     color_buffer,
+                                    Format_type_t       format_type,
+                                    int                 posX,
+                                    int                 posY,
+                                    int                 plane       );
 
 Format_t*
-lookup_format       (   format_type_t       format_type );
+lookup_format                   (   Format_type_t       format_type );
 
 bool
-clear_color_buffer  (   Color_buffer_t*     buffer      );
+clear_color_buffer              (   Color_buffer_t*     buffer      );
 

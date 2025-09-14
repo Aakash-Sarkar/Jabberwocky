@@ -9,94 +9,95 @@
  * This function checks whether the pixel falls within the rectangle border
  */
 bool
-pixel_at_border				(	Rect_t*		rect,
-								int			posX,
-								int			posY,
-								int			border_len	)
+pixel_at_border					(	Rect_t*		rect,
+									int			posX,
+									int			posY,
+									int			border_len	)
 {
 
-	bool						is_border = (((	posX - rect->posX	)
-												< border_len	)
-											||	((	posY - rect->posY	)
-												< border_len	)
-											||	(( rect->posX + rect->width - 1) - posX )
-												< border_len
-											||	(( rect->posY + rect->height - 1) - posY )
-												< border_len	);
+	bool							is_border = (((	posX - rect->posX	)
+													< border_len	)
+												||	((	posY - rect->posY	)
+													< border_len	)
+												||	(( rect->posX + rect->width - 1) - posX )
+													< border_len
+												||	(( rect->posY + rect->height - 1) - posY )
+													< border_len	);
 
-	RETURN					(	is_border	);
+	RETURN						(	is_border	);
 }
 
 static
 void
-normalize_rect				(	Rect_t*			rect,
-								Color_buffer_t*	colorbuf	)
+normalize_rect					(	Rect_t*			rect,
+									Color_buffer_t*	colorbuf	)
 {
 
-	if						((	rect->posX + rect->width	) > colorbuf->width	)
+	if							((	rect->posX + rect->width	) > colorbuf->width	)
 	{
-		int						del	= ((	rect->posX	+	rect->width		)
-											- colorbuf->width + 1	);
-		rect->width			-=	del;
+		int							del	= ((	rect->posX	+	rect->width		)
+												- colorbuf->width + 1	);
+		rect->width				-=	del;
 	}
 
-	if						(	rect->posY + rect->height > colorbuf->height	)
+	if							(	rect->posY + rect->height > colorbuf->height	)
 	{
-		int						del = (	rect->posY + rect->height
-										- colorbuf->height + 1	);
-		rect->height		-=	del;
+		int							del = (	rect->posY + rect->height
+											- colorbuf->height + 1	);
+		rect->height			-=	del;
 	}
 	return;
 }
 
 static
 bool
-paint_rect					(	Rect_t*			rect,
-								Color_t*		interior_color,
-								Color_t*		border_color,
-								Color_buffer_t*	colorbuf,
-								int				border_len	)
+paint_rect						(	Rect_t*			rect,
+									Color_t*		interior_color,
+									Color_t*		border_color,
+									Color_buffer_t*	colorbuf,
+									int				border_len	)
 {
-	DECL_PTR				(	color,	Color_t,	NULL	);
+	DECL_PTR					(	color,	Color_t,	NULL	);
 
-	bool						ret	= FAIL;
+	bool							ret	= FAIL;
 
-	if						(	!rect	||	!border_color
-										||	!interior_color	)
+	if							(	!rect	||	!border_color
+											||	!interior_color	)
 	{
-		LOG					(	"Invalid args\n"	);
-		RETURN				(	FAIL	);
+		LOG						(	"Invalid args\n"	);
+		RETURN					(	FAIL	);
 	}
 
-	if						(	border_len < 0	)
-		border_len			=	0;
+	if							(	border_len < 0	)
+		border_len				=	0;
 
-	normalize_rect			(	rect, colorbuf	);
+	normalize_rect				(	rect,	colorbuf	);
 
-	int							posX = 0,
-								posY = 0;
+	int								posX = 0,
+									posY = 0;
 
-	for_each_posY_in_rect	(	rect, posY	)
-		for_each_posX_in_rect	(	rect, posX	)
+	for_each_posY_in_rect		(	rect,	posY	)
+		for_each_posX_in_rect	(	rect,	posX	)
 		{
 			// Are we at the border, Sergeant?
-			color			=	(	pixel_at_border (	rect,
-														posX, posY,
-														border_len	))
-								? border_color : interior_color;
+			color				=	(	pixel_at_border (	rect,
+															posX, posY,
+															border_len	))
+									? border_color : interior_color;
 
-			ret				=	paint_color (	color,
-												colorbuf,
-												posX, posY,
-												0	
-											);
+			ret					=	paint_color (	color,
+													colorbuf,
+													PIXELFORMAT_ARGB8888,
+													posX, posY,
+													0	
+												);
 
-			if				(	ret != SUCCESS	)
+			if					(	ret != SUCCESS	)
 			{
-				LOG			(	"Failed to paint color at posX : %d, posY : %d\n",
-								posX, posY
-							);
-				RETURN		(	FAIL	);
+				LOG				(	"Failed to paint color at posX : %d, posY : %d\n",
+									posX, posY
+								);
+				RETURN			(	FAIL	);
 			}
 		}
 
@@ -106,34 +107,33 @@ paint_rect					(	Rect_t*			rect,
 
 
 
-HOWTO_DRAW					(	Rect_t,
-								rect,
-								Color_t*			color,
-								Color_buffer_t*		colorbuf	)
+HOWTO_DRAW						(	Rect_t,
+									rect,
+									Color_t*			color,
+									Color_buffer_t*		colorbuf	)
 {
-	paint_rect				(	rect,	color,	color,	colorbuf,	1	);
+	paint_rect					(	rect,	color,	color,	colorbuf,	1	);
 }
 
 
-
-HOWTO_DRAW					(	Grid_t,
-								grid,
-								Color_t*		color,
-								Color_buffer_t* colorbuf	)
+HOWTO_DRAW						(	Grid_t,
+									grid,
+									Color_t*			color,
+									Color_buffer_t*		colorbuf	)
 {
-	MEM						(	Rect_t,		rect,	1	);
+	MEM							(	Rect_t,		rect,	1	);
 
-	int							posX		= 0,
-								posY		= 0,
-								n			= 0;
+	int								posX		= 0,
+									posY		= 0,
+									n			= 0;
 
-	rect->posX				=	posX;
-	rect->posY				=	posY;
-	rect->width				=	grid->width;
-	rect->height			=	grid->height;
+	rect->posX					=	posX;
+	rect->posY					=	posY;
+	rect->width					=	grid->width;
+	rect->height				=	grid->height;
 
-	for_each_rect_in_buffer	(	n,		rect,	colorbuf	)
-		DRAW				(	Rect_t,	rect,	color,	colorbuf	);
+	for_each_rect_in_buffer		(	n,		rect,	colorbuf	)
+		DRAW					(	Rect_t,	rect,	color,	colorbuf	);
 
 }
 

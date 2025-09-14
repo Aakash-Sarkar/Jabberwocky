@@ -68,7 +68,9 @@ CONSTRUCTOR					(	Mesh_t,
 	for						(	int i = 0;		i < num_points;		i++		)
 	{
 		MEM					(	Point3d_t,		point,				1	);
+
 		COPY				(	vec3_t,			&point->v,			points + i		);
+
 		STORE				(	Point3d_t,		point,				&mesh->points	);
 	}
 

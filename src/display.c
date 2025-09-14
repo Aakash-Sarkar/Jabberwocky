@@ -143,7 +143,7 @@ CONSTRUCTOR								(	Texture_t,
 											Renderer_t*				renderer,
 											int						width,
 											int						height,
-											format_type_t			format_type		)
+											Format_type_t			format_type		)
 {
 
 	DECL_PTR							(	texture,	Texture_t,	NULL	);

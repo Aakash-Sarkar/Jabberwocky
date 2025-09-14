@@ -35,6 +35,7 @@ HOWTO_DRAW					(	Line_t,
 	{
 		paint_color			(	color,
 								colorbuf,
+								PIXELFORMAT_ARGB8888,
 								( int )	(	point->v.x	+	origin->v.x		),
 								( int )	(	point->v.y	+	origin->v.y		),
 								0
