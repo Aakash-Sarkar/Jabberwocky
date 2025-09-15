@@ -33,31 +33,31 @@ typedef							DECL_ARRAY			(	Face_t,
 														int*	idx3;	);
 
 typedef							DECL_ARRAY			(	Triangle2d_t,
-														ARRAY	(	Point2d_t,	p1	);
-														ARRAY	(	Point2d_t,	p2	);
-														ARRAY	(	Point2d_t,	p3	);	);
+														ARRAY ( Point2d_t )		p1;
+														ARRAY ( Point2d_t )		p2;
+														ARRAY ( Point2d_t )		p3;	);
 
 typedef							DECL_ARRAY			(	Triangle3d_t,
-														ARRAY	(	Point3d_t,	p1	);
-														ARRAY	(	Point3d_t,	p2	);
-														ARRAY	(	Point3d_t,	p3	);	);
+														ARRAY ( Point3d_t )		p1;
+														ARRAY ( Point3d_t )		p2;
+														ARRAY ( Point3d_t )		p3;	);
 
 
 
-HOWTO_INIT_ARRAY				(	Face_t,			array	);
+HOWTO_ARRAY_INIT				(	Face_t,			array	);
 
-HOWTO_INIT_ARRAY				(	Triangle2d_t,	array	);
+HOWTO_ARRAY_INIT				(	Triangle2d_t,	array	);
 
-HOWTO_INIT_ARRAY				(	Triangle3d_t,	array	);
-
-
+HOWTO_ARRAY_INIT				(	Triangle3d_t,	array	);
 
 
-HOWTO_RESET_ARRAY				(	Face_t,			array	);
 
-HOWTO_RESET_ARRAY				(	Triangle2d_t,	array	);
 
-HOWTO_RESET_ARRAY				(	Triangle3d_t,	array	);
+HOWTO_ARRAY_RESET				(	Face_t,			array	);
+
+HOWTO_ARRAY_RESET				(	Triangle2d_t,	array	);
+
+HOWTO_ARRAY_RESET				(	Triangle3d_t,	array	);
 
 
 

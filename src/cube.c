@@ -6,6 +6,45 @@
 #include "cube.h"
 #include "rect.h"
 
+
+
+
+vec3_t	cube_vertices[] =
+{
+	{.x = -1,		.y = -1,		.z = -1		},
+	{.x = -1,		.y =  1,		.z = -1		},
+	{.x =  1,		.y =  1,		.z = -1		},
+	{.x =  1,		.y = -1,		.z = -1		},
+	{.x =  1,		.y =  1,		.z =  1		},
+	{.x =  1,		.y = -1,		.z =  1		},
+	{.x = -1,		.y =  1,		.z =  1		},
+	{.x = -1,		.y = -1,		.z =  1		},
+};
+
+
+Face_t	cube_faces[] =
+{
+	{.idx1 = 1,		.idx2 = 2,		.idx3 = 3	},
+	{.idx1 = 1,		.idx2 = 3,		.idx3 = 4	},
+
+	{.idx1 = 4,		.idx2 = 3,		.idx3 = 5	},
+	{.idx1 = 4,		.idx2 = 5,		.idx3 = 6	},
+
+	{.idx1 = 6,		.idx2 = 5,		.idx3 = 7	},
+	{.idx1 = 6,		.idx2 = 7,		.idx3 = 8	},
+
+	{.idx1 = 8,		.idx2 = 7,		.idx3 = 2	},
+	{.idx1 = 8,		.idx2 = 2,		.idx3 = 1	},
+
+	{.idx1 = 2,		.idx2 = 7,		.idx3 = 5	},
+	{.idx1 = 2,		.idx2 = 5,		.idx3 = 3	},
+
+	{.idx1 = 6,		.idx2 = 8,		.idx3 = 1	},
+	{.idx1 = 6,		.idx2 = 1,		.idx3 = 4	},
+};
+
+
+
 CONSTRUCTOR							(	Cube_t,
 										int			len,
 										int			width,

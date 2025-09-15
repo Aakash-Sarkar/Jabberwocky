@@ -8,14 +8,15 @@
 
 #include "object.h"
 #include "color.h"
+#include "mesh.h"
 #include "triangle.h"
 
 
 
 
-typedef					struct	Choreographer {
-									uint32_t			previous_ticks_ms;
-									uint32_t			current_ticks;			}	Choreographer_t;
+typedef					struct	Choreographer	{
+									uint32_t		previous_ticks_ms;
+									uint32_t		current_ticks;		}	Choreographer_t;
 
 
 /**
@@ -25,11 +26,11 @@ typedef					struct	Choreographer {
 
 typedef					INHERIT	(	SDL,
 									Window,
-									int					posX;
-									int					posY;
-									int					width;
-									int					height;
-									long				flags;					)	Window_t;
+									int				posX;
+									int				posY;
+									int				width;
+									int				height;
+									long			flags;		)			Window_t;
 
 
 /**
@@ -38,21 +39,22 @@ typedef					INHERIT	(	SDL,
  */
 typedef					INHERIT (	SDL,
 									Texture,
-									int					width;
-									int					height;
-									int					pitch;
-									Format_type_t		format_type;			)	Texture_t;
+									int				width;
+									int				height;
+									int				pitch;
+									Format_type_t	format_type;	)		Texture_t;
 
 
 
 typedef					INHERIT (	SDL,
 									Renderer,
-									Color_buffer_t*		buffer;
-									Texture_t*			texture;
-									Window_t*			window;
-									Choreographer_t*	c_grapher;
-									ARRAY			(	Triangle2d_t,
-														triangles_to_draw	);	)	Renderer_t;
+									Color_buffer_t*			buffer;
+									Texture_t*				texture;
+									Window_t*				window;
+									Choreographer_t*		c_grapher;
+									ARRAY ( Triangle2d_t )	triangles_to_draw;
+									Mesh_t*					mesh;
+									Point2d_t				origin;		)	Renderer_t;
 
 
 

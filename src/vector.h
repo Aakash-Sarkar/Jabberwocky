@@ -69,14 +69,14 @@ HOWTO_COPY							(	vec3_t,	to,	from	);
 
 
 
-HOWTO_INIT_ARRAY					(	vec2_t,	array	);
+HOWTO_ARRAY_INIT					(	vec2_t,	array	);
 
-HOWTO_INIT_ARRAY					(	vec3_t,	array	);
+HOWTO_ARRAY_INIT					(	vec3_t,	array	);
 
 
-HOWTO_RESET_ARRAY					(	vec2_t,	array	);
+HOWTO_ARRAY_RESET					(	vec2_t,	array	);
 
-HOWTO_RESET_ARRAY					(	vec3_t,	array	);
+HOWTO_ARRAY_RESET					(	vec3_t,	array	);
 
 
 HOWTO_LOAD							(	vec2_t,	ptr,	array,	idx	);

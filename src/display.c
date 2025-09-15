@@ -3,6 +3,7 @@
  */
 
 #include "display.h"
+#include "cube.h"
 
 /**
  * The purpose of this function is as follows:
@@ -93,9 +94,9 @@ DESTRUCTOR								(	Window_t	)
  * 	2. attach the renderer to the window
  */
 CONSTRUCTOR								(	Renderer_t,
-											Window_t*		window		)
+											Window_t*	window		)
 {
-	DECL_PTR							(	renderer,		Renderer_t,		NULL	);
+	DECL_PTR							(	renderer,	Renderer_t,		NULL	);
 
 	if									(	!window		)
 	{
@@ -104,7 +105,7 @@ CONSTRUCTOR								(	Renderer_t,
 	}
 
 	// Allocate memory
-	ALLOC_ZEROED						(	1,				Renderer_t,		renderer	);
+	ALLOC_ZEROED						(	1,			Renderer_t,		renderer	);
 
 	if									(	!renderer	)
 	{
@@ -127,7 +128,61 @@ CONSTRUCTOR								(	Renderer_t,
 		RETURN							(	NULL	);
 	}
 
-	INIT_ARRAY							(	Triangle2d_t,	&renderer->triangles_to_draw	);
+	ARRAY_INIT							(	Triangle2d_t,
+											&renderer->triangles_to_draw
+										);
+
+	CONSTRUCT							(	renderer->mesh,
+											Mesh_t,
+											cube_vertices,
+											cube_faces,
+											8,	12
+										);
+
+	/**
+	 * Create a color buffer that we'll use to paint our image inside the game
+	 * loop.
+	 */
+	CONSTRUCT							(	renderer->buffer,
+											Color_buffer_t,
+											window->width,
+											window->height,
+											PIXELFORMAT_ARGB8888	);
+
+	if									(	!renderer->buffer	)
+	{
+		LOG								(	"failed to create buffer\n"	);
+		DESTRUCT						(	renderer, Renderer_t	);
+		RETURN							(	NULL	);
+	}
+
+	/*
+	 * Create a texture for the color buffer
+	 */
+	CONSTRUCT							(	renderer->texture,
+											Texture_t,
+											renderer,
+											window->width,
+											window->height,
+											PIXELFORMAT_ARGB8888	);
+
+	if									(	!renderer->texture	)
+	{
+		LOG								(	"failed to create texture\n"	);
+		DESTRUCT						(	renderer, Renderer_t	);
+		RETURN							(	NULL	);
+	}
+
+	CONSTRUCT							(	renderer->c_grapher, Choreographer_t	);
+
+	if									(	!renderer->c_grapher	)
+	{
+		LOG								(	"Failed to create Choreographer\n"	);
+		DESTRUCT						(	renderer, Renderer_t	);
+		RETURN							(	NULL	);
+	}
+	renderer->origin.v.x				=	window->width  / (float) 2;
+	renderer->origin.v.y				=	window->height / (float) 2;
 
 	renderer->window					=	window;
 

@@ -6,6 +6,7 @@
 
 #include "object.h"
 #include "point.h"
+#include "triangle.h"
 
 
 
@@ -18,6 +19,8 @@ typedef							struct Cube	{	int			len;
 
 
 
+extern						vec3_t			cube_vertices[];
+extern						Face_t			cube_faces[];
 
 #define																				\
 for_each_point_in_cube(cube, point, itr)		for (	itr		= 0,				\

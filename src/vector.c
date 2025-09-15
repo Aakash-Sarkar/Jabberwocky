@@ -20,14 +20,14 @@ vec3_t						camera[1] = {{	.x = 0.0,
 
 
 
-HOWTO_INIT_ARRAY			(	vec2_t,	array	)
+HOWTO_ARRAY_INIT			(	vec2_t,	array	)
 {
 	array->x				=	NULL;
 	array->y				=	NULL;
 	array->count			=	0;
 }
 
-HOWTO_INIT_ARRAY			(	vec3_t,	array	)
+HOWTO_ARRAY_INIT			(	vec3_t,	array	)
 {
 	array->x				=	NULL;
 	array->y				=	NULL;
@@ -36,7 +36,7 @@ HOWTO_INIT_ARRAY			(	vec3_t,	array	)
 }
 
 
-HOWTO_RESET_ARRAY			(	vec2_t,	array	)
+HOWTO_ARRAY_RESET			(	vec2_t,	array	)
 {
 	array_free				(	array->x	);
 	array_free				(	array->y	);
@@ -46,7 +46,7 @@ HOWTO_RESET_ARRAY			(	vec2_t,	array	)
 	array->count			=	0;
 }
 
-HOWTO_RESET_ARRAY			(	vec3_t,	array	)
+HOWTO_ARRAY_RESET			(	vec3_t,	array	)
 {
 	array_free				(	array->x	);
 	array_free				(	array->y	);

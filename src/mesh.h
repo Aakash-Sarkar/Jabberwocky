@@ -7,13 +7,13 @@
 #include "object.h"
 #include "point.h"
 #include "triangle.h"
+#include "geometry.h"
 
-typedef						struct Mesh {	ARRAY	(	Point3d_t,	points	);
-											ARRAY	(	Face_t,		faces	);	}	Mesh_t;
+typedef						struct Mesh {	ARRAY ( Point3d_t )		points;
+											ARRAY ( Face_t )		faces;
+											vec3_t					rotation;	}	Mesh_t;
 
 
-extern						vec3_t			mesh_vertices[];
-extern						Face_t			mesh_faces[];
 
 
 CONSTRUCTOR					(	Mesh_t,
@@ -29,6 +29,7 @@ DESTRUCTOR					(	Mesh_t	);
 
 Triangle3d_t
 create_triangle_from_face	(	Face_t* face,	Mesh_t* mesh	);
+
 
 
 

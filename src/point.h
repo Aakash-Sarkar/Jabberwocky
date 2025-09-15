@@ -65,21 +65,21 @@ typedef					struct		{	vec3_t v;	}		Point3d_t;
 
 
 
-typedef					DECL_ARRAY	(	Point2d_t,	ARRAY	(	vec2_t,	v	);	);
+typedef					DECL_ARRAY	(	Point2d_t,	ARRAY ( vec2_t )	v;	);
 
-typedef					DECL_ARRAY	(	Point3d_t,	ARRAY	(	vec3_t,	v	);	);
-
-
+typedef					DECL_ARRAY	(	Point3d_t,	ARRAY ( vec3_t )	v;	);
 
 
-HOWTO_INIT_ARRAY		(	Point2d_t,	array	);
-
-HOWTO_INIT_ARRAY		(	Point3d_t,	array	);
 
 
-HOWTO_RESET_ARRAY		(	Point2d_t,	array	);
+HOWTO_ARRAY_INIT		(	Point2d_t,	array	);
 
-HOWTO_RESET_ARRAY		(	Point3d_t,	array	);
+HOWTO_ARRAY_INIT		(	Point3d_t,	array	);
+
+
+HOWTO_ARRAY_RESET		(	Point2d_t,	array	);
+
+HOWTO_ARRAY_RESET		(	Point3d_t,	array	);
 
 
 

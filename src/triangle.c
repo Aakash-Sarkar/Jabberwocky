@@ -10,7 +10,7 @@
 
 
 
-HOWTO_INIT_ARRAY					(	Face_t,			array	)
+HOWTO_ARRAY_INIT					(	Face_t,			array	)
 {
 	array->idx1						=	NULL;
 	array->idx2						=	NULL;
@@ -19,20 +19,20 @@ HOWTO_INIT_ARRAY					(	Face_t,			array	)
 	array->count					=	0;
 }
 
-HOWTO_INIT_ARRAY					(	Triangle2d_t,	array	)
+HOWTO_ARRAY_INIT					(	Triangle2d_t,	array	)
 {
-	INIT_ARRAY						(	Point2d_t,		&array->p1	);
-	INIT_ARRAY						(	Point2d_t,		&array->p2	);
-	INIT_ARRAY						(	Point2d_t,		&array->p3	);
+	ARRAY_INIT						(	Point2d_t,		&array->p1	);
+	ARRAY_INIT						(	Point2d_t,		&array->p2	);
+	ARRAY_INIT						(	Point2d_t,		&array->p3	);
 
 	array->count					=	0;
 }
 
-HOWTO_INIT_ARRAY					(	Triangle3d_t,	array		)
+HOWTO_ARRAY_INIT					(	Triangle3d_t,	array		)
 {
-	INIT_ARRAY						(	Point3d_t,		&array->p1	);
-	INIT_ARRAY						(	Point3d_t,		&array->p2	);
-	INIT_ARRAY						(	Point3d_t,		&array->p3	);
+	ARRAY_INIT						(	Point3d_t,		&array->p1	);
+	ARRAY_INIT						(	Point3d_t,		&array->p2	);
+	ARRAY_INIT						(	Point3d_t,		&array->p3	);
 
 	array->count					=	0;
 }
@@ -40,7 +40,7 @@ HOWTO_INIT_ARRAY					(	Triangle3d_t,	array		)
 
 
 
-HOWTO_RESET_ARRAY					(	Face_t,			array	)
+HOWTO_ARRAY_RESET					(	Face_t,			array	)
 {
 	array_free						(	array->idx1		);
 
@@ -51,20 +51,20 @@ HOWTO_RESET_ARRAY					(	Face_t,			array	)
 	array->count					=	0;
 }
 
-HOWTO_RESET_ARRAY					(	Triangle2d_t,	array		)
+HOWTO_ARRAY_RESET					(	Triangle2d_t,	array		)
 {
-	RESET_ARRAY						(	Point2d_t,		&array->p1	);
-	RESET_ARRAY						(	Point2d_t,		&array->p2	);
-	RESET_ARRAY						(	Point2d_t,		&array->p3	);
+	ARRAY_RESET						(	Point2d_t,		&array->p1	);
+	ARRAY_RESET						(	Point2d_t,		&array->p2	);
+	ARRAY_RESET						(	Point2d_t,		&array->p3	);
 
 	array->count					=	0;
 }
 
-HOWTO_RESET_ARRAY					(	Triangle3d_t,	array		)
+HOWTO_ARRAY_RESET					(	Triangle3d_t,	array		)
 {
-	RESET_ARRAY						(	Point3d_t,		&array->p1	);
-	RESET_ARRAY						(	Point3d_t,		&array->p2	);
-	RESET_ARRAY						(	Point3d_t,		&array->p3	);
+	ARRAY_RESET						(	Point3d_t,		&array->p1	);
+	ARRAY_RESET						(	Point3d_t,		&array->p2	);
+	ARRAY_RESET						(	Point3d_t,		&array->p3	);
 
 	array->count					=	0;
 }

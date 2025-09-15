@@ -11,27 +11,27 @@
 #define DECL_ARRAY(class, ...)                  struct {    int count;                      \
                                                             __VA_ARGS__    }   array(class)
 
-#define ARRAY(class, name)                      array(class) name
+#define ARRAY(class)                            array(class)
 
 
 
 
 #define array_init(class)                       concat(array_init, _, class)
 
-#define HOWTO_INIT_ARRAY(class, name)           void                                        \
+#define HOWTO_ARRAY_INIT(class, name)           void                                        \
                                                 array_init(class) ( array(class)* name )
 
-#define INIT_ARRAY(class, name)                 array_init(class) ( name )
+#define ARRAY_INIT(class, name)                 array_init(class) ( name )
 
 
 
 
 #define array_reset(class)                      concat(array_reset, _, class)
 
-#define HOWTO_RESET_ARRAY(class, name)          void                                        \
+#define HOWTO_ARRAY_RESET(class, name)          void                                        \
                                                 array_reset(class) ( array(class)* name )
 
-#define RESET_ARRAY(class, name)                array_reset(class) ( name )
+#define ARRAY_RESET(class, name)                array_reset(class) ( name )
 
 
 

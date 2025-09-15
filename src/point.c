@@ -8,28 +8,28 @@
 
 
 
-HOWTO_INIT_ARRAY					(	Point2d_t,		array		)
+HOWTO_ARRAY_INIT					(	Point2d_t,		array		)
 {
-	INIT_ARRAY						(	vec2_t,			&array->v	);
+	ARRAY_INIT						(	vec2_t,			&array->v	);
 	array->count					=	0;
 }
 
-HOWTO_INIT_ARRAY					(	Point3d_t,		array		)
+HOWTO_ARRAY_INIT					(	Point3d_t,		array		)
 {
-	INIT_ARRAY						(	vec3_t,			&array->v	);
+	ARRAY_INIT						(	vec3_t,			&array->v	);
 	array->count					=	0;
 }
 
 
-HOWTO_RESET_ARRAY					(	Point2d_t,		array		)
+HOWTO_ARRAY_RESET					(	Point2d_t,		array		)
 {
-	RESET_ARRAY						(	vec2_t,			&array->v	);
+	ARRAY_RESET						(	vec2_t,			&array->v	);
 	array->count					=	0;
 }
 
-HOWTO_RESET_ARRAY					(	Point3d_t,		array		)
+HOWTO_ARRAY_RESET					(	Point3d_t,		array		)
 {
-	RESET_ARRAY						(	vec3_t,			&array->v	);
+	ARRAY_RESET						(	vec3_t,			&array->v	);
 	array->count					=	0;
 }
 
