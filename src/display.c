@@ -134,9 +134,7 @@ CONSTRUCTOR								(	Renderer_t,
 
 	CONSTRUCT							(	renderer->mesh,
 											Mesh_t,
-											cube_vertices,
-											cube_faces,
-											8,	12
+											"assets/f22.obj"
 										);
 
 	/**

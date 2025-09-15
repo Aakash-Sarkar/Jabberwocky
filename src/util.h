@@ -7,6 +7,9 @@
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
+
+
 
 
 /**
@@ -32,6 +35,8 @@
 #elif defined(_MSC_VER)
 #define asm(x)							__asm(x)
 #define typeof(x)						__typeof__ (x)
+#define fopen							fopen_s
+#define sscanf							sscanf_s
 #endif
 
 

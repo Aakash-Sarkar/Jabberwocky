@@ -16,11 +16,16 @@ typedef						struct Mesh {	ARRAY ( Point3d_t )		points;
 
 
 
+//CONSTRUCTOR					(	Mesh_t,
+//								vec3_t*		points,
+//								Face_t*		faces,
+//								int			num_points,
+//								int			num_faces	);
+
+
 CONSTRUCTOR					(	Mesh_t,
-								vec3_t*		points,
-								Face_t*		faces,
-								int			num_points,
-								int			num_faces	);
+								char*		filename	);
+
 
 DESTRUCTOR					(	Mesh_t	);
 
