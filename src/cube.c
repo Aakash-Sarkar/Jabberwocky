@@ -51,8 +51,8 @@ CONSTRUCTOR							(	Cube_t,
 										int			height	)
 {
 
-	DECL_PTR						(	cube,		Cube_t,		NULL	);
-	DECL_PTR						(	point,		Point3d_t,	NULL	);
+	PTR								(	Cube_t,		cube,	NULL	);
+	PTR								(	Point3d_t,	point,	NULL	);
 
 	int									num_points	= 0;
 
@@ -60,7 +60,7 @@ CONSTRUCTOR							(	Cube_t,
 										step_w		= 0.0,
 										step_h		= 0.0;
 
-	ALLOC_ZEROED					(	1,			Cube_t,		cube	);
+	ALLOC_ZEROED					(	Cube_t,		cube,	1	);
 
 	if								(	!cube	)
 	{
@@ -75,7 +75,7 @@ CONSTRUCTOR							(	Cube_t,
 	num_points						=	(	len	*	width	*	height	);
 	cube->num_points				=	num_points;
 
-	ALLOC_ZEROED					(	num_points,	Point3d_t,	cube->points	);
+	ALLOC_ZEROED					(	Point3d_t, cube->points,	num_points	);
 	if								(	!cube->points	)
 	{
 		LOG							(	"Couldn't allocate memory\n"	);
@@ -94,9 +94,8 @@ CONSTRUCTOR							(	Cube_t,
 		for							(	float w = -1.0; w < 1.0; w += step_w	)
 			for						(	float h = -1.0; h < 1.0; h += step_h	)
 			{
-				ASSERT				(	( n < num_points ),
-										"Out of bounds access at idx: %d\n",
-										n	);
+				ASSERT				((	n < num_points	),
+										"Out of bounds access at idx: %d\n", n	);
 
 				point->v.x			=	l;
 				point->v.y			=	w;
@@ -107,20 +106,3 @@ CONSTRUCTOR							(	Cube_t,
 	RETURN							(	cube	);
 }
 
-void
-rotate_cube_x						(	Cube_t *cube,	float angle	)
-{
-
-	//Point2d_t							proj		= { 0 };
-	//Point3d_t							t_point		= { 0 },
-	//									*point		= NULL;
-
-	//Rect_t							rect;
-	//int								i			= 0;
-
-	//for_each_point_in_cube		(	cube,   point,	i	)
-	//{
-	//	t_point						=	rotate_point_x		(	*point, angle	);
-	//	proj						=	project_perspective	(	*point	);
-	//}
-}

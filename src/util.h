@@ -63,8 +63,7 @@
 
 #define RETURN(x)						return x
 
-#define PTR(type)						type*
-#define DECL_PTR(name, type, val)		PTR(type) name = val
+#define PTR(class, name, val)			class* name = val
 
 
 
@@ -110,7 +109,7 @@
  * allocated.
  */
 
-#define ALLOC_ZEROED(n, class, ptr)		ptr = (class *)	calloc (	n, sizeof(class)	)
+#define ALLOC_ZEROED(class, ptr, n)		ptr = (class *)	calloc (	n, sizeof(class)	)
 
 /**
  * There are situations in which avoiding the cost of zeroing out memory

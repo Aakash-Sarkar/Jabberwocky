@@ -108,13 +108,13 @@ set_color_rgb                       (   Color_t*    color,
  */
 HOWTO_MAKE                          (   Color_t,
                                         color,
-                                        uint8_t         r,
-                                        uint8_t         g,
-                                        uint8_t         b,
-                                        uint8_t         a   )
+                                        uint8_t     r,
+                                        uint8_t     g,
+                                        uint8_t     b,
+                                        uint8_t     a   )
 {
-    set_color_rgb                   (   color,          r,  g,
-                                                        b,  a   );
+    set_color_rgb                   (   color,      r,  g,
+                                                    b,  a   );
 }
 
 
@@ -126,7 +126,7 @@ get_color_val                       (   Color_t*        color,
                                         uint32_t*       val,
                                         Format_type_t   format_type    )
 {
-    DECL_PTR                        (   format,    Format_t,    NULL   );
+    PTR                             (    Format_t,   format,    NULL   );
 
     format                          =   lookup_format   (   format_type   );
     if                              (   !format   )
@@ -156,12 +156,14 @@ get_color_val                       (   Color_t*        color,
 
 
 CONSTRUCTOR                         (   Color_buffer_t,
-                                        int                 width,
-                                        int                 height,
-                                        Format_type_t       format_type   )
+                                        int             width,
+                                        int             height,
+                                        Format_type_t   format_type   )
 {
-    DECL_PTR                        (   colorbuf,   Color_buffer_t,   NULL    );
-    DECL_PTR                        (   format,     Format_t,         NULL    );
+    PTR                             (   Color_buffer_t,
+                                        colorbuf,       NULL   );
+    PTR                             (   Format_t,
+                                        format,         NULL    );
 
     uint32_t                            *buf  = NULL,
                                         *prev = NULL;
@@ -171,18 +173,21 @@ CONSTRUCTOR                         (   Color_buffer_t,
     if                              (   !format   )
     {
         LOG                         (   "Invalid format: %d\n",
-                                        (int) format_type   );
+                                        (int) format_type
+                                    );
         RETURN                      (   NULL   );
     }
 
-    ALLOC_ZEROED                    (   1, Color_buffer_t, colorbuf   );
+    ALLOC_ZEROED                    (   Color_buffer_t,
+                                        colorbuf,       1   );
 
     if                              (   !colorbuf   )
         RETURN                      (   NULL   );
 
     colorbuf->width                 =   width;
     colorbuf->height                =   height;
-    colorbuf->pitch                 =   ( width  *  BITS_TO_BYTES ( format->bpp ) );
+    colorbuf->pitch                 = ( width
+                                        *  BITS_TO_BYTES ( format->bpp ) );
     colorbuf->num_buffers           =   format->planes;
 
     buf                             =   ALLOC_NONZEROED (   width * height,   uint32_t   );
@@ -301,11 +306,16 @@ paint_color                         (   Color_t*           color,
     }
 
     // Get the offset in buffer for pixel co-ordinate ( posX, posY )
-    offset                          =   get_pixel_offset (    colorbuf->width,
-                                                              posX, posY    );
+    offset                          =   get_pixel_offset  (   colorbuf->width,
+                                                              posX,
+                                                              posY
+                                                          );
 
     // Get the color value
-    ret                             =   get_color_val    (   color,   &val,   format_type   );
+    ret                             =   get_color_val     (   color,
+                                                              &val,
+                                                              format_type
+                                                          );
     if                              (   ret != SUCCESS   )
     {
         LOG                         (   "get_color failed\n"    );
@@ -334,7 +344,6 @@ fill_color_buffer                   (   Color_buffer_t*   buffer,
     bool                                ret = FAIL;
 
     for                             (   int y = 0;   y <  height;   y++   )
-
         for                         (   int x = 0;   x <  width;    x++   )
         {
             ret                     =   paint_color  (    color,

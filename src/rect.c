@@ -9,22 +9,21 @@
  * This function checks whether the pixel falls within the rectangle border
  */
 bool
-pixel_at_border					(	Rect_t*		rect,
-									int			posX,
-									int			posY,
-									int			border_len	)
+pixel_at_border			(	Rect_t*		rect,
+							int			posX,
+							int			posY,
+							int			border_len	)
 {
 
-	bool							is_border = (((	posX - rect->posX	)
-													< border_len	)
-												||	((	posY - rect->posY	)
-													< border_len	)
-												||	(( rect->posX + rect->width - 1) - posX )
-													< border_len
-												||	(( rect->posY + rect->height - 1) - posY )
-													< border_len	);
+	bool					is_border = (( (	posX - rect->posX	) < border_len )
+									||   ( (	posY - rect->posY	) < border_len )
+									||   ( (	rect->posX + rect->width  - 1	)
+												- posX )  < border_len
+									||   ( (	rect->posY + rect->height - 1	)
+												- posY	) < border_len
+										);
 
-	RETURN						(	is_border	);
+	RETURN				(	is_border	);
 }
 
 static
@@ -57,7 +56,7 @@ paint_rect						(	Rect_t*			rect,
 									Color_buffer_t*	colorbuf,
 									int				border_len	)
 {
-	DECL_PTR					(	color,	Color_t,	NULL	);
+	PTR							(	Color_t,		color,	NULL	);
 
 	bool							ret	= FAIL;
 
@@ -80,17 +79,17 @@ paint_rect						(	Rect_t*			rect,
 		for_each_posX_in_rect	(	rect,	posX	)
 		{
 			// Are we at the border, Sergeant?
-			color				=	(	pixel_at_border (	rect,
-															posX, posY,
-															border_len	))
+			color				= (	pixel_at_border (	rect,
+														posX, posY,
+														border_len	))
 									? border_color : interior_color;
 
-			ret					=	paint_color (	color,
-													colorbuf,
-													PIXELFORMAT_ARGB8888,
-													posX, posY,
-													0	
-												);
+			ret					=	paint_color		(	color,
+														colorbuf,
+														PIXELFORMAT_ARGB8888,
+														posX, posY,
+														0
+													);
 
 			if					(	ret != SUCCESS	)
 			{
@@ -133,7 +132,8 @@ HOWTO_DRAW						(	Grid_t,
 	rect->height				=	grid->height;
 
 	for_each_rect_in_buffer		(	n,		rect,	colorbuf	)
-		DRAW					(	Rect_t,	rect,	color,	colorbuf	);
+		DRAW					(	Rect_t,
+									rect,	color,	colorbuf	);
 
 }
 

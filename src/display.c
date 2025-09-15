@@ -5,40 +5,44 @@
 #include "display.h"
 #include "cube.h"
 
+
+
+
 /**
  * The purpose of this function is as follows:
  * 1. Initialize SDL
  * 2. Allocate a New Window
  * 3. Setup dimensions of the window
- *	4. Setup the position of the window on screen
- *	5. Create an SDL_Window
- *	6. Set SDL Window to Fullscreen
+ * 4. Setup the position of the window on screen
+ * 5. Create an SDL_Window
+ * 6. Set SDL Window to Fullscreen
  */
 
-CONSTRUCTOR								(	Window_t	)
+CONSTRUCTOR						(	Window_t	)
 {
-	DECL_PTR							(	window,		Window_t,	NULL	);
 
-	SDL_DisplayMode							mode;
-	int										ret = -1;
+	PTR							(	Window_t,	window,	NULL	);
+
+	MEM							(	SDL_DisplayMode,	mode,	1	);
+	int								ret = -1;
 
 	// Allocate our window
-	ALLOC_ZEROED						(	1,			Window_t,	window	);
+	ALLOC_ZEROED				(	Window_t,	window,	1	);
 
-	if									(	!window		)
-		RETURN							(	NULL	);
+	if							(	!window		)
+		RETURN					(	NULL	);
 
 	/* This is a way to query from the OS what are the dimensions of the
 	 * screen */
-	CALL								(	ret,
-											SDL,
-											GetCurrentDisplayMode,
-											0,
-											&mode
-										);
+	CALL						(	ret,
+									SDL,
+									GetCurrentDisplayMode,
+									0,
+									mode
+								);
 
-	if									(	ret		)
-		RETURN							(	NULL	);
+	if							(	ret		)
+		RETURN					(	NULL	);
 
 	// Setup x,y co-ordinates of the Window
 	/**
@@ -46,45 +50,46 @@ CONSTRUCTOR								(	Window_t	)
 	 * program launches. The user may move the window around later using her
 	 * mouse. But that is not in the scope of this function.
 	 */
-	window->posX						=	SDL_WINDOWPOS_CENTERED;
-	window->posY						=	SDL_WINDOWPOS_CENTERED;
+	window->posX				=	SDL_WINDOWPOS_CENTERED;
+	window->posY				=	SDL_WINDOWPOS_CENTERED;
 
 	// Setup Dimensions of the Window
-	window->width						=	mode.w;
-	window->height						=	mode.h;
+	window->width				=	mode->w;
+	window->height				=	mode->h;
 
 	/* This tells SDL not to add any visible border to our window */
-	window->flags						=	SDL_WINDOW_BORDERLESS;
+	window->flags				=	SDL_WINDOW_BORDERLESS;
 
 	// Call SDL to create our window
-	CALL								(	window->sdl,
-											SDL,
-											CreateWindow,
-											NULL,			// window name
-											window->posX,
-											window->posY,
-											window->width,
-											window->height,
-											window->flags	);
+	CALL						(	window->sdl,
+									SDL,
+									CreateWindow,
+									NULL,			// window name
+									window->posX,
+									window->posY,
+									window->width,
+									window->height,
+									window->flags
+								);
 
 	// Something went wrong
-	if									(	!window->sdl	)
+	if							(	!window->sdl	)
 	{
-		DEALLOC							(	window	);
-		RETURN							(	NULL	);
+		DEALLOC					(	window	);
+		RETURN					(	NULL	);
 	}
 
 	// Set window to fullscreen
-	CALL								(	ret,
-											SDL,
-											SetWindowFullscreen,
-											window->sdl,
-											SDL_WINDOW_FULLSCREEN	);
+	CALL						(	ret,
+									SDL,
+									SetWindowFullscreen,
+									window->sdl,
+									SDL_WINDOW_FULLSCREEN	);
 
-	RETURN								(	window	);
+	RETURN						(	window	);
 }
 
-DESTRUCTOR								(	Window_t	)
+DESTRUCTOR						(	Window_t	)
 {
 }
 
@@ -93,215 +98,221 @@ DESTRUCTOR								(	Window_t	)
  * 	1. Allocate the renderer
  * 	2. attach the renderer to the window
  */
-CONSTRUCTOR								(	Renderer_t,
-											Window_t*	window		)
+CONSTRUCTOR						(	Renderer_t,
+									Window_t*	window		)
 {
-	DECL_PTR							(	renderer,	Renderer_t,		NULL	);
 
-	if									(	!window		)
+	PTR							(	Renderer_t,	renderer,	NULL	);
+
+	if							(	!window		)
 	{
-		LOG								(	"Invalid argument\n"	);
-		RETURN							(	NULL	);
+		LOG						(	"Invalid argument\n"	);
+		RETURN					(	NULL	);
 	}
 
 	// Allocate memory
-	ALLOC_ZEROED						(	1,			Renderer_t,		renderer	);
+	ALLOC_ZEROED				(	Renderer_t,	renderer,	1	);
 
-	if									(	!renderer	)
+	if							(	!renderer	)
 	{
-		LOG								(	"Couldn't allocate memory\n"	);
-		RETURN							(	NULL	);
+		LOG						(	"Couldn't allocate memory\n"	);
+		RETURN					(	NULL	);
 	}
 
 	// This creates our renderer
-	CALL								(	renderer->sdl,
-											SDL,
-											CreateRenderer,
-											window->sdl,
-											-1,
-											0
-										);
+	CALL						(	renderer->sdl,
+									SDL,
+									CreateRenderer,
+									window->sdl,
+									-1,
+									0
+								);
 
-	if									(	!renderer->sdl	)
+	if							(	!renderer->sdl	)
 	{
-		DEALLOC							(	renderer	);
-		RETURN							(	NULL	);
+		DEALLOC					(	renderer	);
+		RETURN					(	NULL	);
 	}
 
-	ARRAY_INIT							(	Triangle2d_t,
-											&renderer->triangles_to_draw
-										);
+	ARRAY_INIT					(	Triangle2d_t,
+									&renderer->triangles_to_draw	);
 
-	CONSTRUCT							(	renderer->mesh,
-											Mesh_t,
-											"assets/f22.obj"
-										);
+	CONSTRUCT					(	renderer->mesh,
+									Mesh_t,
+									"assets/f22.obj"
+								);
 
 	/**
 	 * Create a color buffer that we'll use to paint our image inside the game
 	 * loop.
 	 */
-	CONSTRUCT							(	renderer->buffer,
-											Color_buffer_t,
-											window->width,
-											window->height,
-											PIXELFORMAT_ARGB8888	);
+	CONSTRUCT					(	renderer->buffer,
+									Color_buffer_t,
+									window->width,
+									window->height,
+									PIXELFORMAT_ARGB8888	);
 
-	if									(	!renderer->buffer	)
+	if							(	!renderer->buffer	)
 	{
-		LOG								(	"failed to create buffer\n"	);
-		DESTRUCT						(	renderer, Renderer_t	);
-		RETURN							(	NULL	);
+		LOG						(	"failed to create buffer\n"	);
+		DESTRUCT				(	renderer, Renderer_t	);
+		RETURN					(	NULL	);
 	}
 
 	/*
 	 * Create a texture for the color buffer
 	 */
-	CONSTRUCT							(	renderer->texture,
-											Texture_t,
-											renderer,
-											window->width,
-											window->height,
-											PIXELFORMAT_ARGB8888	);
+	CONSTRUCT					(	renderer->texture,
+									Texture_t,
+									renderer,
+									window->width,
+									window->height,
+									PIXELFORMAT_ARGB8888	);
 
-	if									(	!renderer->texture	)
+	if							(	!renderer->texture	)
 	{
-		LOG								(	"failed to create texture\n"	);
-		DESTRUCT						(	renderer, Renderer_t	);
-		RETURN							(	NULL	);
+		LOG						(	"failed to create texture\n"	);
+		DESTRUCT				(	renderer, Renderer_t	);
+		RETURN					(	NULL	);
 	}
 
-	CONSTRUCT							(	renderer->c_grapher, Choreographer_t	);
+	CONSTRUCT					(	renderer->c_grapher,
+									Choreographer_t		);
 
-	if									(	!renderer->c_grapher	)
+	if							(	!renderer->c_grapher	)
 	{
-		LOG								(	"Failed to create Choreographer\n"	);
-		DESTRUCT						(	renderer, Renderer_t	);
-		RETURN							(	NULL	);
+		LOG						(	"Failed to create Choreographer\n"	);
+		DESTRUCT				(	renderer, Renderer_t	);
+		RETURN					(	NULL	);
 	}
-	renderer->origin.v.x				=	window->width  / (float) 2;
-	renderer->origin.v.y				=	window->height / (float) 2;
+	renderer->origin.v.x		=	window->width  / (float) 2;
+	renderer->origin.v.y		=	window->height / (float) 2;
 
-	renderer->window					=	window;
+	renderer->window			=	window;
 
-	RETURN								(	renderer	);
+	RETURN						(	renderer	);
 }
 
 //TODO: Implement this
-DESTRUCTOR								(	Renderer_t	)
+DESTRUCTOR						(	Renderer_t	)
 {
 }
 
-CONSTRUCTOR								(	Texture_t,
-											Renderer_t*				renderer,
-											int						width,
-											int						height,
-											Format_type_t			format_type		)
+CONSTRUCTOR						(	Texture_t,
+									Renderer_t*		renderer,
+									int				width,
+									int				height,
+									Format_type_t	format_type		)
 {
 
-	DECL_PTR							(	texture,	Texture_t,	NULL	);
-	DECL_PTR							(	format,		Format_t,	NULL	);
+	PTR							(	Texture_t,	texture,	NULL	);
+	PTR							(	Format_t,	format,		NULL	);
 
-	format								=	lookup_format (	format_type	);
-	if									(	!format	)
+	format						=	lookup_format (	format_type	);
+	if							(	!format	)
 	{
-		LOG								(	"Unsupported format!"	);
-		RETURN							(	NULL	);
+		LOG						(	"Unsupported format!"	);
+		RETURN					(	NULL	);
 	}
 
-	ALLOC_ZEROED						(	1,			Texture_t,	texture		);
+	ALLOC_ZEROED				(	Texture_t,	texture,	1	);
 
-	if									(	!texture	)
+	if							(	!texture	)
 	{
-		LOG								(	"failed to allocate texture\n"	);
-		RETURN							(	NULL	);
+		LOG						(	"failed to allocate texture\n"	);
+		RETURN					(	NULL	);
 	}
 
-	texture->width						=	width;
-	texture->height						=	height;
-	texture->format_type				=	format_type;
+	texture->width				=	width;
+	texture->height				=	height;
+	texture->format_type		=	format_type;
 
-	texture->pitch						=	(	width	*	BITS_TO_BYTES ( format->bpp )	);
+	texture->pitch				= (	width *
+									BITS_TO_BYTES ( format->bpp ) );
 
-	CALL								(	texture->sdl,
-											SDL,
-											CreateTexture,
-											renderer->sdl,
-											format->sdl_type,
-											SDL_TEXTUREACCESS_STREAMING,
-											texture->width,
-											texture->height
-										);
+	CALL						(	texture->sdl,
+									SDL,
+									CreateTexture,
+									renderer->sdl,
+									format->sdl_type,
+									SDL_TEXTUREACCESS_STREAMING,
+									texture->width,
+									texture->height
+								);
 
-	if									(	!texture->sdl	)
+	if							(	!texture->sdl	)
 	{
-		LOG								(	"SDL_CreateTexture failed\n"	);
-		DEALLOC							(	texture	);
-		RETURN							(	NULL	);
+		LOG						(	"SDL_CreateTexture failed\n"	);
+		DEALLOC					(	texture	);
+		RETURN					(	NULL	);
 	}
-	RETURN								(	texture	);
+	RETURN						(	texture	);
 }
 
-DESTRUCTOR								(	Texture_t	)
+DESTRUCTOR						(	Texture_t	)
 {
-
 }
 
-CONSTRUCTOR								(	Choreographer_t	)
+CONSTRUCTOR						(	Choreographer_t	)
 {
-	DECL_PTR							(	c,	Choreographer_t,	NULL	);
 
-	ALLOC_ZEROED						(	1, Choreographer_t, c	);
-	if									(	!c	)
+	PTR							(	Choreographer_t,	c,	NULL	);
+
+	ALLOC_ZEROED				(	Choreographer_t,	c,	1	);
+	if							(	!c	)
 	{
-		RETURN							(	NULL	);
+		RETURN					(	NULL	);
 	}
 
-	c->previous_ticks_ms				=	0;
+	c->previous_ticks_ms		=	0;
 
-	CALL								(	c->current_ticks,
-											SDL,
-											GetTicks  );
-	RETURN								(	c	);
+	CALL						(	c->current_ticks,
+									SDL,
+									GetTicks  );
+	RETURN						(	c	);
 }
 
 bool
-render_color_buffer						(	Renderer_t* renderer	)
+render_color_buffer				(	Renderer_t* renderer	)
 {
 
-	DECL_PTR							(	texture,	Texture_t,		renderer->texture	);
-	DECL_PTR							(	bo,			Color_buffer_t,	renderer->buffer	);
+	PTR							(	Texture_t,
+									texture,	renderer->texture	);
+	PTR							(	Color_buffer_t,
+									bo,			renderer->buffer	);
 
-	int										ret	= -1;
+	int								ret	= -1;
 
 	// copy color buffer into texture
-	CALL								(	ret,
-											SDL,
-											UpdateTexture,
-											texture->sdl,
-											NULL,
-											bo->buffer[0],
-											texture->pitch	);
+	CALL						(	ret,
+									SDL,
+									UpdateTexture,
+									texture->sdl,
+									NULL,
+									bo->buffer[0],
+									texture->pitch
+								);
 
-	if									(	ret	)
+	if							(	ret	)
 	{
-		LOG								(	"SDL_UpdateTexture Failed!\n"	);
-		RETURN							(	FAIL	);
+		LOG						(	"SDL_UpdateTexture Failed!\n"	);
+		RETURN					(	FAIL	);
 	}
 
 	// Ask SDL to display the texture
-	CALL								(	ret,
-											SDL,
-											RenderCopy,
-											renderer->sdl,
-											texture->sdl,
-											NULL,
-											NULL	);
+	CALL						(	ret,
+									SDL,
+									RenderCopy,
+									renderer->sdl,
+									texture->sdl,
+									NULL,
+									NULL
+								);
 
-	if									(	ret	)
+	if							(	ret	)
 	{
-		LOG								(	"SDL_RenderCopy Failed!\n"	);
-		RETURN							(	FAIL	);
+		LOG						(	"SDL_RenderCopy Failed!\n"	);
+		RETURN					(	FAIL	);
 	}
 
 	// Use the force Luke!

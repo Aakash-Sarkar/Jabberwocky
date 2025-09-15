@@ -37,12 +37,3 @@ CONSTRUCTOR				(	Cube_t,
 							int			height	);
 
 
-
-void
-rotate_cube_x			(	Cube_t*	cube,		float angle	);
-
-void
-rotate_cube_y			(	Cube_t*	cube,		float angle	);
-
-void
-rotate_cube_z			(	Cube_t*	cube,		float angle	);

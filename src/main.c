@@ -2,7 +2,6 @@
  * SPDX-License-Identifier: MIT
  */
 
-
 #include <SDL.h>
 
 #include "array.h"
@@ -19,9 +18,12 @@
 
 
 
- 
- 
- 
+
+
+
+
+
+
 /**
  * GAME LOOP:
  *
@@ -83,7 +85,8 @@ yo_sdl_init_everything			(	void	)
 	CALL						(	ret,
 									SDL,
 									Init,
-									SDL_INIT_EVERYTHING	);
+									SDL_INIT_EVERYTHING
+								);
 
 	if							(	ret != 0	)
 	{
@@ -100,8 +103,8 @@ Renderer_t*
 setup							(	void	)
 {
 
-	DECL_PTR					(	w,	Window_t,	NULL	);
-	DECL_PTR					(	r,	Renderer_t,	NULL	);
+	PTR							(	Window_t,	w,	NULL	);
+	PTR							(	Renderer_t,	r,	NULL	);
 
 	int								numbufs	= 1;
 
@@ -140,7 +143,7 @@ static
 void
 process_input					(	void	)
 {
-	int								ret		= -1;
+	int								ret	= -1;
 
 	MEM							(	SDL_Event,	event,	1	);
 
@@ -150,7 +153,8 @@ process_input					(	void	)
 	CALL						(	ret,
 									SDL,
 									PollEvent,
-									event		);
+									event
+								);
 
 	switch						(	event->type	)
 	{
@@ -174,12 +178,12 @@ bool
 update							(	Renderer_t*		renderer	)
 {
 
-	int								ret	= -1,
-									i	= 0;
+	int								ret = -1,
+									idx = 0;
 
-	DECL_PTR					(	mesh,	Mesh_t,	renderer->mesh	);
+	PTR							(	Mesh_t,			mesh,	renderer->mesh	);
 
-	for_each_item_in_array		(	&mesh->faces,	i	)
+	for_each_item_in_array		(	&mesh->faces,	idx	)
 	{
 		MEM						(	Triangle3d_t,	triangle,		2	);
 
@@ -188,16 +192,20 @@ update							(	Renderer_t*		renderer	)
 		MEM						(	Face_t,			face,			1	);
 
 
-		LOAD					(	Face_t,	face,	&mesh->faces,	i	);
+		LOAD					(	Face_t,
+									face,			&mesh->faces,	idx	);
 
-		*triangle				=	create_triangle_from_face	(	face,	mesh	);
-
-		ROTATE					(	Triangle3d_t,	triangle + 1,	triangle,	&mesh->rotation	);
+		*triangle				=	create_triangle_from_face	(	face,
+																	mesh	);
+		ROTATE					(	Triangle3d_t,
+									triangle + 1,	triangle,	&mesh->rotation	);
 
 		PROJECT					(	Triangle2d_t,	Triangle3d_t,
-									proj_triangle,	triangle + 1,	PERSPECTIVE		);
+									proj_triangle,	triangle + 1,	PERSPECTIVE	);
 
-		STORE					(	Triangle2d_t,	proj_triangle,	&renderer->triangles_to_draw	);
+		STORE					(	Triangle2d_t,
+									proj_triangle,
+									&renderer->triangles_to_draw	);
 	}
 
 	mesh->rotation.x			+=	0.01;
@@ -216,10 +224,9 @@ render							(	Renderer_t* renderer	)
 {
 
 	int								ret = -1,
-									i	= 0;
+									idx	= 0;
 
 	MEM							(	Color_t,	green,	1	);
-
 
 	MAKE						(	Color_t,
 									green,
@@ -229,18 +236,27 @@ render							(	Renderer_t* renderer	)
 									0xFF
 								);
 
-
-	for_each_item_in_array		(	&renderer->triangles_to_draw,	i	)
+	for_each_item_in_array		(	&renderer->triangles_to_draw,	idx	)
 	{
 		MEM						(	Triangle2d_t,	triangle,	1	);
 
-		LOAD					(	Triangle2d_t,	triangle,	&renderer->triangles_to_draw,	i	);
+		LOAD					(	Triangle2d_t,
+									triangle,
+									&renderer->triangles_to_draw,
+									idx
+								);
 
-		DRAW					(	Triangle2d_t,	triangle,	&renderer->origin,	green,	renderer->buffer	);
+		DRAW					(	Triangle2d_t,
+									triangle,
+									&renderer->origin,
+									green,
+									renderer->buffer
+								);
 	}
 
 
-	ARRAY_RESET					(	Triangle2d_t,	&renderer->triangles_to_draw	);
+	ARRAY_RESET					(	Triangle2d_t,
+									&renderer->triangles_to_draw	);
 
 	ret							=	render_color_buffer	(	renderer	);
 
@@ -269,7 +285,7 @@ render							(	Renderer_t* renderer	)
 int
 main							(	int argc, char** argv	)
 {
-	DECL_PTR					(	r,	Renderer_t,	NULL	);
+	PTR							(	Renderer_t,	r,	NULL	);
 
 	r							=	setup	(	);
 	if							(	!r	)
