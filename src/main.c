@@ -23,50 +23,50 @@
 
 
 
-
-/**
- * GAME LOOP:
- *
- * A Game loop is perhaps one of the most common concept you'll find in
- * Interactive Computer Graphics (caps are there for a reason!). It is
- * found in most rendering apis and game engines in one form or another.
- * You can also call it as Render Loop etc but the core idea remain the
- * same:
- *
- * At every screen refresh (vblank) do the following:
- *
- *  1. Collect and process the inputs given by the user.
- *
- *  2. Because of the inputs, the state of your world (in the video game)
- *     has somehow now changed. So update your data structures to reflect
- *     the new state.
- *
- *  3. Draw the next frame using the updated state into a image buffer.
- *
- *  4. Show the new image to the user at next screen refresh and repeat
- *     the cycle.
- *
- * Most video games aim for a 60 FPS rate. That means you should show at
- * least 60 image frames to the user in a second. If your GPU is slow and
- * is not able to draw the frame within the next refresh cycle, then your
- * frames will start to drop (figuratively!). If the frame rate drops too
- * low then the user will start to notice a visible lag.
- *
- * In a C style representation this will look something like this:
- *
- * int main(void) {
- *     setup();
- *
- *     while (true) {
- *         Process_inputs();
- *         ...
- *         Update();
- *         ...
- *         Render();
- *     }
- * }
- *
- */
+//////////////////////////////////////////////////////////////////////////////
+//								GAME LOOP:									//
+//////////////////////////////////////////////////////////////////////////////
+//																			//
+//	A Game loop is perhaps one of the most common concept you'll find in	//
+//	Interactive Computer Graphics (caps are there for a reason!). It is		//
+//	found in most rendering apis and game engines in one form or another.	//
+//	You can also call it as Render Loop etc but the core idea remain the	//
+//	same:																	//
+//																			//
+//	At every screen refresh (vblank) do the following:						//
+//																			//
+//	1.	Collect and process the inputs given by the user.					//
+//																			//
+//	2.	Because of the inputs, the state of your world (in the video game)	//
+//		has somehow now changed. So update your data structures to reflect	//
+//		the new state.														//
+//																			//
+//	3.	Draw the next frame using the updated state into a image buffer.	//
+//																			//
+//  4. Show the new image to the user at next screen refresh and repeat		//
+//     the cycle.															//
+//																			//
+//	Most video games aim for a 60 FPS rate. That means you should show at	//
+//	least 60 image frames to the user in a second. If your GPU is slow and	//
+//	is not able to draw the frame within the next refresh cycle, then your	//
+//	frames will start to drop (figuratively!). If the frame rate drops too	//
+//	low then the user will start to notice a visible lag.					//
+//																			//
+//	In a C style representation this will look something like this:			//
+//																			//
+//	int main(void) {														//
+//			setup();														//
+//																			//
+//			while (true) {													//
+//				Process_inputs();											//
+//				...															//
+//				Update();													//
+//				...															//
+//				Render();													//
+//			}																//
+//	}																		//
+//																			//
+//////////////////////////////////////////////////////////////////////////////
 
 
 DECLARE_LOOP					(	GAME	);

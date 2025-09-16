@@ -20,6 +20,16 @@ vec3_t						camera[1] = {{	.x = 0.0,
 
 
 
+////////////////////////////////////////////////////////////////////////////////
+//		Vector Operations Implementation
+////////////////////////////////////////////////////////////////////////////////
+
+
+
+/////////////////////////////////////////////////////////////////////////////////
+//		Dynamic Array Operations Implementation
+/////////////////////////////////////////////////////////////////////////////////
+
 HOWTO_ARRAY_INIT			(	vec2_t,	array	)
 {
 	array->x				=	NULL;
@@ -76,7 +86,6 @@ HOWTO_LOAD					(	vec3_t,		ptr,	array,	idx	)
 HOWTO_STORE					(	vec2_t,		ptr,	array	)
 {
 	array_push				(	array->x,	ptr->x	);
-
 	array_push				(	array->y,	ptr->y	);
 
 	array->count++;
@@ -85,9 +94,7 @@ HOWTO_STORE					(	vec2_t,		ptr,	array	)
 HOWTO_STORE					(	vec3_t,		ptr,	array	)
 {
 	array_push				(	array->x,	ptr->x	);
-
 	array_push				(	array->y,	ptr->y	);
-
 	array_push				(	array->z,	ptr->z	);
 
 	array->count++;
@@ -111,6 +118,10 @@ HOWTO_COPY					(	vec3_t,		to,	from	)
 
 
 
+
+//////////////////////////////////////////////////////////////////////////////////
+//				Geomertic Operations Implementations
+//////////////////////////////////////////////////////////////////////////////////
 
 static
 vec3_t
@@ -205,7 +216,7 @@ project_perspective			(	vec3_t*	vector	)
 {
 	float						z = (	vector->z + camera->z	);
 
-	MEM						(	vec2_t,		projection,	1	);
+	MEM						(	vec2_t,	projection,	1	);
 
 	projection->x			=	((	vector->x * fov_scale	) / z	)
 									*	camera->z;
@@ -219,7 +230,8 @@ project_perspective			(	vec3_t*	vector	)
 
 
 
-HOWTO_PROJECT				(	vec2_t,	vec3_t,	to,	from,
+HOWTO_PROJECT				(	vec2_t,	vec3_t,
+								to,		from,
 								Projection_type_t	type	)
 {
 	switch					(	type	)

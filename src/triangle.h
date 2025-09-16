@@ -43,6 +43,22 @@ typedef							DECL_ARRAY			(	Triangle3d_t,
 														ARRAY ( Point3d_t )		p3;	);
 
 
+////////////////////////////////////////////////////////////////////////////////
+//				Triangle Operations
+////////////////////////////////////////////////////////////////////////////////
+
+
+HOWTO_COPY						(	Face_t,			to,	from	);
+
+HOWTO_COPY						(	Triangle2d_t,	to,	from	);
+
+HOWTO_COPY						(	Triangle3d_t,	to,	from	);
+
+
+/////////////////////////////////////////////////////////////////////////////////
+//				Dynamic Array Operations
+/////////////////////////////////////////////////////////////////////////////////
+
 
 HOWTO_ARRAY_INIT				(	Face_t,			array	);
 
@@ -51,15 +67,11 @@ HOWTO_ARRAY_INIT				(	Triangle2d_t,	array	);
 HOWTO_ARRAY_INIT				(	Triangle3d_t,	array	);
 
 
-
-
 HOWTO_ARRAY_RESET				(	Face_t,			array	);
 
 HOWTO_ARRAY_RESET				(	Triangle2d_t,	array	);
 
 HOWTO_ARRAY_RESET				(	Triangle3d_t,	array	);
-
-
 
 
 HOWTO_LOAD						(	Face_t,			ptr,	array,	idx		);
@@ -76,22 +88,14 @@ HOWTO_STORE						(	Triangle2d_t,	ptr,	array	);
 HOWTO_STORE						(	Triangle3d_t,	ptr,	array	);
 
 
-
-
-HOWTO_COPY						(	Face_t,			to,	from	);
-
-HOWTO_COPY						(	Triangle2d_t,	to,	from	);
-
-HOWTO_COPY						(	Triangle3d_t,	to,	from	);
-
-
+/////////////////////////////////////////////////////////////////////////////////
+//				Geomertic Operations
+/////////////////////////////////////////////////////////////////////////////////
 
 
 HOWTO_ROTATE					(	Triangle3d_t,	to,	from,	vec3_t* angle	);
 
 HOWTO_ROTATE					(	Triangle2d_t,	to,	from,	vec2_t* angle	);
-
-
 
 
 HOWTO_DRAW						(	Triangle2d_t,
@@ -105,8 +109,6 @@ HOWTO_DRAW						(	Triangle3d_t,
 									Point2d_t*			origin,
 									Color_t*			color,
 									Color_buffer_t*		colorbuf	);
-
-
 
 
 HOWTO_PROJECT					(	Triangle2d_t,		Triangle3d_t,

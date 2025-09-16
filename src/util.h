@@ -12,15 +12,18 @@
 
 
 
-/**
- * MACROS:
- *
- * The core purpose of this file is to demonstrate how C style Macros
- * can be used to improve the readibilty and quality of your program.
- *
- * You may have learned in school that it's safer to use variables,
- * but hopefully you'll see that it's much cooler to use macros!
- */
+/////////////////////////////////////////////////////////////////////////////////
+//						MACROS:
+/////////////////////////////////////////////////////////////////////////////////
+//
+//	The core purpose of this file is to demonstrate how C style Macros
+//	can be used to improve the readibilty and quality of your program.
+//
+//	You may have learned in school that it's safer to use variables,
+//	but hopefully you'll see that if used carefully, it's much cooler to use 
+//	macros!
+//
+////////////////////////////////////////////////////////////////////////////////
 
 
 
@@ -47,19 +50,22 @@
 
 
 
-/**
- * This is just a fancy way of writing `retval = who_why(args)` aka function call!
- *
- * But it's added here for a purpose. Writing it in this ways pulls the attention
- * of the reader to the line. It also hilights to the reader that this function
- * call is going outside our application and into the SDL Layer. It may make code
- * browsing difficult but you can add your own style into your program!
- *
- * You can also customize the CALL macro to add some extra logic before the function
- * call (for eg, dumping the api name into a debug file before calling the api etc!).
- */
+//////////////////////////////////////////////////////////////////////////////////////
+//
+//	This is just a fancy way of writing `retval = who_why(args)` aka function call!
+//
+//	But it's added here for a purpose. Writing it in this ways pulls the attention
+//	of the reader to the line. It also hilights to the reader that this function
+//	call is going outside our application and into the SDL Layer. It may make code
+//	browsing difficult but you can add your own style into your program!
+//
+//	You can also customize the CALL macro to add some extra logic before the function
+//	call (for eg, dumping the api name into a debug file before calling the api etc!).
+//
+//////////////////////////////////////////////////////////////////////////////////////
 
 #define CALL(retval, who, why, ...)		retval = concat(who, _, why)(__VA_ARGS__)
+
 
 #define RETURN(x)						return x
 
@@ -68,25 +74,27 @@
 
 
 
+////////////////////////////////////////////////////////////////////////////////////
+//
+//	Helper macro for implementing while loops:
+//
+//	Use like this:
+//
+//	#include <stdio.h>
+//
+//	int global_variable;
+//	DECLARE_LOOP(MYLOOP);
+//
+//	int main(void) {
+//
+// 	LOOP(MYLOOP) {
+// 		if (condition) {
+// 			LOOP_BREAK(MYLOOP);
+// 		}
+// 	}
+//
+////////////////////////////////////////////////////////////////////////////////////
 
-/**
- * Helper macro for implementing while loops:
- *
- * Use like this:
- *
- * #include <stdio.h>
- *
- * int global_variable;
- * DECLARE_LOOP(MYLOOP);
- *
- * int main(void) {
- *
- * 	LOOP(MYLOOP) {
- * 		if (condition) {
- * 			LOOP_BREAK(MYLOOP);
- * 		}
- * 	}
- */
 #define LOOP_VAR(x)						concat(x, _, loop)
 
 #define DECLARE_LOOP(x)					volatile bool LOOP_VAR(x)
@@ -98,38 +106,44 @@
 
 
 
-/**
- * Good old calloc put behind a macro?
- * What next? free?
- *
- * The reason behind renaming it to ALLOC_ZEROED is to remind myself that we
- * want a zero initialized memory here. Having a zeroed out memory removes
- * the burden from the programmer to zero initialize it herself. But it also
- * adds the extra overhead of zeroing the bytes each time the memory is
- * allocated.
- */
+////////////////////////////////////////////////////////////////////////////////////
+//
+//	Good old calloc put behind a macro?
+//	What next? free?
+//
+//	The reason behind renaming it to ALLOC_ZEROED is to remind myself that we
+//	want a zero initialized memory here. Having a zeroed out memory removes
+//	the burden from the programmer to zero initialize it herself. But it also
+//	adds the extra overhead of zeroing the bytes each time the memory is
+//	allocated.
+//
+////////////////////////////////////////////////////////////////////////////////////
 
 #define ALLOC_ZEROED(class, ptr, n)		ptr = (class *)	calloc (	n, sizeof(class)	)
 
-/**
- * There are situations in which avoiding the cost of zeroing out memory
- * is more desirable. For eg. if the allocated memory is too large or if
- * the user is anyway going to set it to some other value. Color buffers
- * are an appropriate example of this. The buffers tend to be large and
- * are alway cleared out to some initial color before the next draw call.
- */
+////////////////////////////////////////////////////////////////////////////////////
+//
+//	There are situations in which avoiding the cost of zeroing out memory
+//	is more desirable. For eg. if the allocated memory is too large or if
+//	the user is anyway going to set it to some other value. Color buffers
+//	are an appropriate example of this. The buffers tend to be large and
+//	are alway cleared out to some initial color before the next draw call.
+//
+////////////////////////////////////////////////////////////////////////////////////
 
 #define ALLOC_NONZEROED(n, class)		(class *)	malloc (	(n) * (sizeof(class))	)
 
-/**
- * This is more or less to keep the theme going...
- *
- * This is also to demonstrate an example usecase. Suppose it's required
- * to always set the pointer to null after freeing for whatever reason.
- * Having the two operations packed inside a macro is much easier to use;
- * and it's unlikely to forget to set the pointer to null. This is also an
- * example of code reuse.
- */
+////////////////////////////////////////////////////////////////////////////////////
+//
+//	This is more or less to keep the theme going...
+//
+//	This is also to demonstrate an example usecase. Suppose it's required
+//	to always set the pointer to null after freeing for whatever reason.
+//	Having the two operations packed inside a macro is much easier to use;
+//	and it's unlikely to forget to set the pointer to null. This is also an
+//	example of code reuse.
+//
+////////////////////////////////////////////////////////////////////////////////////
 
 #define DEALLOC(ptr)					do {								\
 												if(ptr)						\
