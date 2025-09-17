@@ -149,8 +149,8 @@ struct Object;
 //
 ///////////////////////////////////////////////////////////////////////////////
 
-#define ctor(class)							concat(create, _, class)
-#define dtor(class)							concat(destroy, _, class)
+#define ctor(class)							concat3(create, _, class)
+#define dtor(class)							concat3(destroy, _, class)
 
 
 
@@ -167,7 +167,7 @@ struct Object;
 
 
 
-#define copy_ctor(class)					concat(copy, _, class)
+#define copy_ctor(class)					concat3(copy, _, class)
 
 #define HOWTO_COPY(class, to, from)			void copy_ctor(class) (class* to, class* from)
 
@@ -176,7 +176,7 @@ struct Object;
 
 
 
-#define	maker(class)						concat(make, _, class)
+#define	maker(class)						concat3(make, _, class)
 
 #define HOWTO_MAKE(class, ptr, ...)			void maker(class) (class* ptr, __VA_ARGS__)
 
@@ -192,7 +192,7 @@ struct Object;
 //
 /////////////////////////////////////////////////////////////////////////////////
 
-#define baseclass(module, class)			concat(module, _, class)
+#define baseclass(module, class)			concat3(module, _, class)
 
 #define INHERIT(module, class, ...)			struct class	{					\
 												baseclass(module, class) *sdl;	\

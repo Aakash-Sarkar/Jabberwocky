@@ -26,6 +26,7 @@ vec3_t						camera[1] = {{	.x = 0.0,
 
 
 
+
 /////////////////////////////////////////////////////////////////////////////////
 //		Dynamic Array Operations Implementation
 /////////////////////////////////////////////////////////////////////////////////
@@ -253,3 +254,79 @@ HOWTO_PROJECT				(	vec2_t,	vec3_t,
 	}
 }
 
+
+
+
+//////////////////////////////////////////////////////////////////////////////////
+//				Arithmetic Operations Implementation
+//////////////////////////////////////////////////////////////////////////////////
+
+
+HOWTO_ADD					(	vec2_t,	dst,	op1,	op2	)
+{
+	dst->x					=	op1->x	+	op2->x;
+	dst->y					=	op1->y	+	op2->y;
+}
+
+HOWTO_ADD					(	vec3_t,	dst,	op1,	op2	)
+{
+	dst->x					=	op1->x	+	op2->x;
+	dst->y					=	op1->y	+	op2->y;
+	dst->z					=	op1->z	+	op2->z;
+}
+
+
+HOWTO_SUB					(	vec2_t,	dst,	op1,	op2	)
+{
+	dst->x					=	op1->x	-	op2->x;
+	dst->y					=	op1->y	-	op2->y;
+}
+
+HOWTO_SUB					(	vec3_t,	dst,	op1,	op2	)
+{
+	dst->x					=	op1->x	-	op2->x;
+	dst->y					=	op1->y	-	op2->y;
+	dst->z					=	op1->z	-	op2->z;
+}
+
+
+HOWTO_MUL					(	vec2_t,	dst,	src,	factor	)
+{
+	dst->x					=	factor	*	src->x;
+	dst->y					=	factor	*	src->y;
+}
+
+HOWTO_MUL					(	vec3_t,	dst,	src,	factor	)
+{
+	dst->x					=	factor	*	src->x;
+	dst->y					=	factor	*	src->y;
+	dst->z					=	factor	*	src->z;
+
+}
+
+
+HOWTO_DOTP					(	vec2_t,	dst,	src1,	src2	)
+{
+	*dst					=	src1->x		*	src2->x
+							+	src1->y		*	src2->y;
+}
+
+HOWTO_DOTP					(	vec3_t,	dst,	src1,	src2	)
+{
+	*dst					=	src1->x		*	src2->x
+							+	src1->y		*	src2->y
+							+	src1->z		*	src2->z;
+}
+
+
+HOWTO_CROSSP				(	vec3_t,	dst,	src1,	src2	)
+{
+	dst->x					=	src1->y		*	src2->z
+							+	src2->y		*	src1->z;
+
+	dst->y					=	src1->x		*	src2->z
+							-	src1->z		*	src2->x;
+
+	dst->z					=	src1->x		*	src2->y
+							-	src1->y		*	src2->x;
+}

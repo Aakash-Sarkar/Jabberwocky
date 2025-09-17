@@ -37,29 +37,25 @@ HOWTO_ARRAY_RESET				(	Point3d_t,	array		)
 HOWTO_LOAD						(	Point2d_t,
 									ptr,		array,		idx	)
 {
-	LOAD						(	vec2_t,
-									&ptr->v,	&array->v,	idx	);
+	LOAD						(	vec2_t,		&ptr->v,	&array->v,	idx	);
 }
 
 HOWTO_LOAD						(	Point3d_t,
 									ptr,		array,		idx	)
 {
-	LOAD						(	vec3_t,
-									&ptr->v,	&array->v,	idx	);
+	LOAD						(	vec3_t,		&ptr->v,	&array->v,	idx	);
 }
 
 HOWTO_STORE						(	Point2d_t,	ptr,		array	)
 {
-	STORE						(	vec2_t,
-									&ptr->v,	&array->v	);
+	STORE						(	vec2_t,		&ptr->v,	&array->v	);
 
 	array->count++;
 }
 
 HOWTO_STORE						(	Point3d_t,	ptr,		array	)
 {
-	STORE						(	vec3_t,
-									&ptr->v,	&array->v	);
+	STORE						(	vec3_t,		&ptr->v,	&array->v	);
 
 	array->count++;
 }
@@ -67,14 +63,12 @@ HOWTO_STORE						(	Point3d_t,	ptr,		array	)
 
 HOWTO_COPY						(	Point2d_t,	to,			from	)
 {
-	COPY						(	vec2_t,
-									&to->v,		&from->v	);
+	COPY						(	vec2_t,		&to->v,		&from->v	);
 }
 
 HOWTO_COPY						(	Point3d_t,	to,			from	)
 {
-	COPY						(	vec3_t,
-									&to->v,		&from->v	);
+	COPY						(	vec3_t,		&to->v,		&from->v	);
 }
 
 
@@ -100,24 +94,22 @@ HOWTO_DRAW						(	Point2d_t,
 									Color_buffer_t*		colorbuf	)
 {
 
-	int								posX = 0,
-									posY = 0;
+	MEM							(	Rect_t,		rect,		1	);
+	MEM							(	Point2d_t,	o_point,	1	);
+
+	// By default all our points will be in the range (-1 * fov_scale) up to
+	// (+1 * fov_scale). This shifts the points to the center of the screen.
+
+	ADD							(	Point2d_t,	o_point,	point,	origin	);
 
 
-	MEM							(	Rect_t,		rect,	1	);
-
-	posX						=	( int )	(	point->v.x  +  origin->v.x	);
-	posY						=	( int )	(	point->v.y  +  origin->v.y	);
-
-
-	rect->posX					=	posX;
-	rect->posY					=	posY;
+	rect->posX					=	( int )	o_point->v.x;
+	rect->posY					=	( int )	o_point->v.y;
 	rect->width					=	4;
 	rect->height				=	4;
 
 
-	DRAW						(	Rect_t,
-									rect,		color,		colorbuf	);
+	DRAW						(	Rect_t,		rect,		color,	colorbuf	);
 }
 
 HOWTO_DRAW						(	Point3d_t,
@@ -148,3 +140,60 @@ HOWTO_PROJECT					(	Point2d_t,			Point3d_t,
 									&to->v,			&from->v,	type	);
 }
 
+
+
+
+//////////////////////////////////////////////////////////////////////////////////
+//				Arithmetic Operations Implementation
+//////////////////////////////////////////////////////////////////////////////////
+
+
+HOWTO_ADD					(	Point2d_t,	dst,	op1,	op2	)
+{
+	ADD						(	vec2_t,	&dst->v,	&op1->v,	&op2->v	);
+}
+
+HOWTO_ADD					(	Point3d_t,	dst,	op1,	op2	)
+{
+	ADD						(	vec3_t,	&dst->v,	&op1->v,	&op2->v	);
+}
+
+
+HOWTO_SUB					(	Point2d_t,	dst,	op1,	op2	)
+{
+	SUB						(	vec2_t,	&dst->v,	&op1->v,	&op2->v	);
+}
+
+HOWTO_SUB					(	Point3d_t,	dst,	op1,	op2	)
+{
+	SUB						(	vec3_t,	&dst->v,	&op1->v,	&op2->v	);
+}
+
+
+HOWTO_MUL					(	Point2d_t,	dst,	src,	factor	)
+{
+	MUL						(	vec2_t,	&dst->v,	&src->v,	factor	);
+
+}
+
+HOWTO_MUL					(	Point3d_t,	dst,	src,	factor	)
+{
+	MUL						(	vec3_t,	&dst->v,	&src->v,	factor	);
+}
+
+
+HOWTO_DOTP					(	Point2d_t,	dst,	src1,	src2	)
+{
+	DOTP					(	vec2_t,		dst,	&src1->v,	&src2->v	);
+}
+
+HOWTO_DOTP					(	Point3d_t,	dst,	src1,	src2	)
+{
+	DOTP					(	vec3_t,		dst,	&src1->v,	&src2->v	);
+}
+
+
+HOWTO_CROSSP				(	Point3d_t,	dst,	src1,	src2	)
+{
+	CROSSP					(	vec3_t,		&dst->v,	&src1->v,	&src2->v	);
+}

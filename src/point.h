@@ -13,54 +13,75 @@
 
 
 
-///////////////////////////////////////////////////////////////////////////////
-//									POINTS:
-///////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////
+//							POINTS:
+//////////////////////////////////////////////////////////////////////////////////
 //
-//	Points are the building blocks of any 2D/3D object model. Any object model
-//	that we see in a video game (tables, chairs, enemies etc) are described as
-//	a collection of points (also called vertices). These points collectively
-//	describe the silhouette of the object on which we paint color.
 //
-//	Typically, one would represent a point as a set of three numbers describing
-//	the X, Y and Z co-ordinates of the point. However, in Graphics it is much
-//	more convenient to represent a point as a vector with three components. i.e,
-//	we treat the X, Y, Z co-ordinates of a point as the components of a 3D
-//	vector.
+//		Points are the building blocks of any 2D/3D object model. Any object
+//		model that we see in a video game (tables, chairs, enemies etc) are 
+//		described as a collection of points (also called vertices). These
+//		points collectively describe the silhouette of the object on which we 
+//		paint color.
 //
-//	This gives us several advantages:
 //
-//	1.	We can now perform vector operations on the points and follow the rules
-//		of vector algebra.
+//		Typically, one would represent a point as a set of three numbers
+//		describing the X, Y and Z co-ordinates of the point. However, in
+//		Graphics it is much more convenient to represent a point as a vector
+//		with three components. i.e, we treat the X, Y, Z co-ordinates of a
+//		point as the components of a 3D vector.
 //
-//	2.	We can change or tranform the position of a point in any way we want by	
-//		multiplying it with a matrix. we can use this property to move the object	
-//		model around by moving the individual points on the model one by one.		
+//		In other words, one can think of each point in a 3D space as a vector 
+//		starting from the origin to that point.
 //
-//	3.	We can change the co-ordinate system of the point. i.e, how would the
-//		object look if viewed by someone else. When Artists create an object
-//		model, they choose the co-ordinate system as viewed by the object itself.
-//		i.e, the origin would be the centre of the object or somewhere inside the
-//		object itself. This co-ordinate system is also called as the object space.
-//		The game needs to change these points to the co-ordinate system as viewed
-//		by the user.
 //
-//	How do we know which matrix to use with which point for the desired movement?
-//	This is where game physics comes into play. By using simplified equations
-//	of physics we can get matrices to create simple motions (oscillations,
-//	rotations etc). We can create complex animations by composing together these
-//	simple motions.
+//							^
+//							|    *	--> 2D point
+//							|   /
+//							|  /	--> Point vector
+//							| /
+//							+----------->
 //
-/////////////////////////////////////////////////////////////////////////////////
+//
+//		This gives us several advantages:
+//
+//		1.	We can now perform vector operations on the points and follow the
+//			rules of vector algebra.
+//
+//		2.	We can change or tranform the position of a point in any way we
+//			want by multiplying it with a matrix. we can use this property to
+//			move the object model around by moving the individual points on
+//			the model one by one.		
+//
+//		3.	We can change the co-ordinate system of the point. i.e, how would
+//			the object look if viewed by someone else. When Artists create an
+//			object model, they choose the co-ordinate system as viewed by the
+//			object itself. i.e, the origin would be the centre of the object
+//			or somewhere inside the object itself. This co-ordinate system is
+//			also called as the object space. The game needs to change these
+//			points to the co-ordinate system as viewed by the user.
+//
+//
+//		How do we know which matrix to use with which point for the desired
+//		movement? This is where game physics comes into play. By using
+//		simplified equations of physics we can get matrices to create simple
+//		motions (oscillations, rotations etc). We can create complex animations
+//		by composing together these simple motions.
+//
+//
+//////////////////////////////////////////////////////////////////////////////////
 
 
 
 typedef					struct		{	vec2_t v;	}		Point2d_t;
 
-/* We could also do `typedef vec3_t point3d_t` here, but then someone would
- * certainly try to pass a position vector in a function for colors. Doing
- * it this way will at least give a compilation error.
- */
+//////////////////////////////////////////////////////////////////////////////////
+//
+//		We could also do `typedef vec3_t point3d_t` here, but then someone would
+//		certainly try to pass a position vector in a function for colors. Doing
+//		it this way will at least give a compilation error.
+//		
+//////////////////////////////////////////////////////////////////////////////////
 
 typedef					struct		{	vec3_t v;	}		Point3d_t;
 
@@ -73,7 +94,7 @@ typedef					DECL_ARRAY	(	Point3d_t,	ARRAY ( vec3_t )	v;	);
 
 
 ////////////////////////////////////////////////////////////////////////////////
-//				Point Operations
+//							Point Operations
 ////////////////////////////////////////////////////////////////////////////////
 
 
@@ -83,7 +104,7 @@ HOWTO_COPY				(	Point3d_t,	to,		from	);
 
 
 /////////////////////////////////////////////////////////////////////////////////
-//				Dynamic Array Operations
+//							Dynamic Array Operations
 /////////////////////////////////////////////////////////////////////////////////
 
 
@@ -110,7 +131,7 @@ HOWTO_STORE				(	Point3d_t,	ptr,	array	);
 
 
 //////////////////////////////////////////////////////////////////////////////////
-//			Geomertic Operations
+//							Geomertic Operations
 //////////////////////////////////////////////////////////////////////////////////
 
 
@@ -138,4 +159,33 @@ HOWTO_DRAW				(	Point3d_t,
 HOWTO_PROJECT			(	Point2d_t,			Point3d_t,
 							to,					from,
 							Projection_type_t	type		);
+
+
+//////////////////////////////////////////////////////////////////////////////////
+//							Arithmetic Operations
+//////////////////////////////////////////////////////////////////////////////////
+
+
+HOWTO_ADD					(	Point2d_t,	dst,	op1,	op2	);
+
+HOWTO_ADD					(	Point3d_t,	dst,	op1,	op2	);
+
+
+HOWTO_SUB					(	Point2d_t,	dst,	op1,	op2	);
+
+HOWTO_SUB					(	Point3d_t,	dst,	op1,	op2	);
+
+
+HOWTO_MUL					(	Point2d_t,	dst,	src,	factor	);
+
+HOWTO_MUL					(	Point3d_t,	dst,	src,	factor	);
+
+
+HOWTO_DOTP					(	Point2d_t,	dst,	src1,	src2	);
+
+HOWTO_DOTP					(	Point3d_t,	dst,	src1,	src2	);
+
+
+HOWTO_CROSSP				(	Point3d_t,	dst,	src1,	src2	);
+
 

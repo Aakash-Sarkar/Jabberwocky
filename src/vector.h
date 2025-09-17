@@ -7,6 +7,7 @@
 #include "array.h"
 #include "object.h"
 #include "geometry.h"
+#include "arithmetic.h"
 
 
 
@@ -112,7 +113,29 @@ HOWTO_PROJECT						(	vec2_t,		vec3_t,
 										Projection_type_t	type	);
 
 
+/////////////////////////////////////////////////////////////////////////////////
+//				Arithmetic Operations
+/////////////////////////////////////////////////////////////////////////////////
+
+HOWTO_ADD							(	vec2_t,	dst,	op1,	op2	);
+
+HOWTO_ADD							(	vec3_t,	dst,	op1,	op2	);
 
 
+HOWTO_SUB							(	vec2_t,	dst,	op1,	op2	);
 
+HOWTO_SUB							(	vec3_t,	dst,	op1,	op2	);
+
+
+HOWTO_MUL							(	vec2_t,	dst,	src,	factor	);
+
+HOWTO_MUL							(	vec3_t,	dst,	src,	factor	);
+
+
+HOWTO_DOTP							(	vec2_t, dst,	src1,	src2	);
+
+HOWTO_DOTP							(	vec3_t, dst,	src1,	src2	);
+
+
+HOWTO_CROSSP						(	vec3_t,	dst,	src1,	src2	);
 

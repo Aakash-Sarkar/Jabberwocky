@@ -7,7 +7,7 @@
 
 
 
-#define rotator(class)								concat(rotate, _, class)
+#define rotator(class)								concat3(rotate, _, class)
 
 #define																									\
 HOWTO_ROTATE(class, to, from, ...)					void												\
@@ -37,7 +37,7 @@ PROJECT(class1, class2, to, from, ...)				projector(class1, class2) (	to,						\
 
 
 
-#define painter(class)								concat(draw, _, class)
+#define painter(class)								concat3(draw, _, class)
 
 #define																									\
 HOWTO_DRAW(class, obj, ...)							void												\

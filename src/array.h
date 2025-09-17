@@ -6,7 +6,7 @@
 
 
 
-#define array(class)                            concat(class, _, array)
+#define array(class)                            concat3(class, _, array)
 
 #define DECL_ARRAY(class, ...)                  struct {    int count;                      \
                                                             __VA_ARGS__    }   array(class)
@@ -16,7 +16,7 @@
 
 
 
-#define array_init(class)                       concat(array_init, _, class)
+#define array_init(class)                       concat3(array_init, _, class)
 
 #define HOWTO_ARRAY_INIT(class, name)           void                                        \
                                                 array_init(class) ( array(class)* name )
@@ -26,7 +26,7 @@
 
 
 
-#define array_reset(class)                      concat(array_reset, _, class)
+#define array_reset(class)                      concat3(array_reset, _, class)
 
 #define HOWTO_ARRAY_RESET(class, name)          void                                        \
                                                 array_reset(class) ( array(class)* name )
@@ -36,7 +36,7 @@
 
 
 
-#define loader(class)                           concat(load, _, class)
+#define loader(class)                           concat3(load, _, class)
 
 #define HOWTO_LOAD(class, ptr, array, idx)      void                                        \
                                                 loader(class) (class* ptr,                  \
@@ -47,7 +47,7 @@
 
 
 
-#define storer(class)                           concat(store, _, class)
+#define storer(class)                           concat3(store, _, class)
 
 #define HOWTO_STORE(class, ptr, array)          void                                        \
                                                 storer(class) (class* ptr,                  \
@@ -63,10 +63,10 @@
 
 
 
-#define array_push(array, value)                                                \
-    do {                                                                        \
-        (array) = array_hold((array), 1, sizeof(*(array)));                     \
-        (array)[array_length(array) - 1] = (value);                             \
+#define array_push(array, value)                                                            \
+    do {                                                                                    \
+        (array) = array_hold((array), 1, sizeof(*(array)));                                 \
+        (array)[array_length(array) - 1] = (value);                                         \
     } while (0);
 
 
