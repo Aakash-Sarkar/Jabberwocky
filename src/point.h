@@ -14,7 +14,7 @@
 
 
 //////////////////////////////////////////////////////////////////////////////////
-//							POINTS:
+//									POINTS:
 //////////////////////////////////////////////////////////////////////////////////
 //
 //
@@ -31,27 +31,32 @@
 //		with three components. i.e, we treat the X, Y, Z co-ordinates of a
 //		point as the components of a 3D vector.
 //
+//
 //		In other words, one can think of each point in a 3D space as a vector 
 //		starting from the origin to that point.
 //
 //
-//							^
+//							Y
 //							|    *	--> 2D point
 //							|   /
 //							|  /	--> Point vector
 //							| /
-//							+----------->
+//							|/
+//							+------------- X
 //
 //
 //		This gives us several advantages:
 //
+//
 //		1.	We can now perform vector operations on the points and follow the
 //			rules of vector algebra.
 //
+// 
 //		2.	We can change or tranform the position of a point in any way we
 //			want by multiplying it with a matrix. we can use this property to
 //			move the object model around by moving the individual points on
 //			the model one by one.		
+//
 //
 //		3.	We can change the co-ordinate system of the point. i.e, how would
 //			the object look if viewed by someone else. When Artists create an
@@ -65,104 +70,104 @@
 //		How do we know which matrix to use with which point for the desired
 //		movement? This is where game physics comes into play. By using
 //		simplified equations of physics we can get matrices to create simple
-//		motions (oscillations, rotations etc). We can create complex animations
-//		by composing together these simple motions.
+//		motions (oscillations, rotations etc). We can create complex
+//		animations by composing together these simple motions.
 //
 //
 //////////////////////////////////////////////////////////////////////////////////
 
 
 
-typedef					struct		{	vec2_t v;	}		Point2d_t;
+typedef						struct		{	vec2_t v;	}		Point2d_t;
 
 //////////////////////////////////////////////////////////////////////////////////
 //
 //		We could also do `typedef vec3_t point3d_t` here, but then someone would
 //		certainly try to pass a position vector in a function for colors. Doing
 //		it this way will at least give a compilation error.
-//		
+//
 //////////////////////////////////////////////////////////////////////////////////
 
-typedef					struct		{	vec3_t v;	}		Point3d_t;
+typedef						struct		{	vec3_t v;	}		Point3d_t;
 
 
 
 
-typedef					DECL_ARRAY	(	Point2d_t,	ARRAY ( vec2_t )	v;	);
+typedef						DECL_ARRAY	(	Point2d_t,	ARRAY ( vec2_t )	v;	);
 
-typedef					DECL_ARRAY	(	Point3d_t,	ARRAY ( vec3_t )	v;	);
-
-
-////////////////////////////////////////////////////////////////////////////////
-//							Point Operations
-////////////////////////////////////////////////////////////////////////////////
-
-
-HOWTO_COPY				(	Point2d_t,	to,		from	);
-
-HOWTO_COPY				(	Point3d_t,	to,		from	);
-
-
-/////////////////////////////////////////////////////////////////////////////////
-//							Dynamic Array Operations
-/////////////////////////////////////////////////////////////////////////////////
-
-
-HOWTO_ARRAY_INIT		(	Point2d_t,	array	);
-
-HOWTO_ARRAY_INIT		(	Point3d_t,	array	);
-
-
-HOWTO_ARRAY_RESET		(	Point2d_t,	array	);
-
-HOWTO_ARRAY_RESET		(	Point3d_t,	array	);
-
-
-
-HOWTO_LOAD				(	Point2d_t,	ptr,	array,	idx	);
-
-HOWTO_LOAD				(	Point3d_t,	ptr,	array,	idx	);
-
-
-HOWTO_STORE				(	Point2d_t,	ptr,	array	);
-
-HOWTO_STORE				(	Point3d_t,	ptr,	array	);
-
+typedef						DECL_ARRAY	(	Point3d_t,	ARRAY ( vec3_t )	v;	);
 
 
 //////////////////////////////////////////////////////////////////////////////////
-//							Geomertic Operations
+//								Point Operations
 //////////////////////////////////////////////////////////////////////////////////
 
 
-HOWTO_ROTATE			(	Point2d_t,	to,		from,	vec2_t* angle	);
+HOWTO_COPY					(	Point2d_t,	to,		from	);
 
-HOWTO_ROTATE			(	Point3d_t,	to,		from,	vec3_t* angle	);
-
-
-HOWTO_DRAW				(	Point2d_t,
-							point,
-							Point2d_t*			origin,
-							Color_t*			color,
-							Color_buffer_t*		colorbuf	);
-
-
-HOWTO_DRAW				(	Point3d_t,
-							point,
-							Point2d_t*			origin,
-							Color_t*			color,
-							Color_buffer_t*		colorbuf	);
-
-
-
-
-HOWTO_PROJECT			(	Point2d_t,			Point3d_t,
-							to,					from,
-							Projection_type_t	type		);
+HOWTO_COPY					(	Point3d_t,	to,		from	);
 
 
 //////////////////////////////////////////////////////////////////////////////////
-//							Arithmetic Operations
+//								Dynamic Array Operations
+//////////////////////////////////////////////////////////////////////////////////
+
+
+HOWTO_ARRAY_INIT			(	Point2d_t,	array	);
+
+HOWTO_ARRAY_INIT			(	Point3d_t,	array	);
+
+
+HOWTO_ARRAY_RESET			(	Point2d_t,	array	);
+
+HOWTO_ARRAY_RESET			(	Point3d_t,	array	);
+
+
+
+HOWTO_LOAD					(	Point2d_t,	ptr,	array,	idx	);
+
+HOWTO_LOAD					(	Point3d_t,	ptr,	array,	idx	);
+
+
+HOWTO_STORE					(	Point2d_t,	ptr,	array	);
+
+HOWTO_STORE					(	Point3d_t,	ptr,	array	);
+
+
+
+//////////////////////////////////////////////////////////////////////////////////
+//								Geomertic Operations
+//////////////////////////////////////////////////////////////////////////////////
+
+
+HOWTO_ROTATE				(	Point2d_t,	to,		from,	vec2_t* angle	);
+
+HOWTO_ROTATE				(	Point3d_t,	to,		from,	vec3_t* angle	);
+
+
+HOWTO_DRAW					(	Point2d_t,
+								point,
+								Point2d_t*			origin,
+								Color_t*			color,
+								Color_buffer_t*		colorbuf	);
+
+
+HOWTO_DRAW					(	Point3d_t,
+								point,
+								Point2d_t*			origin,
+								Color_t*			color,
+								Color_buffer_t*		colorbuf	);
+
+
+
+
+HOWTO_PROJECT				(	Point2d_t,			Point3d_t,
+								to,					from,
+								Projection_type_t	type		);
+
+
+//////////////////////////////////////////////////////////////////////////////////
+//								Arithmetic Operations
 //////////////////////////////////////////////////////////////////////////////////
 
 
