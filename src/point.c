@@ -148,6 +148,10 @@ HOWTO_PROJECT					(	Point2d_t,			Point3d_t,
 //////////////////////////////////////////////////////////////////////////////////
 
 
+// Adding or subtracting two points may be strange, but adding or subtracting
+// two point vectors is a legal mathematical operation. This is why we treat
+// points as vectors in Computer Graphics
+
 HOWTO_ADD					(	Point2d_t,	dst,	op1,	op2	)
 {
 	ADD						(	vec2_t,	&dst->v,	&op1->v,	&op2->v	);
@@ -179,6 +183,18 @@ HOWTO_MUL					(	Point2d_t,	dst,	src,	factor	)
 HOWTO_MUL					(	Point3d_t,	dst,	src,	factor	)
 {
 	MUL						(	vec3_t,	&dst->v,	&src->v,	factor	);
+}
+
+
+HOWTO_DIV					(	Point2d_t,	dst,	src,	factor	)
+{
+	DIV						(	vec2_t,	&dst->v,	&src->v,	factor	);
+
+}
+
+HOWTO_DIV					(	Point3d_t,	dst,	src,	factor	)
+{
+	DIV						(	vec3_t,	&dst->v,	&src->v,	factor	);
 }
 
 

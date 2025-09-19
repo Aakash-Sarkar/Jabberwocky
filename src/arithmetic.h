@@ -38,6 +38,17 @@
 
 
 
+#define scaler_div(class)						concat3(scaler_div, _, class)
+
+#define HOWTO_DIV(class, dest, src, factor)		void scaler_div(class) (class* dest,		\
+																		class* src,			\
+																		float  factor)
+
+#define DIV(class, dest, src, factor)			scaler_div(class) (dest, src, factor)
+
+
+
+
 #define dot_prod(class)							concat3(dotp, _, class)
 
 #define																						\

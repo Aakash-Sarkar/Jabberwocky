@@ -186,6 +186,11 @@ HOWTO_MUL					(	Point2d_t,	dst,	src,	factor	);
 HOWTO_MUL					(	Point3d_t,	dst,	src,	factor	);
 
 
+HOWTO_DIV					(	Point2d_t,	dst,	src,	factor	);
+
+HOWTO_DIV					(	Point3d_t,	dst,	src,	factor	);
+
+
 HOWTO_DOTP					(	Point2d_t,	dst,	src1,	src2	);
 
 HOWTO_DOTP					(	Point3d_t,	dst,	src1,	src2	);

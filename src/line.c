@@ -10,7 +10,6 @@
 HOWTO_COPY					(	Line_t,		to,			from		)
 {
 	COPY					(	Point2d_t,	&to->p1,	&from->p1	);
-
 	COPY					(	Point2d_t,	&to->p2,	&from->p2	);
 }
 
@@ -61,18 +60,20 @@ HOWTO_COPY					(	Line_t,		to,			from		)
 //
 //		With the above background, let's define the DDA Algorithm:
 //
-//			1.	We have two end pixels (x0, y0) and (x1, y1) to draw line.
+//		1.	We have two end pixels (x0, y0) and (x1, y1) to draw line.
 //
-//			2.	Find the run of the line:  max of y1 - y0, x1 - x0
+//		2.	Find the run of the line:  max of y1 - y0, x1 - x0
 //
-//			3.	Find the rise of the line: min of y1 - y0, x1 - x0
+//		3.	Find the rise of the line: min of y1 - y0, x1 - x0
 //
-//			4.	Find the slope of the line: rise / run
+//		4.	Find the slope of the line: rise / run
 //
-//			5.	Next pixel to draw would be (x0 + 1), (y0 + slope)
+//		5.	Next pixel to draw would be (x0 + 1), (y0 + slope)
 //									  
 //
 //////////////////////////////////////////////////////////////////////////////////
+
+
 
 
 HOWTO_DRAW					(	Line_t,
@@ -82,30 +83,44 @@ HOWTO_DRAW					(	Line_t,
 								Color_buffer_t*			colorbuf	)
 {
 
-	int							delta_X		= ( int ) ( line->p2.v.x	-	line->p1.v.x ),
-								delta_Y		= ( int ) ( line->p2.v.y	-	line->p1.v.y );
+	MEM						(	Point2d_t,	len,	1	);
+	MEM						(	Point2d_t,	slope,	1	);
 
-	int							side_len	= max ( abs ( delta_X ), abs ( delta_Y ) );
+	SUB						(	Point2d_t,	len,	&line->p2,	&line->p1	);
 
-	float						delX		= ( delta_X / ( float ) side_len ),
-								delY		= ( delta_Y / ( float ) side_len );
+	float						run	= (float) max ( abs ( len->v.x ), abs ( len->v.y ) );
 
-	MEM						(	Point2d_t,	point,	1	);
+
+	//////////////////////////////////////////////////////////////////////////////
+	//
+	//	Depending on which component becomes our run, our slope vector will have
+	//	one component as (run/run) = 1, and the other as(rise/run) = slope
+	//
+	//	Since division on a processor takes much more clock cycles than the other
+	//	arithmetic operations, DDA algorithm is slower as compared to Bresenham
+	//
+	//////////////////////////////////////////////////////////////////////////////
+
+	DIV						(	Point2d_t,	slope,	len,	run	);
+
+	MEM						(	Point2d_t,	point,		1	);
+	MEM						(	Point2d_t,	o_point,	1	);
 
 	COPY					(	Point2d_t,	point,	&line->p1	);
 
-	for						(	int i = 0;	i <= side_len;	i++		)
+	for						(	int i = 0;	i <= run;	i++		)
 	{
+		ADD					(	Point2d_t,	o_point,	point,	origin	);
+
 		paint_color			(	color,
 								colorbuf,
 								PIXELFORMAT_ARGB8888,
-								( int )	(	point->v.x	+	origin->v.x		),
-								( int )	(	point->v.y	+	origin->v.y		),
+								round	(	o_point->v.x	),
+								round	(	o_point->v.y	),
 								0
 							);
 
-		point->v.x			+=	delX;
-		point->v.y			+=	delY;
+		ADD					(	Point2d_t,	point,	point,	slope	);
 	}
 }
 
