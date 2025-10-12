@@ -18,121 +18,131 @@
 //
 //
 //      Computer Graphics is primarily about three things: Images, Colors and
-//      Light! If you're working on Graphics, then you should have a more
-//      concrete understanding of these three concepts than a lay person (Think
-//      of an Artist who has the same understanding of paints as you!). Here we
+//      Light! If you're working on Graphics, you should have a more concrete
+//      understanding of these three concepts than a lay person  (Think of an
+//      Artist who has the same understanding of paints as you!). Here we are
 //      cover the concept of colors in some detail.
 //
 //
-//      Colors are a manifestation of light interacting with a material surface.
-//      We see different types of colors because each material surface interacts
-//      with light in a different way (depending on the intrinsic properties of
-//      the material). The white light coming from a light source can be thought
-//      of as a composition of Red, Green and Blue lights with different
-//      intensities (or energy). When this light hits the surface of a material
-//      object; some portion of the light gets abosrbed by the surface and
-//      converted to heat; while the remaining portion gets reflected back. When
-//      this reflected light enters into our eyes we percieve it as the color of
-//      that material
+//      Color is a manifestation of light interacting with a material surface.
+//      We can see different kinds of colors because each material surface
+//      interacts with light in a different way ( depending on the intrinsic
+//      properties of that material ). White light coming from a light source
+//      can be thought of as a composition of Red, Green and Blue lights with
+//      different intensities ( or energy ). When this white light hits the
+//      surface of an object; some portion of the light gets abosrbed by the
+//      material surface and converted into heat; while the remaining portion
+//      gets reflected back. When this reflected light enters into our eyes,
+//      we percieve it as the color of that object.
 //
 //
-//      Okay, but what does it have to do with Red, Green and Blue? The
-//      decomposition of light into Red, Green and Blue channels has more to do
-//      with how our eyes work than light itself. Our retina is coated with
-//      tissues that can sense the intensity of Red, Green and Blue lights that
-//      fall on it. When a light ray reflected from a material surface enters
-//      our eye, these tissues become active and send signal to our brain. Our
-//      brain then determines the color of the object based on the intensity of
-//      each of these components (Red, Green and Blue).
+//      Okay but what does it have to do with the colors Red, Green and Blue?
+//      The decomposition of white light into the Red, Green and Blue color
+//      channels has more to do with how our eyes work than the light itself.
+//      Our retina is coated with cells that can sense the intensity of the
+//      individual Red, Green and Blue lights that fall on it. When a light
+//      ray reflected from a material surface enters into our eyes, these
+//      cells become active and start sending signals to our brain. Our brain
+//      then determines the final color of the object based on the intensity
+//      of each of these individual color components (Red, Green and Blue).
 //
 //
-//      One can think of the Red, Green and Blue color channels as the X, Y and
-//      Z co-ordinate axes of a 3D space and each color as a point in this color
-//      space. Thus, instead of thinking of a color value as one integer value,
-//      it is much more convenient to think of it as a point (or vector) with X,
-//      Y and Z (or R, G and B) components.
+//      One can think of the Red, Green and Blue color channels as the X, Y
+//      and Z co-ordinate axes of a 3D space and each color as a point in
+//      this color space. Thus, instead of thinking of a color value as one
+//      integer value, it is much more convenient to think of it as a point
+//      (or vector) with X, Y and Z (or R, G and B) components.
 //
 //
-//                              B    G
-//                              |   /
-//                              |  /    *  --> Purple
+//                              B           
+//                              ^
+//                              |       G
+//                              |     /               
+//                              |   /     *                   --> Purple
 //                              | /
-//                              |/
-//                              +---------- R
+//                              +------------- > R
 //
 //
-//      A large portion of Computer Graphics require us to deal with determining
-//      the color of an object. In order to do this one has to take into account
-//      what are the light sources in the scene, at what angle is the light
-//      source from our object, what is the intrinsic color of the object, how
-//      shiny is the surface of the object etc. This is very similar to how an
-//      Artist paints a scene based on where the sun is, how it's reflected by
-//      water or a mirror like surface and so on.
+//      A large portion of Computer Graphics requires us to deal with finding
+//      the final color of an object. In order to do this, one has to take
+//      into account what are the light sources in the scene, at what angle
+//      are the light sources from our object model, what are the material
+//      properties of the object, how shiny is the surface of the object etc.
+//      This is very similar to how an Artist paints a scene based on where
+//      the sun is, how it's reflected by water or a mirror like surface and
+//      so on.
+//
+//
+////////////////////////////////////////////////////////////////////////////////////
+
+
+
+
+
+typedef                 enum Format_type {
+                                    PIXELFORMAT_ARGB8888 = 0,
+                                    PIXELFORMAT_RGBA8888,
+                                    PIXELFORMAT_XRGB4444,
+                                    PIXELFORMAT_MAX         }   Format_type_t;
+
+
+
+
+////////////////////////////////////////////////////////////////////////////////////
+//
+//
+//      On modern day systems, we always represent a color value as a 32-
+//      bit integer. Each of the color components (R, G and B) are packed
+//      into the successive 8-bits of a 32-bit integer ( with last 8-bits
+//      reserved for other purposes). Thus, each color component can take
+//      up a value between 0 and 255 representing the intensity of that
+//      individual component. This provides us with a wide range of colors
+//      (256 * 256 * 256).
+//
+//
+//       |<--------------  32-bit integer  ------------->|
+//       +-----------------------------------------------+
+//       |   8-bit   |   8-bit   |   8-bit   |   8-bit   |
+//       +------+----------+-----------+-----------+-----+
+//              |          |           |           |
+//              |          |           |           |
+//              |          |           |           +--------> B  channel
+//              |          |           +--------------------> G  channel
+//              |          +--------------------------------> R  channel
+//              +-------------------------------------------> A  channel
+//
+//
+//      On older 8-bit and 16-bit systems this was not the case. We had
+//      a very limited number of colors that we could use to paint our
+//      scenes (256 for 8-bit systems). Therefore, these systems would
+//      instead use a color pallete (or lookup table) of the available
+//      colors. The color value was then used as an index into the color
+//      pallete in order to determine the final color of the pixel.
+//
+//
+//      Having each of the color components packed into the successive
+//      8-bits of a 32-bit integer value makes sense from a performace
+//      perspective, since all three color channels are needed together
+//      in order to determine the final pixel color. Therefore, having
+//      them in a single cache line reduces the number of cache misses.
+//
+//
+//      However, there are situations where having the individual color
+//      components inside separate integers is more useful. For e.g. if
+//      you are doing some kind of image processing work where you wish
+//      to amplify only one of the components ( Red for e.g. ), but not
+//      want to touch any of the other color components. In this case,
+//      having all the Red values in a separate buffer makes more sense
+//      since we want to have only the Red values inside our cache line.
+//      This also allows us to pack more bits for our Red component, so
+//      that we can now have a more fine grained control over it, while
+//      keeping the number of bits for the Green and Blue color values
+//      the same as before.
 //
 //
 ////////////////////////////////////////////////////////////////////////////////////
 
 
-
-
-
-typedef                     enum Format_type  {
-                                                PIXELFORMAT_ARGB8888 = 0,
-                                                PIXELFORMAT_RGBA8888,
-                                                PIXELFORMAT_XRGB4444,
-                                                PIXELFORMAT_MAX       } Format_type_t;
-
-
-
-
-////////////////////////////////////////////////////////////////////////////////////
-//
-//
-//      On modern day systems we always represent a color value as a 32-bit
-//      integer. Each color component (R, G and B) is packed into the successive
-//      8-bits of the 32-bit integar value (with the last 8-bits reserved for
-//      other purposes). Thus each color component can take a value between 0
-//      and 255 representing the intensity of that component. This provides us
-//      with a wide range of colors (256 * 256 * 256).
-//
-//
-//          <-----------------32-bit integar---------------->
-//          +-----------------------------------------------+
-//          |   8-bit   |   8-bit   |   8-bit   |   8-bit   |
-//          +------+----------+-----------+-----------+-----+
-//                 |          |           |           |
-//                 |          |           +           +-------->    B channel
-//                 |          |           +-------------------->    G channel
-//                 |          +-------------------------------->    R channel
-//                 +------------------------------------------->    A channel
-//
-//
-//      On older 8-bit and 16-bit systems this was not the case. We had a very
-//      limited number of colors that we could use to paint our scene (256 for
-//      8-bit systems). So, these systems would use a color pallete (lookup
-//      table) of the available colors. The color value was used as an index
-//      into this color palette to determine the final color.
-//
-//
-//      Having each of the color component packed into the successive 8-bits of
-//      a 32-bit integer makes sense from a performace perspective since all
-//      three color channels are needed together to determine the the pixel
-//      color. Thus having them in a single cache line reduces the number of
-//      cache misses.
-//
-//
-//      However, there are situations where having the individual components
-//      into separate integers make more sense. For eg. if you're doing some
-//      image processing work where you want to amplify one of the component
-//      (Red for example), but not touch the other components. In this case
-//      having the Red component into a separate buffer makes more sense since
-//      we want only the Red values in our cache. This also allows us to pack
-//      more bits for the Red component. With this we can now do more fine
-//      grained operations on the Red component while keeping the number of
-//      bits for Green and Blue same as before
-//
-//
-////////////////////////////////////////////////////////////////////////////////////
 
 
 typedef                     struct Color    {
