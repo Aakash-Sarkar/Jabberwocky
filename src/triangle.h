@@ -74,162 +74,130 @@
 //////////////////////////////////////////////////////////////////////////////////
 
 
+typedef					struct Triangle3d						Triangle3d_t	;
+
+typedef					struct Triangle2d						Triangle2d_t	;
 
 
-typedef						struct Triangle3d	{	Point3d_t	p1;
-													Point3d_t	p2;
-													Point3d_t	p3;
-												}						Triangle3d_t;
+typedef					DECL_ARRAY ( Triangle2d_t )		ARRAY ( Triangle2d_t )	;
 
 
-typedef						struct Triangle2d	{	Point2d_t	p1;
-													Point2d_t	p2;
-													Point2d_t	p3;
-												}						Triangle2d_t;
+typedef					DECL_ARRAY ( Triangle3d_t )		ARRAY ( Triangle3d_t)	;
 
 
-
-
-//////////////////////////////////////////////////////////////////////////////////
-//
-//
-//		In Graphics, we define a triangle face using the indices of the
-//		its three end points in the points array.
-//
-//		At first glance, this may sound like an overkill. It's perfectly
-//		valid to ask: why can't we have just one triangle array in our
-//		mesh instead of two separate vertex and faces array. The answer
-//		will become clear once you start to notice how the vertices are
-//		shared amongst different triangles in a mesh.
-//
-//
-//						2.						3.
-//						@	-	-	-	-	-	@
-//					+		+				+		+	
-//				+				+		+				+
-//		4.	@	-	-	-	-	-	@	-	-	-	-	-	@ 5.
-//				+				+	1.	+				+
-//					+		+				+		+
-//						@	-	-	-	-	-	@
-//						6.						7.
-//
-//
-//		Notice how the vertex (1) = { 0.0800, 0.000, 0.000 } is shared
-//		between the triangles: [1,2,3] , [1,2,4] , [1,4,6] , [1,3,5] ,
-//		[1,6,7] and [1,5,7]. If we only keep the value of the vertices
-//		of our triangles inside a single array, then the value of our
-//		vertex (1) will appear 6 times in our triangles array without
-//		any way for us to know it's the same vertex. Keeping the data
-//		for the vertices and the faces isolated within separate arrays
-//		helps us to minimize the number of redundent vertices in the
-//		memory.
-//
-//
-//////////////////////////////////////////////////////////////////////////////////
-
-
-typedef						struct Face			{	int		idx1;
-													int		idx2;
-													int		idx3;
-												}						Face_t;
-
-
-
-
-typedef						DECL_ARRAY			(	Face_t,
-													int*	idx1;
-													int*	idx2;
-													int*	idx3;
-												);
-
-
-typedef						DECL_ARRAY			(	Triangle2d_t,
-													ARRAY ( Point2d_t )		p1;
-													ARRAY ( Point2d_t )		p2;
-													ARRAY ( Point2d_t )		p3;
-												);
-
-
-typedef						DECL_ARRAY			(	Triangle3d_t,
-													ARRAY ( Point3d_t )		p1;
-													ARRAY ( Point3d_t )		p2;
-													ARRAY ( Point3d_t )		p3;
-												);
 
 
 ////////////////////////////////////////////////////////////////////////////////
-//				Triangle Operations
+//						Triangle Operations
 ////////////////////////////////////////////////////////////////////////////////
 
 
-HOWTO_COPY						(	Face_t,			to,	from	);
+HOWTO_COPY						(	Triangle2d_t,	to,	from	)	;
 
-HOWTO_COPY						(	Triangle2d_t,	to,	from	);
-
-HOWTO_COPY						(	Triangle3d_t,	to,	from	);
+HOWTO_COPY						(	Triangle3d_t,	to,	from	)	;
 
 
-/////////////////////////////////////////////////////////////////////////////////
-//				Dynamic Array Operations
-/////////////////////////////////////////////////////////////////////////////////
+HOWTO_COMPOSE					(	Triangle3d_t,
+									self,
+									Point3d_t*		p1,
+									Point3d_t*		p2,
+									Point3d_t*		p3
+								)	;
 
 
-HOWTO_ARRAY_INIT				(	Face_t,			array	);
-
-HOWTO_ARRAY_INIT				(	Triangle2d_t,	array	);
-
-HOWTO_ARRAY_INIT				(	Triangle3d_t,	array	);
-
-
-HOWTO_ARRAY_RESET				(	Face_t,			array	);
-
-HOWTO_ARRAY_RESET				(	Triangle2d_t,	array	);
-
-HOWTO_ARRAY_RESET				(	Triangle3d_t,	array	);
+HOWTO_CONSTRUCT					(	Triangle2d_t,
+									self,
+									float	x1,		float	y1,
+									float	x2,		float	y2,
+									float	x3,		float	y3
+								)	;
 
 
-HOWTO_LOAD						(	Face_t,			ptr,	array,	idx		);
-
-HOWTO_LOAD						(	Triangle2d_t,	ptr,	array,	idx		);
-
-HOWTO_LOAD						(	Triangle3d_t,	ptr,	array,	idx		);
-
-
-HOWTO_STORE						(	Face_t,			ptr,	array	);
-
-HOWTO_STORE						(	Triangle2d_t,	ptr,	array	);
-
-HOWTO_STORE						(	Triangle3d_t,	ptr,	array	);
-
+HOWTO_CONSTRUCT					(	Triangle3d_t,
+									self,
+									float	x1,		float	y1,		float	z1,
+									float	x2,		float	y2,		float	z2,
+									float	x3,		float	y3,		float	z3
+								)	;
 
 /////////////////////////////////////////////////////////////////////////////////
-//				Geomertic Operations
+//						Dynamic Array Operations
 /////////////////////////////////////////////////////////////////////////////////
 
 
-HOWTO_ROTATE					(	Triangle3d_t,	to,	from,	vec3_t* angle	);
+HOWTO_ARRAY_INIT				(	Triangle2d_t,	self	)	;
 
-HOWTO_ROTATE					(	Triangle2d_t,	to,	from,	vec2_t* angle	);
+HOWTO_ARRAY_INIT				(	Triangle3d_t,	self	)	;
+
+
+HOWTO_ARRAY_RESET				(	Triangle2d_t,	self	)	;
+
+HOWTO_ARRAY_RESET				(	Triangle3d_t,	self	)	;
+
+
+HOWTO_CONSTRUCT					(	ARRAY ( Triangle2d_t ),
+									self,
+									void*	null
+								)	;
+
+HOWTO_CONSTRUCT					(	ARRAY ( Triangle3d_t ),
+									self,
+									void*	null
+								)	;
+
+HOWTO_DESTRUCT					(	ARRAY ( Triangle2d_t ),
+									self
+								)	;
+
+HOWTO_DESTRUCT					(	ARRAY ( Triangle3d_t ),
+									self
+								)	;
+
+
+HOWTO_LOAD						(	Triangle2d_t,	self,	array,	idx		)	;
+
+HOWTO_LOAD						(	Triangle3d_t,	self,	array,	idx		)	;
+
+
+HOWTO_PUSH						(	Triangle2d_t,	self,	array	)	;
+
+HOWTO_PUSH						(	Triangle3d_t,	self,	array	)	;
+
+
+HOWTO_STORE						(	Triangle2d_t,	self,	array,	idx		)	;
+
+HOWTO_STORE						(	Triangle3d_t,	self,	array,	idx		)	;
+
+
+
+
+/////////////////////////////////////////////////////////////////////////////////
+//						Geomertic Operations
+/////////////////////////////////////////////////////////////////////////////////
+
+
+
+
+HOWTO_ROTATE					(	Triangle3d_t,	self,	Vec3_t* angle	)	;
+
+HOWTO_ROTATE					(	Triangle2d_t,	self,	Vec2_t* angle	)	;
 
 
 HOWTO_DRAW						(	Triangle2d_t,
-									triangle,
-									Point2d_t*			origin,
+									self,
 									Color_t*			color,
-									Color_buffer_t*		colorbuf	);
+									Renderer_t*			renderer
+								)	;
 
 HOWTO_DRAW						(	Triangle3d_t,
-									triangle,
-									Point2d_t*			origin,
+									self,
 									Color_t*			color,
-									Color_buffer_t*		colorbuf	);
+									Renderer_t*			renderer
+								)	;
 
 
 HOWTO_PROJECT					(	Triangle2d_t,		Triangle3d_t,
 									to,					from,
-									Projection_type_t	type	);
-
-
-
-
+									Projection_type_t	type
+								)	;
 

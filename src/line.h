@@ -8,10 +8,10 @@
 #include "color.h"
 #include "geometry.h"
 
-typedef							struct Line {	Point2d_t	p1;
-												Point2d_t	p2;		}	Line_t;
 
 
+
+typedef							struct Line						Line_t;
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -23,7 +23,7 @@ HOWTO_COPY						(	Line_t,	to,	from	);
 
 
 HOWTO_COMPOSE					(	Line_t,
-									line,
+									self,
 									Point2d_t*	p1,
 									Point2d_t*	p2	);
 
@@ -36,9 +36,9 @@ HOWTO_COMPOSE					(	Line_t,
 
 
 HOWTO_DRAW						(	Line_t,
-									line,
-									Point2d_t*			origin,
-									Color_t*			color, 
-									Color_buffer_t*		colorbuf	);
+									self,
+									Color_t*			color,
+									Renderer_t*			renderer
+								);
 
 

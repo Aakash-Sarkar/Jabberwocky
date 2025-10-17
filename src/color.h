@@ -79,144 +79,94 @@
 
 
 
-typedef                 enum Format_type {
-                                    PIXELFORMAT_ARGB8888 = 0,
-                                    PIXELFORMAT_RGBA8888,
-                                    PIXELFORMAT_XRGB4444,
-                                    PIXELFORMAT_MAX         }   Format_type_t;
+enum Format_type {
+    PIXELFORMAT_ARGB8888 = 0,
+    PIXELFORMAT_RGBA8888,
+    PIXELFORMAT_XRGB4444,
+    PIXELFORMAT_MAX
+};
 
 
+typedef                         enum Format_type              Format_type_t;
 
+typedef                         struct Color                   Color_t;
 
-////////////////////////////////////////////////////////////////////////////////////
-//
-//
-//      On modern day systems, we always represent a color value as a 32-
-//      bit integer. Each of the color components (R, G and B) are packed
-//      into the successive 8-bits of a 32-bit integer ( with last 8-bits
-//      reserved for other purposes). Thus, each color component can take
-//      up a value between 0 and 255 representing the intensity of that
-//      individual component. This provides us with a wide range of colors
-//      (256 * 256 * 256).
-//
-//
-//       |<--------------  32-bit integer  ------------->|
-//       +-----------------------------------------------+
-//       |   8-bit   |   8-bit   |   8-bit   |   8-bit   |
-//       +------+----------+-----------+-----------+-----+
-//              |          |           |           |
-//              |          |           |           |
-//              |          |           |           +--------> B  channel
-//              |          |           +--------------------> G  channel
-//              |          +--------------------------------> R  channel
-//              +-------------------------------------------> A  channel
-//
-//
-//      On older 8-bit and 16-bit systems this was not the case. We had
-//      a very limited number of colors that we could use to paint our
-//      scenes (256 for 8-bit systems). Therefore, these systems would
-//      instead use a color pallete (or lookup table) of the available
-//      colors. The color value was then used as an index into the color
-//      pallete in order to determine the final color of the pixel.
-//
-//
-//      Having each of the color components packed into the successive
-//      8-bits of a 32-bit integer value makes sense from a performace
-//      perspective, since all three color channels are needed together
-//      in order to determine the final pixel color. Therefore, having
-//      them in a single cache line reduces the number of cache misses.
-//
-//
-//      However, there are situations where having the individual color
-//      components inside separate integers is more useful. For e.g. if
-//      you are doing some kind of image processing work where you wish
-//      to amplify only one of the components ( Red for e.g. ), but not
-//      want to touch any of the other color components. In this case,
-//      having all the Red values in a separate buffer makes more sense
-//      since we want to have only the Red values inside our cache line.
-//      This also allows us to pack more bits for our Red component, so
-//      that we can now have a more fine grained control over it, while
-//      keeping the number of bits for the Green and Blue color values
-//      the same as before.
-//
-//
-////////////////////////////////////////////////////////////////////////////////////
+typedef                         struct Format                  Format_t;
 
-
-
-
-typedef                     struct Color    {
-                                    union {
-                                        struct   {
-                                            uint8_t    r;
-                                            uint8_t    g;
-                                            uint8_t    b;
-                                            uint8_t    a;
-                                        }   rgba;
-                                        // TODO: Support YUV formats
-                                        uint32_t       yuv;
-                                    };                         }    Color_t;
-
-
-
-
-typedef                     struct Format   {
-                                    SDL_PixelFormatEnum   sdl_type;
-                                    int        r_shft;
-                                    int        g_shft;
-                                    int        b_shft;
-                                    int        a_shft;
-                                    int        bpp;
-                                    int        planes;
-                                    struct {
-                                        bool   has_alpha;
-                                        bool   has_modifiers;
-                                    }   flags;                 }    Format_t;
-
-
-
-
-typedef                     struct color_buffer   {
-                                    int        width;
-                                    int        height;
-                                    int        pitch;
-                                    int        num_buffers;
-                                    uint32_t*  buffer[4];      }    Color_buffer_t;
+typedef                         struct color_buffer            Color_buffer_t;
 
 
 
 
 
-HOWTO_MAKE                      (   Color_t,
-                                    color,
+HOWTO_COMPOSE                   (   Color_t,
+                                    self,
                                     uint8_t         r,
                                     uint8_t         g,
                                     uint8_t         b,
-                                    uint8_t         a    );
+                                    uint8_t         a
+                                );
 
 
 
-CONSTRUCTOR                     (   Color_buffer_t,
-                                    int                 width,
-                                    int                 height,
-                                    Format_type_t       format_type   );
+HOWTO_CONSTRUCT                 (   Color_buffer_t,
+                                    self,
+                                    int             width,
+                                    int             height,
+                                    Format_type_t   format_type
+                                );
 
 
-DESTRUCTOR                      (   Color_buffer_t  );
+HOWTO_DESTRUCT                  (   Color_buffer_t,
+                                     self
+                                );
 
 
-
-bool
-paint_color                     (   Color_t*            color,
-                                    Color_buffer_t*     color_buffer,
-                                    Format_type_t       format_type,
-                                    int                 posX,
-                                    int                 posY,
-                                    int                 plane       );
 
 Format_t*
 lookup_format                   (   Format_type_t       format_type );
 
-bool
-clear_color_buffer              (   Color_buffer_t*     buffer      );
+
+METHOD                          (   Format_t,
+                                    get_pitch,
+                                    self,
+                                    int         width,
+                                    int*        out
+                                );
+
+
+METHOD                          (   Format_t,
+                                    get_sdl_type,
+                                    self,
+                                    int*        out
+                                );
+
+
+METHOD                          (   Color_buffer_t,
+                                    get_buffer_dimensions,
+                                    self,
+                                    int*        out_w,
+                                    int*        out_h
+                                );
+
+
+METHOD                          (    Color_buffer_t,
+                                    paint_color,
+                                    self,
+							        Color_t*	color,
+                                    int			posX,
+                                    int			posY,
+                                    int			plane
+                                );
+
+
+METHOD						    (	Color_buffer_t,
+									get_pixel_offset,
+									self,
+									int		    posX,
+									int		    posY,
+									int*	    out
+								)
+
+
 

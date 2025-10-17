@@ -9,18 +9,9 @@
 #include "color.h"
 #include "geometry.h"
 #include "util.h"
+#include "renderer.h"
 
-/**
- * @brief Rect: A Rectangle
- * 
- * Defines a rectangle using four parameters:
- * 
- * posX:								X coordinate of the rectangle on screen.
- * posY:								Y coodrinate of the rectangle  on screen
- * width:								width of the rectangle
- * height:								height of the rectangle
- *
- */
+
 
 typedef						struct		Rect	{	int					posX;
 													int					posY;
@@ -36,37 +27,26 @@ typedef						struct		Grid	{	int					width;
 /* Here beginneth the declarations of functions */
 
 
-/**
- * @brief: Check if the pixel is at the border of rectangle
- * 
- * @param rect:							Rectangle to check
- * @param posX:							X co-ordinate of the pixel
- * @param posY:							Y co-ordinate of the pixel
- * @param border_len:					border thickness in pixels
- * 
- * @return: true if the pixel is at the border, false otherwise
- */
-bool						pixel_at_border		(	Rect_t*				rect,
-													int					posX,
-													int					posY,
-													int					border_len	);
+bool						pixel_at_border		(	Rect_t*			rect,
+													int				posX,
+													int				posY,
+													int				border_len
+												);
 
 
-/**
- * @brief: draw a rectangle into the color buffer
- *
- * @return: SUCCESS if operation succeeds, FAIL otherwise
- */
+
 HOWTO_DRAW										(	Rect_t,
-													rect,
-													Color_t*			color,
-													Color_buffer_t*		colorbuf	);
+													self,
+													Color_t*		color,
+													Renderer_t*		renderer
+												);
 
 
 HOWTO_DRAW										(	Grid_t,
-													grid,
-													Color_t*			color,
-													Color_buffer_t*		colorbuf	);
+													self,
+													Color_t*		color,
+													Renderer_t*		renderer
+												);
 
 
 

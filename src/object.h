@@ -102,126 +102,52 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
-struct Object;
+
+typedef						struct Object				Object_t;
 
 
-////////////////////////////////////////////////////////////////////////////////
-//								CONSTRUCTORS:
-////////////////////////////////////////////////////////////////////////////////
-//
-//
-//		Constructors are the methods through which objects are created.
-//		Objects in modern applications are complex entities with lots
-//		of internal state variables. Some of these variables can be
-//		objects themselves with their own internal states. If any of
-//		these variables are set incorrectly (or not set at all), then
-//		the object will be in a inconsistent state. Calling a method
-//		on an object in an inconsistent state can lead to undefined or
-//		inexplicable behaviors that are hard to analyze or debug.
-//
-//
-//		We can rely on the user to allocate the object and set each of
-//		the member variable correctly on their own, before calling any
-//		of its methods. But this has a lot of pitfalls:
-//
-//
-//		First, the user may only have a surface level understanding of
-//		the object. She may be aware of what some of the methods are
-//		supposed to do and may know of the more common internal state
-//		variables. However, expecting her to initialize all the internal
-//		variables correctly plus be cognizant of the various pitfalls
-//		that may occur in case she makes a mistake; is really too much
-//		to ask from the user.
-//
-//
-//		Second, there are generally multiple users of an object in a
-//		modern software. If you are writing a framework library, you
-//		can expect multiple applications to use your classes in their
-//		program for one purpose or another (People typically like to
-//		avoid writing things from the scratch). Therefore, the risk of
-//		making mistakes while initializing an object increases
-//		significantly with each new user.
-//
-//
-//		Therefore,  most modern programming languages today, pin the
-//		responsibility of intializing an object correctly on the class
-//		designer (person who is responsible for defining the class and
-//		its internal state variables). This is done through the use of
-//		constructors. While designing the object class, the author is
-//		responsible for writing a constructor method for that class.
-//
-//
-//		This special method takes some arguments from the caller and
-//		creates an object with a consistent initial state based on the
-//		supplied arguments. The parameters requested from the caller
-//		are the ones that are most commonly used (or, you can omit the
-//		arguments altogether, if your object can have only a single
-//		initial state).
-//
-//
-//		Here's an example. Let's say we have an object that have more
-//		than 20 member variables and functions and can be used in four
-//		different states:
-//
-//
-//		[	BEGINNER	]
-//
-//		[	INTERMEDIATE	]
-//
-//		[	EXPERT	]
-//
-//		[	EXPERIMENTAL	]
-//
-//
-//		In |BEGINNER| state we only expose the most basic functions to
-//		the user but hide away the rest of the more complex functions.
-//		In |EXPERT| state we allow the user to call all the available
-//		functions and use all the complex features of the object. In
-//		|EXPERIMENTAL| state, we also expose to the user newly added
-//		featrues that are not yet fully tested to work on all systems.
-//
-//
-//		Instead of asking the user to provide the initial value of all
-//		the 20 member variables, or keep four differernt copies of the
-//		same class; we can instead ask the user to provide one of the
-//		above 4 states; and based on the state provided we can set each
-//		of the variables ourselves.
-//
-//
-///////////////////////////////////////////////////////////////////////////////
+
+
+
+
 
 #define ctor(class)							concat3(create, _, class)
+
 #define dtor(class)							concat3(destroy, _, class)
 
 
 
 
-#define CONSTRUCTOR(class, ...)				class* ctor(class) (__VA_ARGS__)
+#define HOWTO_CONSTRUCT(class, self, ...)	class* ctor(class) (class* self, __VA_ARGS__)
 
-#define DESTRUCTOR(class)					void dtor(class) (class* object)
+#define HOWTO_DESTRUCT(class, self)			void dtor(class) (class* self)
 
 
-#define CONSTRUCT(ptr, class, ...)			ptr = ctor(class) (__VA_ARGS__)
+#define CONSTRUCT(class, self, ...)			self = ctor(class) (self, __VA_ARGS__)
 
-#define DESTRUCT(ptr, class)				dtor(class) (ptr)
+#define DESTRUCT(class, self)				dtor(class) (self)
 
 
 
 
 #define copy_ctor(class)					concat3(copy, _, class)
 
-#define HOWTO_COPY(class, to, from)			void copy_ctor(class) (class* to, class* from)
+#define HOWTO_COPY(class, to, from)			void copy_ctor(class) ( class* to,	\
+																	class* from)
 
 #define COPY(class, to , from)				copy_ctor(class) (to, from)
 
 
 
 
-#define	maker(class)						concat3(make, _, class)
+#define	composer(class)						concat3(compose, _, class)
 
-#define HOWTO_MAKE(class, ptr, ...)			void maker(class) (class* ptr, __VA_ARGS__)
+#define HOWTO_COMPOSE(class, self, ...)		void								\
+											composer(class) (	class* self,	\
+																	__VA_ARGS__	)
 
-#define MAKE(class, ptr, ...)				maker(class) (ptr, __VA_ARGS__)
+#define COMPOSE(class, self, ...)			composer(class) (self, __VA_ARGS__)
+
 
 
 
@@ -233,10 +159,26 @@ struct Object;
 //
 /////////////////////////////////////////////////////////////////////////////////
 
+
 #define baseclass(module, class)			concat3(module, _, class)
 
 #define INHERIT(module, class, ...)			struct class	{					\
 												baseclass(module, class) *sdl;	\
 												__VA_ARGS__						\
 											}
+
+
+
+
+/////////////////////////////////////////////////////////////////////////////////
+//								METHOD:
+/////////////////////////////////////////////////////////////////////////////////
+
+#define method(class, name)					concat3(class, _, name)
+#define METHOD(class, name, self, ...)		class*									\
+											method(class, name) (	class* self,	\
+																	__VA_ARGS__ )
+
+#define CALLM(class, name, self, ...)		self = method(class, name) (	self,	\
+																		__VA_ARGS__)
 

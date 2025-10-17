@@ -51,7 +51,7 @@
 #define concat2(a, b)					a##b
 #define concat3(a, b, c)				a##b##c
 #define concat4(a, b, c, d)				a##b##c##d
-#define concat5(a, b, c, d, e)			a##b##c##d#e
+#define concat5(a, b, c, d, e)			a##b##c##d##e
 #define concat6(a, b, c, d, e, f)		a##b##c##d##e##f
 #define concat7(a, b, c, d, e, f, g)	a##b##c##d##e##f##g
 
@@ -115,6 +115,9 @@
 //
 //
 /////////////////////////////////////////////////////////////////////////////////
+
+
+
 
 #define LOOP_VAR(x)						concat3(x, _, loop)
 
@@ -184,27 +187,31 @@
 //
 /////////////////////////////////////////////////////////////////////////////////
 
+
+
+
 #define DEALLOC(ptr)					do {								\
 												if(ptr)						\
 													free(ptr);				\
 												ptr = NULL;					\
-										}	while(0)
+										}	while ( 0 )
 
 
-#define MEM(class, x, n)				class x [ n ] = { 0 }
 #define TMP(class, x, n)				class x [ n ] = { 0 }
 
 
 
-#define BITS_PER_BYTE					(8)
+#define BITS_PER_BYTE					( 8 )
+
 #define BITS_TO_BYTES(n)				(( n ) /  ( BITS_PER_BYTE ))
 
-#define LOG(...)						fprintf	(stderr,  __VA_ARGS__)
+
+#define LOG(...)						fprintf	( stderr,  __VA_ARGS__ )
 
 #define ASSERT(cond, ...)				do {								\
-												if (!cond) {				\
-													LOG  (__VA_ARGS__);		\
-													exit (1);				\
+												if (!( cond )) {			\
+													LOG  ( __VA_ARGS__ );	\
+													exit ( 1 );				\
 												}							\
 										}	while  (0)
 

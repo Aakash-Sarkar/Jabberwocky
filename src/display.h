@@ -14,49 +14,21 @@
 
 
 
-typedef					struct	Choreographer	{
-									uint32_t		previous_ticks_ms;
-									uint32_t		current_ticks;
-												}					Choreographer_t;
-
-
-
+typedef					struct	Choreographer					Choreographer_t;
 
 //////////////////////////////////////////////////////////////////////////////////
-//								WINDOW:											//
+//								WINDOW:
 //////////////////////////////////////////////////////////////////////////////////
 
-typedef					INHERIT	(	SDL,
-									Window,
-									int				posX;
-									int				posY;
-									int				width;
-									int				height;
-									long			flags;	)			Window_t;
-
+typedef					struct	Window							Window_t;
 
 //////////////////////////////////////////////////////////////////////////////////
-//								TEXTURE:										//
+//								TEXTURE:
 //////////////////////////////////////////////////////////////////////////////////
 
-typedef					INHERIT (	SDL,
-									Texture,
-									int				width;
-									int				height;
-									int				pitch;
-									Format_type_t	format_type;	)	Texture_t;
+typedef					struct	Texture							Texture_t;
 
 
-
-typedef					INHERIT (	SDL,
-									Renderer,
-									Color_buffer_t*			buffer;
-									Texture_t*				texture;
-									Window_t*				window;
-									Choreographer_t*		c_grapher;
-									ARRAY ( Triangle2d_t )	triangles_to_draw;
-									Mesh_t*					mesh;
-									Point2d_t				origin;		)	Renderer_t;
 
 
 
@@ -64,30 +36,54 @@ typedef					INHERIT (	SDL,
 /* Beginning of function declarations */
 
 
-CONSTRUCTOR				(	Window_t	);
+HOWTO_CONSTRUCT					(	Window_t,
+									self,
+									Format_type_t	format_type
+								);
 
 
-DESTRUCTOR				(	Window_t	);
+HOWTO_DESTRUCT					(	Window_t,
+									self
+								);
 
 
-CONSTRUCTOR				(	Renderer_t,
-							Window_t*	w	);
+HOWTO_CONSTRUCT					(	Texture_t,
+									self,
+									SDL_Renderer*	sdl_renderer,
+									int				width,
+									int				height,
+									Format_type_t	format_type
+								);
+
+HOWTO_DESTRUCT					(	Texture_t,
+									self
+								);
+
+HOWTO_CONSTRUCT					(	Choreographer_t,
+									self,
+									void*	null
+								);
 
 
-DESTRUCTOR				(	Renderer_t	);
+METHOD							(	Window_t,
+									set_window_fullscreen,
+									self,
+									void*	null
+								);
 
 
+METHOD                          (   Window_t,
+                                    get_window_dimensions,
+                                    self,
+                                    int*    out_w,
+                                    int*    out_h
+                                );
 
-CONSTRUCTOR				(	Texture_t,
-							Renderer_t*		r,
-							int				w,
-							int				h,
-							Format_type_t	f_t	);
 
-DESTRUCTOR				(	Texture_t	);
+METHOD                          (   Window_t,
+                                    get_sdl_type,
+                                    self,
+                                    int*    out
+                                );
 
-CONSTRUCTOR				(	Choreographer_t	);
-
-bool
-render_color_buffer		(	Renderer_t*	renderer	);
 

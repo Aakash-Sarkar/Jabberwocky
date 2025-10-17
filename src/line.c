@@ -8,6 +8,11 @@
 
 
 
+struct Line					{	Point2d_t*		p1;
+								Point2d_t*		p2;
+							};
+
+
  ////////////////////////////////////////////////////////////////////////////////
  //						Line Operations Implementation
  ////////////////////////////////////////////////////////////////////////////////
@@ -18,16 +23,17 @@
 HOWTO_COMPOSE				(	Line_t,
 								self,
 								Point2d_t*		p1,
-								Point2d_t*		p2		)
+								Point2d_t*		p2
+							)
 {
 
 	COPY					(	Point2d_t,
-								&self->p1,
+								self->p1,
 								p1
 							);
 
 	COPY					(	Point2d_t,
-								&self->p2,
+								self->p2,
 								p2
 							);
 }
@@ -37,13 +43,13 @@ HOWTO_COPY					(	Line_t,		to,	from	)
 {
 
 	COPY					(	Point2d_t,
-								&to->p1,
-								&from->p1
+								to->p1,
+								from->p1
 							);
 
 	COPY					(	Point2d_t,
-								&to->p2,
-								&from->p2
+								to->p2,
+								from->p2
 							);
 }
 
@@ -140,12 +146,12 @@ HOWTO_DRAW					(	Line_t,
 
 	SUB						(	Point2d_t,
 								p12,
-								&self->p2,
-								&self->p1
+								self->p2,
+								self->p1
 							);
 
-	float						run	= max	(	abs ( p12->v.x ),
-												abs ( p12->v.y )
+	float						run	= max	(	abs ( p12->v->x ),
+												abs ( p12->v->y )
 											);
 
 
@@ -178,7 +184,7 @@ HOWTO_DRAW					(	Line_t,
 
 	COPY					(	Point2d_t,
 								point,
-								&self->p1
+								self->p1
 							);
 
 	for						(	int i = 0;	i <= run;	i++		)
@@ -190,11 +196,12 @@ HOWTO_DRAW					(	Line_t,
 								&renderer->origin
 							);
 
-		paint_color			(	color,
-								colorbuf,
-								PIXELFORMAT_ARGB8888,
-								round	(	o_point->v.x	),
-								round	(	o_point->v.y	),
+		CALLM				(	Renderer_t,
+								paint_color,
+								renderer,
+								color,
+								round ( o_point->v->x ),
+								round ( o_point->v->y ),
 								0
 							);
 

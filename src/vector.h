@@ -17,36 +17,21 @@
 /////////////////////////////////////////////////////////////////////////////////
 
 
-typedef					struct				Vec2	{	float x;
-														float y;	}	vec2_t;
-
-typedef					struct				Vec3	{	float x;
-														float y;
-														float z;	}	vec3_t;
-
-typedef					struct				Vec4	{	float x;
-														float y;
-														float z;
-														float w;	}	vec4_t;
 
 
+typedef					struct	Vec2					Vec2_t;
+
+typedef					struct	Vec3					Vec3_t;
+
+typedef					struct	Vec4					vec4_t;
 
 
-typedef					DECL_ARRAY					(	vec2_t,
-														float*	x;
-														float*	y;	);
+typedef					DECL_ARRAY ( Vec2_t )			ARRAY ( Vec2_t );
 
-typedef					DECL_ARRAY					(	vec3_t,
-														float*	x;
-														float*	y;
-														float*	z;	);
+typedef					DECL_ARRAY ( Vec3_t )			ARRAY ( Vec3_t );
 
-typedef					DECL_ARRAY					(	vec4_t,
-														float*	x;
-														float*	y;
-														float*	z;
-														float*	w;	);
 
+extern Vec3_t			camera[];
 
 
 /////////////////////////////////////////////////////////////////////////////////
@@ -68,75 +53,156 @@ typedef					enum	Projection_type	{	ORTHOGRAPHIC = 0,
 
 
 ////////////////////////////////////////////////////////////////////////////////
-//						Vector Operations
+//								Vector Operations
 ////////////////////////////////////////////////////////////////////////////////
 
 
-HOWTO_COPY							(	vec2_t,		to,	from	);
+HOWTO_COPY							(	Vec2_t,		to,	from	);
 
-HOWTO_COPY							(	vec3_t,		to,	from	);
+HOWTO_COPY							(	Vec3_t,		to,	from	);
+
+
+HOWTO_COMPOSE						(	Vec2_t,
+										self,
+										float x,
+										float y
+									);
+
+HOWTO_COMPOSE						(	Vec3_t,
+										self,
+										float x,
+										float y,
+										float z
+									);
+
+
+HOWTO_CONSTRUCT						(	Vec2_t,
+										self,
+										float x,
+										float y
+									);
+
+HOWTO_CONSTRUCT						(	Vec3_t,
+										self,
+										float x,
+										float y,
+										float z
+									);
+
+
+HOWTO_DESTRUCT						(	Vec2_t,
+										self
+									);
+
+HOWTO_DESTRUCT						(	Vec3_t,
+										self
+									);
+
+/////////////////////////////////////////////////////////////////////////////////
+//							Dynamic Array Operations
+/////////////////////////////////////////////////////////////////////////////////
+
+
+HOWTO_ARRAY_INIT					(	Vec2_t,		self	);
+
+HOWTO_ARRAY_INIT					(	Vec3_t,		self	);
+
+
+HOWTO_ARRAY_RESET					(	Vec2_t,		self	);
+
+HOWTO_ARRAY_RESET					(	Vec3_t,		self	);
+
+
+HOWTO_CONSTRUCT						(	ARRAY ( Vec2_t ),
+										self,
+										void*	null
+									)	;
+
+HOWTO_CONSTRUCT						(	ARRAY ( Vec3_t ),
+										self,
+										void*	null
+									)	;
+
+HOWTO_DESTRUCT						(	ARRAY ( Vec2_t ),
+										self
+									)	;
+
+HOWTO_DESTRUCT						(	ARRAY ( Vec3_t ),
+										self
+									)	;
+
+
+HOWTO_LOAD							(	Vec2_t,		self,	array,	idx	);
+
+HOWTO_LOAD							(	Vec3_t,		self,	array,	idx	);
+
+
+HOWTO_PUSH							(	Vec2_t,		self,	array	);
+
+HOWTO_PUSH							(	Vec3_t,		self,	array	);
+
+
+HOWTO_STORE							(	Vec2_t,		self,	array,	idx	);
+
+HOWTO_STORE							(	Vec3_t,		self,	array,	idx	);
 
 
 /////////////////////////////////////////////////////////////////////////////////
-//						Dynamic Array Operations
+//							Geomertic Operations
 /////////////////////////////////////////////////////////////////////////////////
 
 
-HOWTO_ARRAY_INIT					(	vec2_t,	array	);
+HOWTO_ROTATE						(	Vec3_t,	
+										self,
+										Vec3_t*		angle
+									);
 
-HOWTO_ARRAY_INIT					(	vec3_t,	array	);
-
-
-HOWTO_ARRAY_RESET					(	vec2_t,	array	);
-
-HOWTO_ARRAY_RESET					(	vec3_t,	array	);
-
-
-HOWTO_LOAD							(	vec2_t,	ptr,	array,	idx	);
-
-HOWTO_LOAD							(	vec3_t,	ptr,	array,	idx	);
-
-
-HOWTO_STORE							(	vec2_t,	ptr,	array	);
-
-HOWTO_STORE							(	vec3_t,	ptr,	array	);
+HOWTO_PROJECT						(	Vec2_t,					Vec3_t,
+										to,						from,
+										Projection_type_t		type
+									);
 
 
 /////////////////////////////////////////////////////////////////////////////////
-//						Geomertic Operations
+//							Arithmetic Operations
 /////////////////////////////////////////////////////////////////////////////////
 
 
-HOWTO_ROTATE						(	vec3_t,	to,	from,	vec3_t* angle	);
+HOWTO_ADD							(	Vec2_t,	dst,	op1,	op2	);
 
-HOWTO_PROJECT						(	vec2_t,		vec3_t,
-										to,			from,
-										Projection_type_t	type	);
+HOWTO_ADD							(	Vec3_t,	dst,	op1,	op2	);
 
 
-/////////////////////////////////////////////////////////////////////////////////
-//				Arithmetic Operations
-/////////////////////////////////////////////////////////////////////////////////
+HOWTO_SUB							(	Vec2_t,	dst,	op1,	op2	);
 
-HOWTO_ADD							(	vec2_t,	dst,	op1,	op2	);
-
-HOWTO_ADD							(	vec3_t,	dst,	op1,	op2	);
+HOWTO_SUB							(	Vec3_t,	dst,	op1,	op2	);
 
 
-HOWTO_SUB							(	vec2_t,	dst,	op1,	op2	);
+HOWTO_MUL							(	Vec2_t,	dst,	src,	factor	);
 
-HOWTO_SUB							(	vec3_t,	dst,	op1,	op2	);
-
-
-HOWTO_MUL							(	vec2_t,	dst,	src,	factor	);
-
-HOWTO_MUL							(	vec3_t,	dst,	src,	factor	);
+HOWTO_MUL							(	Vec3_t,	dst,	src,	factor	);
 
 
-HOWTO_DOTP							(	vec2_t, dst,	src1,	src2	);
+HOWTO_DIV							(	Vec2_t,	dst,	src,	factor	);
 
-HOWTO_DOTP							(	vec3_t, dst,	src1,	src2	);
+HOWTO_DIV							(	Vec3_t,	dst,	src,	factor	);
 
 
-HOWTO_CROSSP						(	vec3_t,	dst,	src1,	src2	);
+HOWTO_NORM							(	Vec2_t,	self	);
+
+HOWTO_NORM							(	Vec3_t,	self	);
+
+
+HOWTO_INC							(	Vec2_t,	self,	inc		);
+
+HOWTO_INC							(	Vec3_t,	self,	inc		);
+
+
+
+HOWTO_DOTP							(	Vec2_t, dst,	src1,	src2	);
+
+HOWTO_DOTP							(	Vec3_t, dst,	src1,	src2	);
+
+
+HOWTO_CROSSP						(	Vec3_t,	dst,	src1,	src2	);
 

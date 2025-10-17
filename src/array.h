@@ -8,52 +8,63 @@
 
 #define array(class)                            concat3(class, _, array)
 
-#define DECL_ARRAY(class, ...)                  struct {    int count;                      \
-                                                            __VA_ARGS__    }   array(class)
+#define DECL_ARRAY(class, ...)                  struct array(class)
 
-#define ARRAY(class)                            array(class)
+#define ARRAY(class)                            concat5(class, _, array, _, t)
 
 
 
 
 #define array_init(class)                       concat3(array_init, _, class)
 
-#define HOWTO_ARRAY_INIT(class, name)           void                                        \
-                                                array_init(class) ( array(class)* name )
+#define HOWTO_ARRAY_INIT(class, self)           void                                        \
+                                                array_init(class) ( ARRAY(class)* self )
 
-#define ARRAY_INIT(class, name)                 array_init(class) ( name )
+#define ARRAY_INIT(class, self)                 array_init(class) ( self )
 
 
 
 
 #define array_reset(class)                      concat3(array_reset, _, class)
 
-#define HOWTO_ARRAY_RESET(class, name)          void                                        \
-                                                array_reset(class) ( array(class)* name )
+#define HOWTO_ARRAY_RESET(class, self)          void                                        \
+                                                array_reset(class) ( ARRAY(class)* self )
 
-#define ARRAY_RESET(class, name)                array_reset(class) ( name )
+#define ARRAY_RESET(class, self)                array_reset(class) ( self )
 
 
 
 
 #define loader(class)                           concat3(load, _, class)
 
-#define HOWTO_LOAD(class, ptr, array, idx)      void                                        \
-                                                loader(class) (class* ptr,                  \
-                                                               array(class)* array, int idx)
+#define HOWTO_LOAD(class, self, array, idx)     void                                         \
+                                                loader(class) (class* self,                  \
+                                                               ARRAY(class)* array, int idx)
 
-#define LOAD(class, ptr, array, idx)            loader(class) (ptr, array, idx)
+#define LOAD(class, self, array, idx)            loader(class) (self, array, idx)
 
 
 
 
 #define storer(class)                           concat3(store, _, class)
 
-#define HOWTO_STORE(class, ptr, array)          void                                        \
-                                                storer(class) (class* ptr,                  \
-                                                               array(class)* array)
+#define HOWTO_STORE(class, self, array, idx)    void                                         \
+                                                storer(class) (class* self,                  \
+                                                               ARRAY(class)* array,          \
+                                                               int idx)
 
-#define STORE(class, ptr, array)                storer(class) (ptr, array)
+#define STORE(class, self, array, idx)          storer(class) (self, array, idx)
+
+
+
+
+#define pusher(class)                           concat3(push, _, class)
+
+#define HOWTO_PUSH(class, self, array)          void                                         \
+                                                pusher(class) (class* self,                  \
+                                                               ARRAY(class)* array)
+
+#define PUSH(class, self, array)                pusher(class) (self, array)
 
 
 

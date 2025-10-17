@@ -2,276 +2,707 @@
  * SPDX-License-Identifier: MIT
  */
 
+
 #include "array.h"
 #include "line.h"
-#include "mesh.h"
+#include "renderer.h"
 #include "triangle.h"
 
 
 
 
-HOWTO_ARRAY_INIT				(	Face_t,		array	)
+struct							Triangle3d
 {
-	array->idx1					=	NULL;
-	array->idx2					=	NULL;
-	array->idx3					=	NULL;
+	Point3d_t *					p1	;
 
-	array->count				=	0;
-}
+	Point3d_t *					p2	;
 
-HOWTO_ARRAY_INIT				(	Triangle2d_t,	array	)
+	Point3d_t *					p3	;
+};
+
+
+struct							Triangle2d
 {
-	ARRAY_INIT					(	Point2d_t,		&array->p1	);
-	ARRAY_INIT					(	Point2d_t,		&array->p2	);
-	ARRAY_INIT					(	Point2d_t,		&array->p3	);
+	Point2d_t *					p1	;
 
-	array->count				=	0;
-}
+	Point2d_t *					p2	;
+
+	Point2d_t *					p3	;
+};
 
 
-HOWTO_ARRAY_INIT				(	Triangle3d_t,	array		)
+DECL_ARRAY					(	Triangle2d_t	)
 {
-	ARRAY_INIT					(	Point3d_t,		&array->p1	);
-	ARRAY_INIT					(	Point3d_t,		&array->p2	);
-	ARRAY_INIT					(	Point3d_t,		&array->p3	);
+	ARRAY ( Point2d_t ) *		p1	;
 
-	array->count				=	0;
-}
+	ARRAY ( Point2d_t ) *		p2	;
+
+	ARRAY ( Point2d_t ) *		p3	;
+
+	int							count	;
+};
 
 
-
-
-HOWTO_ARRAY_RESET				(	Face_t,			array	)
+DECL_ARRAY					(	Triangle3d_t	)
 {
-	array_free					(	array->idx1		);
-	array_free					(	array->idx2		);
-	array_free					(	array->idx3		);
+	ARRAY ( Point3d_t ) *		p1	;
 
-	array->count				=	0;
-}
+	ARRAY ( Point3d_t ) *		p2	;
 
-HOWTO_ARRAY_RESET				(	Triangle2d_t,	array		)
+	ARRAY ( Point3d_t ) *		p3	;
+
+	int							count	;
+};
+
+
+////////////////////////////////////////////////////////////////////////////////
+//				Triangle Operations Implementation
+////////////////////////////////////////////////////////////////////////////////
+
+
+
+HOWTO_COPY					(	Triangle2d_t,	to,	from	)
 {
-	ARRAY_RESET					(	Point2d_t,		&array->p1	);
-	ARRAY_RESET					(	Point2d_t,		&array->p2	);
-	ARRAY_RESET					(	Point2d_t,		&array->p3	);
+	COPY					(	Point2d_t,
+								to->p1,
+								from->p1
+							)	;
 
-	array->count				=	0;
-}
+	COPY					(	Point2d_t,
+								to->p2,
+								from->p2
+							)	;
 
-HOWTO_ARRAY_RESET				(	Triangle3d_t,	array		)
-{
-	ARRAY_RESET					(	Point3d_t,		&array->p1	);
-	ARRAY_RESET					(	Point3d_t,		&array->p2	);
-	ARRAY_RESET					(	Point3d_t,		&array->p3	);
-
-	array->count				=	0;
-}
-
-
-
-
-HOWTO_LOAD						(	Face_t,	ptr,	array,	idx	)
-{
-	ptr->idx1					=	array->idx1 [ idx ];
-	ptr->idx2					=	array->idx2 [ idx ];
-	ptr->idx3					=	array->idx3 [ idx ];
-}
-
-HOWTO_LOAD						(	Triangle2d_t,	ptr,	array,	idx	)
-{
-	LOAD						(	Point2d_t,
-									&ptr->p1,		&array->p1,		idx	);
-
-	LOAD						(	Point2d_t,
-									&ptr->p2,		&array->p2,		idx	);
-
-	LOAD						(	Point2d_t,
-									&ptr->p3,		&array->p3,		idx	);
-}
-
-HOWTO_LOAD						(	Triangle3d_t,	ptr,	array,	idx	)
-{
-	LOAD						(	Point3d_t,
-									&ptr->p1,		&array->p1,		idx	);
-
-	LOAD						(	Point3d_t,
-									&ptr->p2,		&array->p2,		idx	);
-
-	LOAD						(	Point3d_t,
-									&ptr->p3,		&array->p3,		idx	);
+	COPY					(	Point2d_t,
+								to->p3,
+								from->p3
+							)	;
 }
 
 
-
-
-HOWTO_STORE						(	Face_t,			ptr,	array	)
+HOWTO_COPY					(	Triangle3d_t,	to,	from	)
 {
-	array_push					(	array->idx1,	ptr->idx1	);
-	array_push					(	array->idx2,	ptr->idx2	);
-	array_push					(	array->idx3,	ptr->idx3	);
+	COPY					(	Point3d_t,
+								to->p1,
+								from->p1
+							)	;
 
-	array->count++;
-}
+	COPY					(	Point3d_t,
+								to->p2,
+								from->p2
+							)	;
 
-HOWTO_STORE						(	Triangle2d_t,	ptr,	array	)
-{
-	STORE						(	Point2d_t,
-									&ptr->p1,		&array->p1	);
-
-	STORE						(	Point2d_t,
-									&ptr->p2,		&array->p2	);
-
-	STORE						(	Point2d_t,
-									&ptr->p3,		&array->p3	);
-
-	array->count++;
-}
-
-HOWTO_STORE						(	Triangle3d_t,	ptr,	array	)
-{
-	STORE						(	Point3d_t,
-									&ptr->p1,		&array->p1	);
-
-	STORE						(	Point3d_t,
-									&ptr->p2,		&array->p2	);
-
-	STORE						(	Point3d_t,
-									&ptr->p3,		&array->p3	);
-
-	array->count++;
+	COPY					(	Point3d_t,
+								to->p3,
+								from->p3
+							)	;
 }
 
 
-
-
-HOWTO_COPY						(	Face_t,			to,	from	)
+HOWTO_COMPOSE				(	Triangle3d_t,
+								self,
+								Point3d_t*		p1,
+								Point3d_t*		p2,
+								Point3d_t*		p3
+							)
 {
-	to->idx1					=	from->idx1;
-	to->idx2					=	from->idx2;
-	to->idx3					=	from->idx3;
-}
+	COPY					(	Point3d_t,
+								self->p1,
+								p1
+							)	;
 
-HOWTO_COPY						(	Triangle2d_t,	to,	from	)
-{
-	COPY						(	Point2d_t,		&to->p1,	&from->p1	);
-	COPY						(	Point2d_t,		&to->p2,	&from->p2	);
-	COPY						(	Point2d_t,		&to->p3,	&from->p3	);
-}
+	COPY					(	Point3d_t,
+								self->p2,
+								p2
+							)	;
 
-HOWTO_COPY						(	Triangle3d_t,	to,	from	)
-{
-	COPY						(	Point3d_t,		&to->p1,	&from->p1	);
-	COPY						(	Point3d_t,		&to->p2,	&from->p2	);
-	COPY						(	Point3d_t,		&to->p3,	&from->p3	);
-}
-
-
-
-
-HOWTO_ROTATE					(	Triangle2d_t,	to,	from,	vec2_t* angle	)
-{
-}
-
-HOWTO_ROTATE					(	Triangle3d_t,	to,	from,	vec3_t* angle	)
-{
-	ROTATE						(	Point3d_t,
-									&to->p1,		&from->p1,	angle	);
-
-	ROTATE						(	Point3d_t,
-									&to->p2,		&from->p2,	angle	);
-
-	ROTATE						(	Point3d_t,
-									&to->p3,		&from->p3,	angle	);
+	COPY					(	Point3d_t,
+								self->p3,
+								p3
+							)	;
 }
 
 
+HOWTO_CONSTRUCT				(	Triangle2d_t,
+								self,
+								float	x1,		float	y1,
+								float	x2,		float	y2,
+								float	x3,		float	y3
+							)
+{
+	ALLOC_ZEROED			(	Triangle2d_t,
+								self,
+								1
+							)	;
+
+	ASSERT					(	self != NULL, ""	);
+
+	CONSTRUCT				(	Point2d_t,
+								self->p1,
+								x1,		y1
+							)	;
+
+	CONSTRUCT				(	Point2d_t,
+								self->p2,
+								x2,		y2
+							)	;
+
+	CONSTRUCT				(	Point2d_t,
+								self->p3,
+								x3,		y3
+							)	;
+}
 
 
-HOWTO_DRAW						(	Triangle2d_t,
-									triangle,
-									Point2d_t*			origin,
-									Color_t*			color,
-									Color_buffer_t*		colorbuf	)
+HOWTO_CONSTRUCT				(	Triangle3d_t,
+								self,
+								float	x1,		float	y1,		float	z1,
+								float	x2,		float	y2,		float	z2,
+								float	x3,		float	y3,		float	z3
+							)
+{
+	ALLOC_ZEROED			(	Triangle3d_t,
+								self,
+								1
+							)	;
+
+	ASSERT					(	self != NULL, " "	)	;
+
+	CONSTRUCT				(	Point3d_t,
+								self->p1,
+								x1,		y1,		z1
+							)	;
+
+	CONSTRUCT				(	Point3d_t,
+								self->p2,
+								x2,		y2,		z2
+							)	;
+
+	CONSTRUCT				(	Point3d_t,
+								self->p3,
+								x3,		y3,		z3
+							)	;
+}
+
+
+HOWTO_DESTRUCT				(	Triangle2d_t,
+								self
+							)
+{
+	DESTRUCT				(	Point2d_t,
+								self->p1
+							)	;
+
+	DESTRUCT				(	Point2d_t,
+								self->p2
+							)	;
+
+	DESTRUCT				(	Point2d_t,
+								self->p3
+							)	;
+
+	DEALLOC					(	self	);
+}
+
+
+HOWTO_DESTRUCT				(	Triangle3d_t,
+								self
+							)
+{
+	DESTRUCT				(	Point3d_t,
+								self->p1
+							)	;
+
+	DESTRUCT				(	Point3d_t,
+								self->p2
+							)	;
+
+	DESTRUCT				(	Point3d_t,
+								self->p3
+							)	;
+
+	DEALLOC					(	self	)	;
+}
+
+
+
+
+/////////////////////////////////////////////////////////////////////////////////
+//				Dynamic Array Operations Implementation
+/////////////////////////////////////////////////////////////////////////////////
+
+
+
+
+HOWTO_ARRAY_INIT			(	Triangle2d_t,	self	)
+{
+	ARRAY_INIT				(	Point2d_t,
+								self->p1
+							)	;
+
+	ARRAY_INIT				(	Point2d_t,
+								self->p2
+							)	;
+
+	ARRAY_INIT				(	Point2d_t,
+								self->p3
+							)	;
+
+	self->count				=	0	;
+}
+
+
+HOWTO_ARRAY_INIT			(	Triangle3d_t,	self	)
+{
+	ARRAY_INIT				(	Point3d_t,
+								self->p1
+							)	;
+
+	ARRAY_INIT				(	Point3d_t,
+								self->p2
+							)	;
+
+	ARRAY_INIT				(	Point3d_t,
+								self->p3
+							)	;
+
+	self->count				=	0	;
+}
+
+
+
+HOWTO_ARRAY_RESET			(	Triangle2d_t,	self	)
+{
+	ARRAY_RESET				(	Point2d_t,
+								self->p1
+							)	;
+
+	ARRAY_RESET				(	Point2d_t,
+								self->p2
+							)	;
+
+	ARRAY_RESET				(	Point2d_t,
+								self->p3
+							)	;
+
+	self->count				=	0	;
+}
+
+
+HOWTO_ARRAY_RESET			(	Triangle3d_t,	self	)
+{
+	ARRAY_RESET				(	Point3d_t,
+								self->p1
+							)	;
+
+	ARRAY_RESET				(	Point3d_t,
+								self->p2
+							)	;
+
+	ARRAY_RESET				(	Point3d_t,
+								self->p3
+							)	;
+
+	self->count				=	0	;
+}
+
+
+HOWTO_CONSTRUCT				(	ARRAY ( Triangle2d_t ),
+								self,
+								void*	null
+							)
+{
+	ALLOC_ZEROED			(	ARRAY ( Triangle2d_t ),
+								self,
+								1
+							)	;
+
+	ASSERT					(	self != NULL, " "	)	;
+
+	CONSTRUCT				(	ARRAY ( Point2d_t ),
+								self->p1,
+								NULL
+							)	;
+
+	CONSTRUCT				(	ARRAY ( Point2d_t ),
+								self->p2,
+								NULL
+							)	;
+
+	CONSTRUCT				(	ARRAY ( Point2d_t ),
+								self->p3,
+								NULL
+							)	;
+
+	ARRAY_INIT				(	Triangle2d_t,	self	)	;
+}
+
+
+HOWTO_CONSTRUCT				(	ARRAY ( Triangle3d_t ),
+								self,
+								void*	null
+							)
+{
+	ALLOC_ZEROED			(	ARRAY ( Triangle3d_t ),
+								self,
+								1
+							)	;
+
+	ASSERT					(	self != NULL, " "	)	;
+
+	CONSTRUCT				(	ARRAY ( Point3d_t ),
+								self->p1,
+								NULL
+							)	;
+
+	CONSTRUCT				(	ARRAY ( Point3d_t ),
+								self->p2,
+								NULL
+							)	;
+
+	CONSTRUCT				(	ARRAY ( Point3d_t ),
+								self->p3,
+								NULL
+							)	;
+
+	ARRAY_INIT				(	Triangle3d_t,	self	)	;
+}
+
+
+HOWTO_DESTRUCT				(	ARRAY ( Triangle2d_t ),
+								self
+							)
+{
+}
+
+HOWTO_DESTRUCT				(	ARRAY ( Triangle3d_t ),
+								self
+							)
+{
+}
+
+
+HOWTO_LOAD					(	Triangle2d_t,	self,	array,	idx	)
+{
+	LOAD					(	Point2d_t,
+								self->p1,
+								array->p1,
+								idx
+							)	;
+
+	LOAD					(	Point2d_t,
+								self->p2,
+								array->p2,
+								idx
+							)	;
+
+	LOAD					(	Point2d_t,
+								self->p3,
+								array->p3,
+								idx
+							)	;
+}
+
+
+HOWTO_LOAD					(	Triangle3d_t,	self,	array,	idx	)
+{
+	LOAD					(	Point3d_t,
+								self->p1,
+								array->p1,
+								idx
+							)	;
+
+	LOAD					(	Point3d_t,
+								self->p2,
+								array->p2,
+								idx
+							)	;
+
+	LOAD					(	Point3d_t,
+								self->p3,
+								array->p3,
+								idx
+							)	;
+}
+
+
+HOWTO_PUSH					(	Triangle2d_t,	self,	array	)
+{
+	PUSH					(	Point2d_t,
+								self->p1,
+								array->p1
+							)	;
+
+	PUSH					(	Point2d_t,
+								self->p2,
+								array->p2
+							)	;
+
+	PUSH					(	Point2d_t,
+								self->p3,
+								array->p3
+							)	;
+
+	array->count++	;
+}
+
+
+HOWTO_PUSH					(	Triangle3d_t,	self,	array	)
+{
+	PUSH					(	Point3d_t,
+								self->p1,
+								array->p1
+							)	;
+
+	PUSH					(	Point3d_t,
+								self->p2,
+								array->p2
+							)	;
+
+	PUSH					(	Point3d_t,
+								self->p3,
+								array->p3
+							)	;
+
+	array->count++	;
+}
+
+
+HOWTO_STORE					(	Triangle2d_t,	self,	array,	idx	)
+{
+	TMP						(	Triangle2d_t,
+								zero,
+								1
+							)	;
+
+	while					(	array->count <= idx	)
+	{
+		PUSH				(	Triangle2d_t,
+								zero,
+								array
+							)	;
+	}
+
+	STORE					(	Point2d_t,
+								self->p1,
+								array->p1,
+								idx
+							)	;
+
+	STORE					(	Point2d_t,
+								self->p2,
+								array->p2,
+								idx
+							)	;
+
+	STORE					(	Point2d_t,
+								self->p3,
+								array->p3,
+								idx
+							)	;
+}
+
+
+HOWTO_STORE					(	Triangle3d_t,	self,	array,	idx	)
+{
+	TMP						(	Triangle3d_t,
+								zero,
+								1
+							)	;
+
+	while					(	array->count <= idx		)
+	{
+		PUSH				(	Triangle3d_t,
+								zero,
+								array
+							)	;
+	}
+
+	STORE					(	Point3d_t,
+								self->p1,
+								array->p1,
+								idx
+							)	;
+
+	STORE					(	Point3d_t,
+								self->p2,
+								array->p2,
+								idx
+							)	;
+
+	STORE					(	Point3d_t,
+								self->p3,
+								array->p3,
+								idx
+							)	;
+}
+
+
+//////////////////////////////////////////////////////////////////////////////////
+//				Geomertic Operations Implementations
+//////////////////////////////////////////////////////////////////////////////////
+
+
+HOWTO_ROTATE				(	Triangle2d_t,
+								self,
+								Vec2_t*			angle
+							)
+{
+}
+
+
+HOWTO_ROTATE				(	Triangle3d_t,
+								self,
+								Vec3_t*			angle
+							)
 {
 
-	MEM							(	Line_t,			line1,		1	);
-	MEM							(	Line_t,			line2,		1	);
-	MEM							(	Line_t,			line3,		1	);
+	ROTATE					(	Point3d_t,
+								self->p1,
+								angle
+							)	;
 
-	COPY						(	Point2d_t,
-									&line1->p1,		&triangle->p1	);
+	ROTATE					(	Point3d_t,
+								self->p2,
+								angle
+							)	;
 
-	COPY						(	Point2d_t,
-									&line1->p2,		&triangle->p2	);
+	ROTATE					(	Point3d_t,
+								self->p3,
+								angle
+							)	;
+}
 
-	COPY						(	Point2d_t,
-									&line2->p1,		&triangle->p2	);
 
-	COPY						(	Point2d_t,
-									&line2->p2,		&triangle->p3	);
+HOWTO_DRAW					(	Triangle2d_t,
+								self,
+								Color_t*		color,
+								Renderer_t*		renderer
+							)
+{
 
-	COPY						(	Point2d_t,
-									&line3->p1,		&triangle->p1	);
+	TMP						(	Line_t,
+								line1,
+								1
+							)	;
 
-	COPY						(	Point2d_t,
-									&line3->p2,		&triangle->p3	);
+	TMP						(	Line_t,
+								line2,
+								1
+							)	;
 
-	// Draw the vertices
-	DRAW						(	Point2d_t,		&triangle->p1,
-									origin,			color,		colorbuf	);
+	TMP						(	Line_t,
+								line3,
+								1
+							)	;
 
-	DRAW						(	Point2d_t,		&triangle->p2,
-									origin,			color,		colorbuf	);
+	// Compose the edges	
 
-	DRAW						(	Point2d_t,		&triangle->p3,
-									origin,			color,		colorbuf	);
+	COMPOSE					(	Line_t,
+								line1,
+								self->p1,
+								self->p2
+							)	;
+
+	COMPOSE					(	Line_t,
+								line2,
+								self->p2,
+								self->p3
+							)	;
+
+	COMPOSE					(	Line_t,
+								line3,
+								self->p1,
+								self->p3
+							)	;
+
+
+	// Draw the vertices	
+
+	DRAW					(	Point2d_t,
+								self->p1,
+								color,
+								renderer
+							)	;
+
+	DRAW					(	Point2d_t,
+								self->p2,
+								color,
+								renderer
+							)	;
+
+	DRAW					(	Point2d_t,
+								self->p3,
+								color,
+								renderer
+							)	;
 
 
 	// Draw the edges
-	DRAW						(	Line_t,			line1,
-									origin,			color,		colorbuf	);
 
-	DRAW						(	Line_t,			line2,
-									origin,			color,		colorbuf	);
+	DRAW					(	Line_t,
+								line1,
+								color,
+								renderer
+							)	;
 
-	DRAW						(	Line_t,			line3,
-									origin,			color,		colorbuf	);
+	DRAW					(	Line_t,
+								line2,
+								color,
+								renderer
+							)	;
+
+	DRAW					(	Line_t,
+								line3,
+								color,
+								renderer
+							)	;
 }
 
-HOWTO_DRAW						(	Triangle3d_t,
-									triangle,
-									Point2d_t*		origin,
-									Color_t*		color,
-									Color_buffer_t*	colorbuf	)
+
+HOWTO_DRAW					(	Triangle3d_t,
+								self,
+								Color_t*			color,
+								Renderer_t*			renderer
+							)
 {
 
-	MEM							(	Triangle2d_t,	proj_triangle,	1	);
+	TMP						(	Triangle2d_t,
+								projection,
+								1
+							)	;
 
-	PROJECT						(	Triangle2d_t,	Triangle3d_t,
-									proj_triangle,	triangle,
-									PERSPECTIVE		);
+	PROJECT					(	Triangle2d_t,		Triangle3d_t,
+								projection,			self,
+								PERSPECTIVE	
+							)	;
 
-	DRAW						(	Triangle2d_t,	proj_triangle,
-									origin,			color,		colorbuf	);
+	DRAW					(	Triangle2d_t,
+								projection,
+								color,
+								renderer
+							)	;
 }
 
 
-
-
-HOWTO_PROJECT					(	Triangle2d_t,		Triangle3d_t,
-									to,					from,
-									Projection_type_t	type	)
+HOWTO_PROJECT				(	Triangle2d_t,		Triangle3d_t,
+								to,					from,
+								Projection_type_t	type
+							)
 {
+	PROJECT					(	Point2d_t,			Point3d_t,
+								to->p1,				from->p1,
+								type
+							)	;
 
-	PROJECT						(	Point2d_t,		Point3d_t,
-									&to->p1,		&from->p1,	type	);
+	PROJECT					(	Point2d_t,			Point3d_t,
+								to->p2,				from->p2,
+								type
+							)	;
 
-	PROJECT						(	Point2d_t,		Point3d_t,
-									&to->p2,		&from->p2,	type	);
-
-	PROJECT						(	Point2d_t,		Point3d_t,
-									&to->p3,		&from->p3,	type	);
+	PROJECT					(	Point2d_t,			Point3d_t,
+								to->p3,				from->p3,
+								type
+							)	;
 }
-
 

@@ -4,117 +4,336 @@
 
 #include <math.h>
 
-#include "geometry.h"
 #include "util.h"
 #include "vector.h"
 
 
 
 
-float						fov_scale = 256;
+float							fov_scale		=	256;
 
-vec3_t						camera[1] = {{	.x = 0.0,
-											.y = 0.0,
-											.z = -5.0	}};
-
-
+Vec3_t							camera [ 1 ]	=	{{	.x	=	0.0,
+														.y	=	0.0,
+														.z	=	-5.0	}};
 
 
 ////////////////////////////////////////////////////////////////////////////////
-//		Vector Operations Implementation
+//				Vector Structures Implementation
 ////////////////////////////////////////////////////////////////////////////////
+
+
+struct							Vec2
+{
+	float						x	;
+
+	float						y	;
+};
+
+struct							Vec3
+{
+	float						x	;
+
+	float						y	;
+
+	float						z	;
+};
+
+DECL_ARRAY					(	Vec2_t	)
+{
+	float*						x	;
+
+	float*						y	;
+
+	int							count	;
+};
+
+DECL_ARRAY					(	Vec3_t	)
+{
+	float*						x	;
+
+	float*						y	;
+
+	float*						z	;
+
+	int							count	;
+};
+
+
+////////////////////////////////////////////////////////////////////////////////
+//				Vector Operations Implementation
+////////////////////////////////////////////////////////////////////////////////
+
+
+HOWTO_COPY					(	Vec2_t,		to,	from	)
+{
+	to->x					=	from->x	;
+
+	to->y					=	from->y	;
+}
+
+
+HOWTO_COPY					(	Vec3_t,		to,	from	)
+{
+	to->x					=	from->x	;
+
+	to->y					=	from->y	;
+
+	to->z					=	from->z	;
+}
+
+
+HOWTO_COMPOSE				(	Vec2_t,
+								self,
+								float	x,
+								float	y
+							)
+{
+	self->x					=	x;
+
+	self->y					=	y;
+}
+
+
+HOWTO_COMPOSE				(	Vec3_t,
+								self,
+								float	x,
+								float	y,
+								float	z
+							)
+{
+	self->x					=	x	;
+
+	self->y					=	y	;
+
+	self->z					=	z	;
+}
+
+
+HOWTO_CONSTRUCT				(	Vec2_t,
+								self,
+								float x,
+								float y
+							)
+{
+	ALLOC_ZEROED			(	Vec2_t,
+								self,
+								1
+							)	;
+
+	ASSERT					(	self != NULL, " "	)	;
+
+	COMPOSE					(	Vec2_t,
+								self,
+								x,	y
+							)	;
+}
+
+HOWTO_CONSTRUCT				(	Vec3_t,
+								self,
+								float x,
+								float y,
+								float z
+							)
+{
+	ALLOC_ZEROED			(	Vec3_t,
+								self,
+								1
+							)	;
+
+	ASSERT					(	self != NULL, ""	)	;
+
+	COMPOSE					(	Vec3_t,
+								self,
+								x,	y,	z
+							)	;
+}
+
+HOWTO_DESTRUCT				(	Vec2_t,
+								self
+							)
+{
+	DEALLOC					(	self	)	;
+}
+
+HOWTO_DESTRUCT				(	Vec3_t,
+								self
+							)
+{
+	DEALLOC					(	self	)	;
+}
 
 
 
 
 /////////////////////////////////////////////////////////////////////////////////
-//		Dynamic Array Operations Implementation
+//				Dynamic Array Operations Implementation
 /////////////////////////////////////////////////////////////////////////////////
 
-HOWTO_ARRAY_INIT			(	vec2_t,	array	)
-{
-	array->x				=	NULL;
-	array->y				=	NULL;
-	array->count			=	0;
-}
 
-HOWTO_ARRAY_INIT			(	vec3_t,	array	)
+
+
+HOWTO_ARRAY_INIT			(	Vec2_t,	self	)
 {
-	array->x				=	NULL;
-	array->y				=	NULL;
-	array->z				=	NULL;
-	array->count			=	0;
+	self->x					=	NULL	;
+
+	self->y					=	NULL	;
+
+	self->count				=	0	;
 }
 
 
-HOWTO_ARRAY_RESET			(	vec2_t,	array	)
+HOWTO_ARRAY_INIT			(	Vec3_t,	self	)
 {
-	array_free				(	array->x	);
-	array_free				(	array->y	);
+	self->x					=	NULL	;
 
-	array->x				=	NULL;
-	array->y				=	NULL;
-	array->count			=	0;
-}
+	self->y					=	NULL	;
 
-HOWTO_ARRAY_RESET			(	vec3_t,	array	)
-{
-	array_free				(	array->x	);
-	array_free				(	array->y	);
-	array_free				(	array->z	);
+	self->z					=	NULL	;
 
-
-	array->x				=	NULL;
-	array->y				=	NULL;
-	array->z				=	NULL;
-	array->count			=	0;
+	self->count				=	0	;
 }
 
 
-HOWTO_LOAD					(	vec2_t,		ptr,	array,	idx	)
+HOWTO_ARRAY_RESET			(	Vec2_t,	self	)
 {
-	ptr->x					=	array->x [ idx ];
-	ptr->y					=	array->y [ idx ];
+	array_free				(	self->x	)	;
+	array_free				(	self->y	)	;
+
+	self->x					=	NULL	;
+	self->y					=	NULL	;
+
+	self->count				=	0	;
 }
 
-HOWTO_LOAD					(	vec3_t,		ptr,	array,	idx	)
+
+HOWTO_ARRAY_RESET			(	Vec3_t,	self	)
 {
-	ptr->x					=	array->x [ idx ];
-	ptr->y					=	array->y [ idx ];
-	ptr->z					=	array->z [ idx ];
+	array_free				(	self->x	)	;
+	array_free				(	self->y	)	;
+	array_free				(	self->z	)	;
+
+	self->x					=	NULL	;
+	self->y					=	NULL	;
+	self->z					=	NULL	;
+
+	self->count				=	0	;
 }
 
-HOWTO_STORE					(	vec2_t,		ptr,	array	)
+
+HOWTO_CONSTRUCT				(	ARRAY ( Vec2_t ),
+								self,
+								void*	null
+							)
 {
-	array_push				(	array->x,	ptr->x	);
-	array_push				(	array->y,	ptr->y	);
+	ALLOC_ZEROED			(	ARRAY ( Vec2_t ),
+								self,
+								1
+							)	;
+
+	ASSERT					(	self != NULL, ""	)	;
+
+	ARRAY_INIT				(	Vec2_t,		self	)	;
+}
+
+HOWTO_CONSTRUCT				(	ARRAY ( Vec3_t ),
+								self,
+								void*	null
+							)
+{
+	ALLOC_ZEROED			(	ARRAY ( Vec3_t ),
+								self,
+								1
+							)	;
+
+	ASSERT					(	self != NULL, ""	)	;
+
+	ARRAY_INIT				(	Vec3_t,		self	)	;
+}
+
+HOWTO_DESTRUCT				(	ARRAY ( Vec2_t ),
+								self
+							)
+{
+}
+
+HOWTO_DESTRUCT				(	ARRAY ( Vec3_t ),
+								self
+							)
+{
+}
+
+HOWTO_LOAD					(	Vec2_t,	self,	array,	idx	)
+{
+	self->x					=	array->x [ idx ]	;
+
+	self->y					=	array->y [ idx ]	;
+}
+
+
+HOWTO_LOAD					(	Vec3_t,	self,	array,	idx	)
+{
+	self->x					=	array->x [ idx ]	;
+
+	self->y					=	array->y [ idx ]	;
+
+	self->z					=	array->z [ idx ]	;
+}
+
+
+HOWTO_PUSH					(	Vec2_t,	self,	array	)
+{
+	array_push				(	array->x,	self->x	)	;
+
+	array_push				(	array->y,	self->y	)	;
 
 	array->count++;
 }
 
-HOWTO_STORE					(	vec3_t,		ptr,	array	)
+
+HOWTO_PUSH					(	Vec3_t,	self,	array	)
 {
-	array_push				(	array->x,	ptr->x	);
-	array_push				(	array->y,	ptr->y	);
-	array_push				(	array->z,	ptr->z	);
+	array_push				(	array->x,	self->x	)	;
+
+	array_push				(	array->y,	self->y	)	;
+
+	array_push				(	array->z,	self->z	)	;
 
 	array->count++;
 }
 
 
-
-
-HOWTO_COPY					(	vec2_t,		to,	from	)
+HOWTO_STORE					(	Vec2_t,	self,	array,	idx		)
 {
-	to->x					=	from->x;
-	to->y					=	from->y;
+	Vec2_t						zero = { 0 };
+
+	while					(	array->count	<=	idx		)
+	{
+		PUSH				(	Vec2_t,
+								&zero,
+								array
+							);
+	}
+
+	array->x [ idx ]		=	self->x;
+	array->y [ idx ]		=	self->y;
 }
 
-HOWTO_COPY					(	vec3_t,		to,	from	)
+
+HOWTO_STORE					(	Vec3_t,	self,	array,	idx		)
 {
-	to->x					=	from->x;
-	to->y					=	from->y;
-	to->z					=	from->z;
+	Vec3_t						zero = { 0 };
+
+	while					(	array->count	<=	idx	)
+	{
+		PUSH				(	Vec3_t,
+								&zero,
+								array
+							);
+	}
+
+	array->x [ idx ]		=	self->x;
+	array->y [ idx ]		=	self->y;
+	array->z [ idx ]		=	self->z;
 }
 
 
@@ -124,77 +343,102 @@ HOWTO_COPY					(	vec3_t,		to,	from	)
 //				Geomertic Operations Implementations
 //////////////////////////////////////////////////////////////////////////////////
 
+
+
+
 static
-vec3_t
-rotate_vector_x				(	vec3_t* v,		float angle	)
+void
+rotate_vector_x				(	Vec3_t* v,		float angle		)
 {
-	MEM						(	vec3_t,
-								transform_v,	1	);
+
+	TMP						(	Vec3_t,
+								transform_v,
+								1
+							);
 
 	// X component remains same
 	transform_v->x			=	v->x;
 	transform_v->y			=	v->y * cos(	angle	)	-	v->z * sin(	angle	);
 	transform_v->z			=	v->z * cos(	angle	)	+	v->y * sin(	angle	);
 
-	RETURN					(	*transform_v	);
+	COPY					(	Vec3_t,
+								v,
+								transform_v
+							);
 }
 
 static
-vec3_t
-rotate_vector_y				(	vec3_t*	v,	float angle		)
+void
+rotate_vector_y				(	Vec3_t*	v,		float angle		)
 {
-	MEM						(	vec3_t,		transform_v,	1	);
+	TMP						(	Vec3_t,
+								transform_v,
+								1
+							);
 
 	// Y component remains same
 	transform_v->x			=	v->x * cos(	angle	)	-	v->z * sin(	angle	);
 	transform_v->y			=	v->y;
 	transform_v->z			=	v->z * cos(	angle	)	+	v->x * sin(	angle	);
 
-	RETURN					(	*transform_v	);
+	COPY					(	Vec3_t,
+								v,
+								transform_v
+							);
 }
 
 
 static
-vec3_t
-rotate_vector_z				(	vec3_t* v,	float angle	)
+void
+rotate_vector_z				(	Vec3_t* v,	float angle	)
 {
-	MEM						(	vec3_t,		transform_v,	1	);
+	TMP						(	Vec3_t,
+								transform_v,
+								1
+							);
 
 	// Z component remains same
 	transform_v->x			=	v->x * cos(	angle	)	-	v->y * sin(	angle	);
 	transform_v->y			=	v->y * cos(	angle	)	+	v->x * sin(	angle	);
 	transform_v->z			=	v->z;
 
-	RETURN					(	*transform_v	);
+	COPY					(	Vec3_t,
+								v,
+								transform_v
+							);
 }
 
 
-HOWTO_ROTATE				(	vec3_t,		to,	from,	vec3_t* angle	)
+HOWTO_ROTATE				(	Vec3_t,	self,	Vec3_t* angle	)
 {
 	if						(	angle->x != 0	)
 	{
-		*to					=	rotate_vector_x	(	from,	angle->x	);
+		rotate_vector_x		(	self,	angle->x	);
 	}
 
 	if						(	angle->y != 0	)
 	{
-		*to					=	rotate_vector_y	(	from,	angle->y	);
+		rotate_vector_y		(	self,	angle->y	);
 	}
 
 	if						(	angle->z != 0	)
 	{
-		*to					=	rotate_vector_z	(	from,	angle->z	);
+		rotate_vector_z		(	self,	angle->z	);
 	}
+
 }
 
 
 
 
 static
-vec2_t
-project_orthographic		(	vec3_t*		vector		)
+Vec2_t
+project_orthographic		(	Vec3_t*		vector		)
 {
-	MEM						(	vec2_t,		projection,	1	);
+	TMP						(	Vec2_t,
+								projection,
+								1
+							);
 
 	projection->x			=	fov_scale	*	vector->x;
 	projection->y			=	fov_scale	*	vector->y;
@@ -203,27 +447,30 @@ project_orthographic		(	vec3_t*		vector		)
 }
 
 static
-vec2_t
-project_isometric			(	vec3_t*		vector	)
+Vec2_t
+project_isometric			(	Vec3_t*		vector	)
 {
-	MEM						(	vec2_t,		projection,	1	);
+	TMP						(	Vec2_t,
+								projection,
+								1
+							);
 	// TODO: Implement this
 	RETURN					(	*projection		);
 }
 
 static
-vec2_t
-project_perspective			(	vec3_t*	vector	)
+Vec2_t
+project_perspective			(	Vec3_t*	vector	)
 {
 	float						z = (	vector->z + camera->z	);
 
-	MEM						(	vec2_t,	projection,	1	);
+	TMP						(	Vec2_t,
+								projection,
+								1
+							);
 
-	projection->x			=	((	vector->x * fov_scale	) / z	)
-									*	camera->z;
-
-	projection->y			=	((	vector->y * fov_scale	) / z	)
-									*	camera->z;
+	projection->x			=	( (	vector->x * fov_scale	) / z	);
+	projection->y			=	( (	vector->y * fov_scale	) / z	);
 
 	RETURN					(	*projection		);
 }
@@ -231,10 +478,11 @@ project_perspective			(	vec3_t*	vector	)
 
 
 
-HOWTO_PROJECT				(	vec2_t,	vec3_t,
-								to,		from,
+HOWTO_PROJECT				(	Vec2_t,				Vec3_t,
+								to,					from,
 								Projection_type_t	type	)
 {
+
 	switch					(	type	)
 	{
 		case				(	ORTHOGRAPHIC	):
@@ -262,13 +510,15 @@ HOWTO_PROJECT				(	vec2_t,	vec3_t,
 //////////////////////////////////////////////////////////////////////////////////
 
 
-HOWTO_ADD					(	vec2_t,	dst,	op1,	op2	)
+
+
+HOWTO_ADD					(	Vec2_t,	dst,	op1,	op2	)
 {
 	dst->x					=	op1->x	+	op2->x;
 	dst->y					=	op1->y	+	op2->y;
 }
 
-HOWTO_ADD					(	vec3_t,	dst,	op1,	op2	)
+HOWTO_ADD					(	Vec3_t,	dst,	op1,	op2	)
 {
 	dst->x					=	op1->x	+	op2->x;
 	dst->y					=	op1->y	+	op2->y;
@@ -276,13 +526,13 @@ HOWTO_ADD					(	vec3_t,	dst,	op1,	op2	)
 }
 
 
-HOWTO_SUB					(	vec2_t,	dst,	op1,	op2	)
+HOWTO_SUB					(	Vec2_t,	dst,	op1,	op2	)
 {
 	dst->x					=	op1->x	-	op2->x;
 	dst->y					=	op1->y	-	op2->y;
 }
 
-HOWTO_SUB					(	vec3_t,	dst,	op1,	op2	)
+HOWTO_SUB					(	Vec3_t,	dst,	op1,	op2	)
 {
 	dst->x					=	op1->x	-	op2->x;
 	dst->y					=	op1->y	-	op2->y;
@@ -290,28 +540,106 @@ HOWTO_SUB					(	vec3_t,	dst,	op1,	op2	)
 }
 
 
-HOWTO_MUL					(	vec2_t,	dst,	src,	factor	)
+HOWTO_MUL					(	Vec2_t,	dst,	src,	factor	)
 {
 	dst->x					=	factor	*	src->x;
 	dst->y					=	factor	*	src->y;
 }
 
-HOWTO_MUL					(	vec3_t,	dst,	src,	factor	)
+HOWTO_MUL					(	Vec3_t,	dst,	src,	factor	)
 {
 	dst->x					=	factor	*	src->x;
 	dst->y					=	factor	*	src->y;
 	dst->z					=	factor	*	src->z;
-
 }
 
 
-HOWTO_DOTP					(	vec2_t,	dst,	src1,	src2	)
+HOWTO_DIV					(	Vec2_t,	dst,	src,	factor	)
+{
+	dst->x					=	src->x	/	factor;
+	dst->y					=	src->y	/	factor;
+}
+
+HOWTO_DIV					(	Vec3_t,	dst,	src,	factor	)
+{
+	dst->x					=	src->x	/	factor;
+	dst->y					=	src->y	/	factor;
+	dst->z					=	src->z	/	factor;
+}
+
+
+HOWTO_NORM					(	Vec2_t,	self	)
+{
+
+	float						vlen_sqr	= 0,
+								vlen		= 0;
+
+	DOTP					(	Vec2_t,
+								&vlen_sqr,
+								self,
+								self
+							);
+
+	vlen					=	sqrt	(	vlen_sqr	);
+
+	DIV						(	vec2_t,
+								self,
+								self,
+								vlen
+							);
+}
+
+
+HOWTO_NORM					(	Vec3_t,	self	)
+{
+
+	float						vlen_sqr	= 0,
+								vlen		= 0;
+
+	DOTP					(	Vec3_t,
+								&vlen_sqr,
+								self,
+								self
+							);
+
+	vlen					=	sqrt	(	vlen_sqr	);
+
+	DIV						(	Vec3_t,
+								self,
+								self,
+								vlen
+							);
+}
+
+
+HOWTO_INC					(	Vec2_t,	self,	inc		)
+{
+	ADD						(	Vec2_t,
+								self,
+								self,
+								inc
+							);
+}
+
+
+HOWTO_INC					(	Vec3_t,	self,	inc		)
+{
+	ADD						(	Vec3_t,
+								self,
+								self,
+								inc
+							);
+}
+
+
+HOWTO_DOTP					(	Vec2_t,		dst,	src1,	src2	)
 {
 	*dst					=	src1->x		*	src2->x
 							+	src1->y		*	src2->y;
 }
 
-HOWTO_DOTP					(	vec3_t,	dst,	src1,	src2	)
+
+HOWTO_DOTP					(	Vec3_t,		dst,	src1,	src2	)
 {
 	*dst					=	src1->x		*	src2->x
 							+	src1->y		*	src2->y
@@ -319,14 +647,15 @@ HOWTO_DOTP					(	vec3_t,	dst,	src1,	src2	)
 }
 
 
-HOWTO_CROSSP				(	vec3_t,	dst,	src1,	src2	)
+HOWTO_CROSSP				(	Vec3_t,		dst,	src1,	src2	)
 {
 	dst->x					=	src1->y		*	src2->z
-							+	src2->y		*	src1->z;
+							-	src2->y		*	src1->z;
 
-	dst->y					=	src1->x		*	src2->z
-							-	src1->z		*	src2->x;
+	dst->y					=	src1->z		*	src2->x
+							-	src1->x		*	src2->z;
 
 	dst->z					=	src1->x		*	src2->y
 							-	src1->y		*	src2->x;
 }
+
