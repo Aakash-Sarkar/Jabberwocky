@@ -20,7 +20,7 @@ HOWTO_DRAW						(	Rect_t,
 		for_each_posX_in_rect	(	self,	posX	)
 		{
 
-			CALLM				(	Renderer_t,
+			MSG					(	Renderer_t,
 									paint_color,
 									renderer,
 									color,
@@ -52,12 +52,12 @@ HOWTO_DRAW						(	Grid_t,
 	rect->width					=	self->width;
 	rect->height				=	self->height;
 
-	for_each_rect_in_buffer		(	n,		rect,	renderer->buffer	)
-		DRAW					(	Rect_t,
-									rect,
-									color,
-									renderer
-								);
+	//for_each_rect_in_buffer		(	n,		rect,	renderer->buffer	)
+	//	DRAW					(	Rect_t,
+	//								rect,
+	//								color,
+	//								renderer
+	//							);
 
 }
 

@@ -41,8 +41,8 @@
 //		head. A digital camera works over the principle of converging all
 //		the incoming light on a 2D matrix of light sensors and recording
 //		the intensity of each of the individual Red, Green and Blue light
-//		components that falls on top of it through the use of colored
-//		lenses etc.
+//		components that falls on top of it via the use of colored lenses
+//		etc.
 //
 //
 //		In other words, a pixel can be a paint dot, a light sensor, an LED
@@ -52,24 +52,28 @@
 //		intensities.
 //
 //
-//						0			 1			  2
-//				+-------------+-------------+-------------+
-//				|			  |				|			  |
-//			0	|	[ RGB ]	  |	  [ RGB ]	|	[ RGB ]	  |
-//				|			  |				|			  |
-//				+-------------+-------------+-------------+
-//				|			  |				|			  |
-//			1	|	[ RGB ]	  |	  [ RGB ]	|	[ RGB ]	  |
-//				|			  |				|			  |
-//				+-------------+-------------+-------------+
-//				|			  |				|			  |
-//			2	|	[ RGB ]	  |	  [ RGB ]	|	[ RGB ]	  |
-//				|			  |				|			  |
-//				+-------------+-------------+-------------+
-//				|			  |				|			  |
-//			3	|	[ RGB ]	  |	  [ RGB ]	|	[ RGB ]	  |
-//				|			  |				|			  |
-//				+-------------+-------------+-------------+
+//					0			 1			   2			 3
+//			+-------------+-------------+-------------+-------------+
+//			|			  |				|			  |				|
+//		0	|	[ RGB ]	  |	  [ RGB ]	|	[ RGB ]	  |	  [ RGB ]	|
+//			|			  |				|			  |				|
+//			+-------------+-------------+-------------+-------------+
+//			|			  |				|			  |				|
+//		1	|	[ RGB ]	  |	  [ RGB ]	|	[ RGB ]	  |	  [ RGB ]	|
+//			|			  |				|			  |				|
+//			+-------------+-------------+-------------+-------------+
+//			|			  |				|			  |				|
+//		2	|	[ RGB ]	  |	  [ RGB ]	|	[ RGB ]	  |	  [ RGB ]	|
+//			|			  |				|			  |				|
+//			+-------------+-------------+-------------+-------------+
+//			|			  |				|			  |				|
+//		3	|	[ RGB ]	  |	  [ RGB ]	|	[ RGB ]	  |	  [ RGB ]	|
+//			|			  |				|			  |				|
+//			+-------------+-------------+-------------+-------------+
+//			|			  |				|			  |				|
+//		4	|	[ RGB ]	  |	  [ RGB ]	|	[ RGB ]	  |	  [ RGB ]	|
+//			|			  |				|			  |				|
+//			+-------------+-------------+-------------+-------------+
 //
 //
 //		Computing the value of a pixel from the given inputs is not a very
@@ -106,7 +110,7 @@ typedef							struct Pixel						Pixel_t;
 
 
 
-typedef							DECL_ARRAY						(	Pixel_t	);
+typedef					DECL_ARRAY ( Pixel_t )				ARRAY (	Pixel_t	);
 
 
 typedef							struct Image						Image_t;
@@ -124,12 +128,11 @@ typedef							struct Image						Image_t;
 //		we can simply overlay on top of our base image.
 //
 //
-//		In this regard, an image patch is an array of pixels that
-//		describes how to paint a primitive on our color buffer. This
-//		allows our primitives to fly around on different processors
-//		for the patch to be generated. Finally the main thread would
-//		collect all the patches and draw our full image on the color
-//		buffer.
+//		In this regard, an image patch is an array of pixels that describes
+//		how to paint a primitive on our color buffer. This allows for our
+//		primitives to fly around on different CPUs in order for the patch to
+//		be generated. Finally the main thread would collect all the patches
+//		and draw our full image on the color buffer.
 //
 //
 //////////////////////////////////////////////////////////////////////////////////
@@ -140,24 +143,30 @@ typedef							struct Patch						Patch_t;
 
 
 
-HOWTO_COMPOSE			(	Pixel_t,
+HOWTO_CONSTRUCT			(	Pixel_t,
 							self,
 							uint32_t	color,
 							int			posX,
 							int			posY
 						);
 
-HOWTO_COPY				(	Pixel_t,	to,	from	);
 
-HOWTO_ARRAY_INIT		(	Pixel_t,	pixels	);
+HOWTO_CPY				(	Pixel_t,	to,	from	);
 
-HOWTO_ARRAY_RESET		(	Pixel_t,	pixels	);
 
-HOWTO_PUSH				(	Pixel_t,	ptr,	array	);
+HOWTO_ARRAY_INIT		(	ARRAY ( Pixel_t ),	self	);
 
-HOWTO_LOAD				(	Pixel_t,	ptr,	array,	idx	);
+HOWTO_ARRAY_RESET		(	ARRAY ( Pixel_t ),	self	);
 
-HOWTO_STORE				(	Pixel_t,	ptr,	array,	idx	);
+
+HOWTO_CONSTRUCT			(	ARRAY ( Pixel_t ),	self,	void* null	);
+
+HOWTO_DESTRUCT			(	ARRAY ( Pixel_t ),	self	);
+
+
+HOWTO_LD				(	Pixel_t,	self,	array,	idx	);
+
+HOWTO_STR				(	Pixel_t,	self,	array,	idx	);
 
 
 HOWTO_CONSTRUCT			(	Image_t,
@@ -169,7 +178,7 @@ HOWTO_CONSTRUCT			(	Image_t,
 							Format_type_t	format_type
 						);
 
-HOWTO_COPY				(	Image_t,	to,	from	);
+HOWTO_CPY				(	Image_t,	to,	from	);
 
 
 

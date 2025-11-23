@@ -9,66 +9,70 @@
 
 
 
- //////////////////////////////////////////////////////////////////////////////////
- //
- //
- //		We could also do a `typedef vec3_t point3d_t` here, but then again,
- //		someone would certainly try to pass a position vector in a function
- //		for colors. Doing it this way will at least give us a compilation
- //		error.
- //
- //
- //		Another, more nuanced way of thinking about this is the following:
- //
- //		Each vector lives in a vector space and can only be added to or
- //		subtracted from other vectors living in the same space. For e.g,
- //		our point vectors as described by the X, Y and Z co-ordinates of
- //		our point, together form a point space and can only be added to
- //		or subtracted from other point vectors in the same space.
- //
- //
- //		However,  if we choose a point vector from a different co-ordinate
- //		system ( i.e, with different X, Y and Z axes ), and try to add it
- //		to our point vector; then it's not a valid mathematical operation.
- //		We may get some resulting vector by doing this, but in a geometric
- //		sense this new vector doesn't have any valid meaning since the two
- //		vectors come from different co-ordinate spaces.
- //
- //
- //		To give another example of this from a different domain:
- //
- //		If we subtract two velocity vectors, we get the relative velocity
- //		of one with respect to the other. Same goes with subtracting two
- //		displacement vectors. But if we try to subtract a velocity vector
- //		from a displacement vector; the resulting vector isn't a valid
- //		physical quantity.
- //
- //
- //		In physics textbooks this is described in terms of the two vectors
- //		having different units; but in mathematical terms one could also
- //		describe this as the two vectors living in different vector spaces.
- //
- //
- //////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+//				Point Structures Implementation
+////////////////////////////////////////////////////////////////////////////////
 
 
-struct	Point3d					{	Vec3_t*		v;	};
-
-struct	Point2d					{	Vec2_t*		v;	};
 
 
-DECL_ARRAY						(	Point2d_t	)
-{
-	ARRAY ( Vec2_t )*				v;
-	int								count;
-};
+//////////////////////////////////////////////////////////////////////////////////
+//
+//
+//		We could also do a `typedef vec3_t point3d_t` here, but then again,
+//		someone would certainly try to pass a position vector in a function
+//		for colors. Doing it this way will at least give us a compilation
+//		error.
+//
+//
+//		Another, more nuanced way of thinking about this is the following:
+//
+//		Each vector lives in a vector space and can only be added to or
+//		subtracted from other vectors living in the same space. For e.g,
+//		our point vectors as described by the X, Y and Z co-ordinates of
+//		our point, together form a point space and can only be added to
+//		or subtracted from other point vectors in the same space.
+//
+//
+//		However,  if we choose a point vector from a different co-ordinate
+//		system ( i.e, with different X, Y and Z axes ), and try to add it
+//		to our point vector; then it's not a valid mathematical operation.
+//		We may get some resulting vector by doing this, but in a geometric
+//		sense this new vector doesn't have any valid meaning since the two
+//		vectors come from different co-ordinate spaces.
+//
+//
+//		To give another example of this from a different domain:
+//
+//		If we subtract two velocity vectors, we get the relative velocity
+//		of one with respect to the other. Same goes with subtracting two
+//		displacement vectors. But if we try to subtract a velocity vector
+//		from a displacement vector; the resulting vector isn't a valid
+//		physical quantity.
+//
+//
+//		In physics textbooks this is described in terms of the two vectors
+//		having different units; but in mathematical terms one could also
+//		describe this as the two vectors living in different vector spaces.
+//
+//
+//////////////////////////////////////////////////////////////////////////////////
 
 
-DECL_ARRAY						(	Point3d_t	)
-{
-	ARRAY ( Vec3_t )*				v;
-	int								count;
-};
+struct	Point2d					{	Vec2_t *	v;	};
+
+
+struct	Point3d					{	Vec3_t *	v;	};
+
+
+DECL_ARRAY	(	Point2d_t	)	{	ARRAY ( Vec2_t ) *	v;
+									int					count;
+								};
+
+
+DECL_ARRAY	(	Point3d_t	)	{	ARRAY ( Vec3_t ) *	v;
+									int					count;
+								};
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -76,90 +80,48 @@ DECL_ARRAY						(	Point3d_t	)
 ////////////////////////////////////////////////////////////////////////////////
 
 
-HOWTO_COPY						(	Point2d_t,	to,		from	)
+HOWTO_CPY						(	Point2d_t,	to,	from	)
 {
-	COPY						(	vec2_t,
+	CPY							(	Vec2_t,
 									to->v,
 									from->v
-								)	;
+								);
 }
 
-HOWTO_COPY						(	Point3d_t,	to,		from	)
+HOWTO_CPY						(	Point3d_t,	to,	from	)
 {
-	COPY						(	vec3_t,
+	CPY							(	Vec3_t,
 									to->v,
 									from->v
-								)	;
+								);
 }
 
 
-HOWTO_COMPOSE					(	Point2d_t,
+
+HOWTO_CONSTRUCT					(	Point2d_t,
 									self,
 									float		x,
 									float		y
 								)
 {
-	COMPOSE						(	Vec2_t,
+	NEW							(	Vec2_t,
 									self->v,
-									x,
-									y
-								)	;
-}
-
-HOWTO_COMPOSE					(	Point3d_t,
-									self,
-									float		x,
-									float		y,
-									float		z
-								)
-{
-	COMPOSE						(	Vec3_t,
-									self->v,
-									x,
-									y,
-									z
-								)	;
-}
-
-
-HOWTO_CONSTRUCT					(	Point2d_t,
-									self,
-									float	x,
-									float	y
-								)
-{
-	ALLOC_ZEROED				(	Point2d_t,
-									self,
-									1
-								);
-
-	CONSTRUCT					(	Vec2_t,
-									self->v,
-									x,
-									y
+									x,	y
 								);
 }
 
 
 HOWTO_CONSTRUCT					(	Point3d_t,
 									self,
-									float	x,
-									float	y,
-									float	z
+									float		x,
+									float		y,
+									float		z
 								)
 {
-	ALLOC_ZEROED				(	Point3d_t,
-									self,
-									1
-								);
 
-	ASSERT						(	self != NULL, ""	);
-
-	CONSTRUCT					(	Vec3_t,
+	NEW							(	Vec3_t,
 									self->v,
-									x,
-									y,
-									z
+									x,	y,	z
 								);
 }
 
@@ -168,23 +130,17 @@ HOWTO_DESTRUCT					(	Point2d_t,
 									self
 								)
 {
-	DESTRUCT					(	Vec2_t,
+	DEL							(	Vec2_t,
 									self->v
 								);
-
-	DEALLOC						(	self	);
 }
 
 
-HOWTO_DESTRUCT					(	Point3d_t,
-									self
-								)
+HOWTO_DESTRUCT					(	Point3d_t,	self	)
 {
-	DESTRUCT					(	Vec3_t,
+	DEL							(	Vec3_t,
 									self->v
 								);
-
-	DEALLOC						(	self	);
 }
 
 
@@ -193,172 +149,146 @@ HOWTO_DESTRUCT					(	Point3d_t,
 /////////////////////////////////////////////////////////////////////////////////
 
 
-HOWTO_ARRAY_INIT				(	Point2d_t,		self	)
+HOWTO_ARRAY_INIT				(	ARRAY ( Point2d_t ),	self	)
 {
-	ARRAY_INIT					(	Vec2_t,
+	INIT						(	Vec2_t,
 									self->v
 								);
 
-	self->count				=	0;
+	self->count					=	0;
 }
 
-HOWTO_ARRAY_INIT				(	Point3d_t,		self	)
+HOWTO_ARRAY_INIT				(	ARRAY ( Point3d_t ),	self	)
 {
-	ARRAY_INIT					(	Vec3_t,
+	INIT						(	Vec3_t,
 									self->v
 								);
 
-	self->count				=	0;
+	self->count					=	0;
 }
 
-HOWTO_ARRAY_RESET				(	Point2d_t,		self	)
+HOWTO_ARRAY_RESET				(	ARRAY ( Point2d_t ),	self	)
 {
-	ARRAY_RESET					(	Vec2_t,
+	ARRAY_RESET					(	Vec2_t,	self->v	);
+
+	self->count					=	0;
+}
+
+HOWTO_ARRAY_RESET				(	ARRAY ( Point3d_t ),	self	)
+{
+	ARRAY_RESET					(	Vec3_t,	self->v	);
+
+	self->count					=	0;
+}
+
+
+HOWTO_CONSTRUCT					(	ARRAY ( Point2d_t ),
+									self,
+									void*	null
+								)
+{
+	DEF							(	ARRAY ( Vec2_t ),
 									self->v
 								);
 
-	self->count				=	0;
+	INIT						(	ARRAY ( Point2d_t ),	self	);
 }
 
-HOWTO_ARRAY_RESET				(	Point3d_t,		self	)
+HOWTO_CONSTRUCT					(	ARRAY ( Point3d_t ),
+									self,
+									void*	null
+								)
 {
-	ARRAY_RESET					(	Vec3_t,
+	DEF							(	ARRAY ( Vec3_t ),
 									self->v
 								);
 
-	self->count				=	0;
+	INIT						(	ARRAY ( Point3d_t ),	self	)	;
+}
+
+HOWTO_DESTRUCT					(	ARRAY ( Point2d_t ),	self	)
+{
+}
+
+HOWTO_DESTRUCT					(	ARRAY ( Point3d_t ),	self	)
+{
 }
 
 
-HOWTO_CONSTRUCT				(	ARRAY ( Point2d_t ),
-								self,
-								void*	null
-							)
+HOWTO_LD						(	Point2d_t,	self,	array,	idx		)
 {
-	ALLOC_ZEROED			(	ARRAY ( Point2d_t ),
-								self,
-								1
-							)	;
+	LD							(	Vec2_t,
+									self->v,
+									array->v,
+									idx
+								);
+}
 
-	ASSERT					(	self != NULL, ""	)	;
+HOWTO_LD						(	Point3d_t,	self,	array,	idx		)
+{
+	LD							(	Vec3_t,
+									self->v,
+									array->v,
+									idx
+								);
+}
 
-	CONSTRUCT				(	ARRAY ( Vec2_t ),
+HOWTO_STR						(	Point2d_t,	self,	array,	idx		)
+{
+	STR							(	Vec2_t,
+									self->v,
+									array->v,
+									idx
+								);
+}
+
+HOWTO_STR						(	Point3d_t,	self,	array,	idx		)
+{
+	STR							(	Vec3_t,
+									self->v,
+									array->v,
+									idx
+								);
+}
+
+
+HOWTO_COUNT					(	ARRAY ( Point2d_t ),	self	)
+{
+	ASSERT					(	self != EMPTY, ""	);
+
+	RETURN					(	COUNT	( ARRAY( Vec2_t ),
+										self->v
+										)
+							);
+}
+
+HOWTO_COUNT					(	ARRAY ( Point3d_t ),	self	)
+{
+	ASSERT					(	self != EMPTY, ""	);
+
+	RETURN					(	COUNT	( ARRAY( Vec3_t ),
+										self->v
+										)
+							);
+}
+
+
+HOWTO_INC					(	ARRAY ( Point2d_t ),	self,	int inc	)
+{
+	INC						(	ARRAY ( Vec2_t ),
 								self->v,
-								NULL
-							)	;
-
-	ARRAY_INIT				(	Point2d_t,	self	)	;
+								inc
+							);
 }
 
-HOWTO_CONSTRUCT				(	ARRAY ( Point3d_t ),
-								self,
-								void*	null
-							)
+HOWTO_INC					(	ARRAY ( Point3d_t ),	self,	int inc	)
 {
-	ALLOC_ZEROED			(	ARRAY ( Point3d_t ),
-								self,
-								1
-							)	;
-
-	ASSERT					(	self != NULL, ""	)	;
-
-	CONSTRUCT				(	ARRAY ( Vec3_t ),
+	INC						(	ARRAY ( Vec3_t ),
 								self->v,
-								NULL
-							)	;
-
-	ARRAY_INIT				(	Point3d_t,	self	)	;
+								inc
+							);
 }
 
-HOWTO_DESTRUCT				(	ARRAY ( Point2d_t ),
-								self
-							)
-{
-}
-
-HOWTO_DESTRUCT				(	ARRAY ( Point3d_t ),
-								self
-							)
-{
-}
-
-
-HOWTO_LOAD						(	Point2d_t,	self,	array,	idx		)
-{
-	LOAD						(	Vec2_t,
-									self->v,
-									array->v,
-									idx
-								);
-}
-
-HOWTO_LOAD						(	Point3d_t,	self,	array,	idx		)
-{
-	LOAD						(	Vec3_t,
-									self->v,
-									array->v,
-									idx
-								);
-}
-
-HOWTO_PUSH						(	Point2d_t,	self,	array	)
-{
-	PUSH						(	Vec2_t,
-									self->v,
-									array->v
-								);
-
-	array->count++;
-}
-
-HOWTO_PUSH						(	Point3d_t,	self,	array	)
-
-{
-	PUSH						(	Vec3_t,
-									self->v,
-									array->v
-								);
-
-	array->count++;
-}
-
-HOWTO_STORE						(	Point2d_t,	self,	array,	idx		)
-{
-	Point2d_t						zero = { 0 };
-
-	while						(	array->count	<=	idx		)
-	{
-		PUSH					(	Point2d_t,
-									&zero,
-									array
-								);
-	}
-
-	STORE						(	Vec2_t,
-									self->v,
-									array->v,
-									idx
-								);
-}
-
-HOWTO_STORE						(	Point3d_t,	self,	array,	idx		)
-{
-	Point3d_t						zero = { 0 };
-
-	while						(	array->count	<=	idx	)
-	{
-		PUSH					(	Point3d_t,
-									&zero,
-									array
-								);
-	}
-
-	STORE						(	Vec3_t,
-									self->v,
-									array->v,
-									idx
-								);
-}
 
 
 //////////////////////////////////////////////////////////////////////////////////
@@ -366,19 +296,19 @@ HOWTO_STORE						(	Point3d_t,	self,	array,	idx		)
 //////////////////////////////////////////////////////////////////////////////////
 
 
-HOWTO_ROTATE					(	Point2d_t,
+HOWTO_ROT						(	Point2d_t,
 									self,
 									Vec2_t*		angle
 								)
 {
 }
 
-HOWTO_ROTATE					(	Point3d_t,
+HOWTO_ROT						(	Point3d_t,
 									self,
 									Vec3_t*		angle
 								)
 {
-	ROTATE						(	Vec3_t,
+	ROT							(	Vec3_t,
 									self->v,
 									angle
 								);
@@ -390,14 +320,24 @@ HOWTO_DRAW						(	Point2d_t,
 									Renderer_t*		renderer
 								)
 {
-	TMP							(	Rect_t,
-									rect,
-									1
+	Rect_t							*rect	=	NULL;
+
+	Point2d_t						*o_point	=	NULL,
+									*origin		=	NULL;
+
+
+	DEF							(	Point2d_t,
+									o_point
 								);
 
-	TMP							(	Point2d_t,
-									o_point,
-									1
+	DEF							(	Point2d_t,
+									origin
+								);
+
+	MSG							(	Renderer_t,
+									get_origin,
+									renderer,
+									origin
 								);
 
 
@@ -414,19 +354,40 @@ HOWTO_DRAW						(	Point2d_t,
 	ADD							(	Point2d_t,
 									o_point,
 									self,
-									&renderer->origin
+									origin
 								);
 
-	rect->posX					=	( int )	o_point->v->x;
-	rect->posY					=	( int )	o_point->v->y;
-	
-	rect->width					=	4;
-	rect->height				=	4;
+	float							posX	=	0,
+									posY	=	0;
+
+	MSG							(	Point2d_t,
+									decompose,
+									o_point,
+									&posX,	&posY
+								);
+
+	NEW							(	Rect_t,
+									rect,
+									posX,	posY,
+									4,		4
+								);
 
 	DRAW						(	Rect_t,
 									rect,
 									color,
-									renderer->buffer
+									renderer
+								);
+
+	DEL							(	Rect_t,
+									rect
+								);
+
+	DEL							(	Point2d_t,
+									o_point
+								);
+
+	DEL							(	Point2d_t,
+									origin
 								);
 }
 
@@ -436,12 +397,13 @@ HOWTO_DRAW						(	Point3d_t,
 									Renderer_t*			renderer
 								)
 {
-	TMP							(	Point2d_t,
-									proj,
-									1
+	Point2d_t						*proj	=	NULL;
+
+	DEF							(	Point2d_t,
+									proj
 								);
 
-	PROJECT						(	Point2d_t,			Point3d_t,
+	PROJ						(	Point2d_t,			Point3d_t,
 									proj,				self,
 									PERSPECTIVE
 								);
@@ -451,13 +413,17 @@ HOWTO_DRAW						(	Point3d_t,
 									color,
 									renderer
 								);
+
+	DEL							(	Point2d_t,
+									proj
+								);
 }
 
-HOWTO_PROJECT					(	Point2d_t,			Point3d_t,
+HOWTO_PROJ						(	Point2d_t,			Point3d_t,
 									to,					from,
 									Projection_type_t	type	)
 {
-	PROJECT						(	Vec2_t,				Vec3_t,
+	PROJ						(	Vec2_t,				Vec3_t,
 									to->v,				from->v,
 									type
 								);
@@ -566,7 +532,7 @@ HOWTO_NORM					(	Point3d_t,	self	)
 							);
 }
 
-HOWTO_INC					(	Point2d_t,	self,	inc		)
+HOWTO_INC					(	Point2d_t,	self,	Point2d_t * inc		)
 {
 	INC						(	Vec2_t,
 								self->v,
@@ -574,7 +540,7 @@ HOWTO_INC					(	Point2d_t,	self,	inc		)
 							);
 }
 
-HOWTO_INC					(	Point3d_t,	self,	inc		)
+HOWTO_INC					(	Point3d_t,	self,	Point2d_t * inc		)
 {
 	INC						(	Vec3_t,
 								self->v,
@@ -609,6 +575,10 @@ HOWTO_CROSSP				(	Point3d_t,	dst,	src1,	src2	)
 								src2->v
 							);
 }
+
+
+
+DEFINE_TYPE					(	Point3d_t,	NULL	);
 
 
 

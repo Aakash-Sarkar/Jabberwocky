@@ -9,21 +9,14 @@
 
 struct								Renderer
 {
-	SDL_Renderer *					sdl	;
-
-	Color_buffer_t *				buffer	;
-
-	Texture_t *						texture	;
-
-	Window_t *						window	;
-
-	Choreographer_t *				c_grapher	;
-
-	ARRAY ( Triangle2d_t ) *		triangles_to_draw	;
-
-	Mesh_t *						mesh	;
-
-	Point2d_t *						origin	;
+	SDL_Renderer *					sdl;
+	Color_buffer_t *				buffer;
+	Texture_t *						texture;
+	Window_t *						window;
+	Choreographer_t *				c_grapher;
+	ARRAY ( Triangle2d_t ) *		triangles_to_draw;
+	Mesh_t *						mesh;
+	Point2d_t *						origin;
 };
 
 
@@ -40,35 +33,23 @@ HOWTO_CONSTRUCT					(	Renderer_t,
 	float							origin_x = 0,
 									origin_y = 0;
 
-	PTR							(	SDL_Window,
-									sdl_window,
-									NULL
-								);
+	SDL_Window						*sdl_w	=	NULL;
 
-	ASSERT						(	window != NULL,
+	ASSERT						(	window != EMPTY,
 									"Invalid arguments\n"
 								);
 
-	// Allocate memory
-	
-	ALLOC_ZEROED				(	Renderer_t,
-									self,
-									1
-								);
-
-	ASSERT						(	self != NULL,	" "	);
-
-	CALLM						(	Window_t,
+	MSG							(	Window_t,
 									get_window_dimensions,
 									window,
 									&window_w,
 									&window_h
 								);
 
-	CALLM						(	Window_t,
+	MSG							(	Window_t,
 									get_sdl_type,
 									window,
-									sdl_window
+									sdl_w
 								);
 
 	// This creates our renderer
@@ -76,19 +57,18 @@ HOWTO_CONSTRUCT					(	Renderer_t,
 	CALL						(	self->sdl,
 									SDL,
 									CreateRenderer,
-									sdl_window,
+									sdl_w,
 									-1,
 									0
 								);
 
-	ASSERT						(	self->sdl != NULL, ""	);
+	ASSERT						(	self->sdl != EMPTY, ""	);
 
-	CONSTRUCT					(	ARRAY ( Triangle2d_t ),
-									self->triangles_to_draw,
-									NULL
+	DEF							(	ARRAY ( Triangle2d_t ),
+									self->triangles_to_draw
 								);
 
-	CONSTRUCT					(	Mesh_t,
+	NEW							(	Mesh_t,
 									self->mesh,
 									"assets/cube.obj"
 								);
@@ -97,38 +77,37 @@ HOWTO_CONSTRUCT					(	Renderer_t,
 //	Create a color buffer that we'll use to paint our image inside the game
 //	loop.
 
-	CONSTRUCT					(	Color_buffer_t,
+	NEW							(	Color_buffer_t,
 									self->buffer,
 									window_w,
 									window_h,
 									PIXELFORMAT_ARGB8888
 								);
 
-	ASSERT						(	self->buffer != NULL,	" "	)	;
+	assert						(	self->buffer	);
 
 	// Create a texture for the color buffer
 
-	CONSTRUCT					(	Texture_t,
+	NEW							(	Texture_t,
 									self->texture,
 									self,
 									window_w,
 									window_h,
 									PIXELFORMAT_ARGB8888
-								)	;
+								);
 
-	ASSERT						(	self->texture != NULL,	" "	)	;
+	assert						(	self->texture	);
 
-	CONSTRUCT					(	Choreographer_t,
-									self->c_grapher,
-									NULL
-								)	;
+	DEF							(	Choreographer_t,
+									self->c_grapher
+								);
 
-	ASSERT						(	self->c_grapher != NULL,	" "	);
+	asert						(	self->c_grapher		);
 
 	origin_x					=	window_w  / (float) 2;
 	origin_y					=	window_h  / (float) 2;
 
-	CONSTRUCT					(	Point2d_t,
+	NEW							(	Point2d_t,
 									self->origin,
 									origin_x,
 									origin_y
@@ -161,14 +140,13 @@ METHOD							(	Renderer_t,
 
 	// copy color buffer into texture
 
-	CALL						(	ret,
-									SDL,
-									UpdateTexture,
-									self->texture->sdl,
-									NULL,
-									self->buffer->buffer[ 0 ],
-									self->texture->pitch
-								);
+	ret							=	__CALL	(	SDL,
+												UpdateTexture,
+												self->texture->sdl,
+												NULL,
+												self->buffer->buffer[ 0 ],
+												self->texture->pitch
+											);
 
 	if							(	ret	)
 	{
@@ -177,14 +155,13 @@ METHOD							(	Renderer_t,
 
 	// Ask SDL to display the texture
 
-	CALL						(	ret,
-									SDL,
-									RenderCopy,
-									self->sdl,
-									self->texture->sdl,
-									NULL,
-									NULL
-								);
+	ret							=	__CALL	(	SDL,
+												RenderCopy,
+												self->sdl,
+												self->texture->sdl,
+												NULL,
+												NULL
+											);
 
 	if							(	ret	)
 	{
@@ -202,7 +179,7 @@ METHOD                          (   Renderer_t,
 	int								width	= 0,
 									height	= 0;
 
-	CALLM						(	Color_buffer_t,
+	MSG							(	Color_buffer_t,
 									get_buffer_dimensions,
 									self->buffer,
 									&width,
@@ -213,7 +190,7 @@ METHOD                          (   Renderer_t,
         for                     (   int x = 0;   x < width;    x++   )
         {
 
-            CALLM               (   Color_buffer_t,
+            MSG               (   Color_buffer_t,
                                     paint_color,
                                     self,
                                     color,
@@ -230,16 +207,12 @@ METHOD							(	Renderer_t,
 								)
 {
 
-	bool							ret = FAIL;
-
-	TMP							(	Color_t,
-									black,
-									1
-								);
+	bool							ret		=	FAIL;
+	Color_t							*black	=	NULL;
 
     // Compose a Black color
 
-	COMPOSE						(	Color_t,
+	NEW							(	Color_t,
 									black,
 									0x00,      // no red
 									0x00,      // no green
@@ -251,7 +224,7 @@ METHOD							(	Renderer_t,
      // Fill the color buffer with our color to the full width and height of the
      // buffer
 
-    CALLM                       (   Renderer_t,
+    MSG		                    (   Renderer_t,
                                     fill_color_buffer,
                                     self,
                                     black
@@ -267,7 +240,7 @@ METHOD							(	Renderer_t,
 {
 	PUSH						(	Triangle2d_t,
 									triangle,
-									&self->triangles_to_draw
+									self->triangles_to_draw
 								);
 }
 
@@ -284,19 +257,52 @@ METHOD							(	Renderer_t,
 									1
 								);
 
-	for_each_item_in_array		(	&self->triangles_to_draw, idx	)
+	for_each_item_in_array		(	Triangle2d_t,	self->triangles_to_draw, idx	)
 	{
-		LOAD					(	Triangle2d_t,
+		LD						(	Triangle2d_t,
 									triangle,
-									&self->triangles_to_draw,
+									self->triangles_to_draw,
 									idx
 								);
 
 		DRAW					(	Triangle2d_t,
 									triangle,
-									&self->origin,
+									self->origin,
 									color,
 									self->buffer
 								);
 	}
+}
+
+METHOD							(	Renderer_t,
+									get_origin,
+									self,
+									Point2d_t *	out
+								)
+{
+	CPY							(	Point2d_t,
+									out,
+									self->origin
+								);
+
+	RETURN						(	self	);
+}
+
+METHOD							(	Renderer_t,
+									get_raw_buffer,
+									self,
+									int	idx,
+									uint32_t **	out
+								)
+{
+	assert						(	self	);
+
+	MSG							(	Color_buffer_t,
+									get_raw_buffer,
+									self->buffer,
+									idx,
+									out
+								);
+
+	RETURN						(	self	);
 }

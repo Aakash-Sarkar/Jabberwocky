@@ -7,7 +7,6 @@
 
 #include "array.h"
 #include "color.h"
-#include "cube.h"
 #include "display.h"
 #include "geometry.h"
 #include "mesh.h"
@@ -95,11 +94,10 @@ yo_sdl_init_everything			(	void	)
 
 	int								ret = -1;
 
-	CALL						(	ret,
-									SDL,
-									Init,
-									SDL_INIT_EVERYTHING
-								);
+	ret							=	__CALL	(	SDL,
+												Init,
+												SDL_INIT_EVERYTHING
+											);
 
 	if							(	ret != 0	)
 	{
@@ -115,16 +113,8 @@ static
 Renderer_t*
 setup							(	void	)
 {
-
-	PTR							(	Window_t,
-									w,
-									NULL
-								);
-
-	PTR							(	Renderer_t,
-									r,
-									NULL
-								);
+	Window_t						*window		=	NULL;
+	Renderer_t						*renderer	=	NULL;
 
 	int								numbufs		=	1;
 
@@ -140,11 +130,11 @@ setup							(	void	)
 	 * Ask SDL to create a window for us where we can render (show) our images.
 	 */
 
-	CONSTRUCT					(	w,
-									Window_t
+	DEF							(	Window_t,
+									window
 								);
 
-	if							(	!w	)
+	if							(	!window		)
 	{
 		LOG						(	"Couldn't create window\n"	);
 		RETURN					(	NULL	);
@@ -154,19 +144,19 @@ setup							(	void	)
 	 * Create a renderer so that we can talk to the SDL layer.
 	 */
 
-	CONSTRUCT					(	r,
-									Renderer_t,
-									w
+	NEW							(	Renderer_t,
+									renderer,
+									window
 								);
 
-	if							(	!r	)
+	if							(	!renderer	)
 	{
 		LOG						(	"Couldn't create renderer\n"	);
-		DESTRUCT				(	w,		Window_t	);
-		RETURN					(	NULL	);
+		DEL						(	Window_t,	window	);
+		RETURN					(	EMPTY	);
 	}
 
-	RETURN						(	r	);
+	RETURN						(	renderer	);
 }
 
 static
@@ -184,11 +174,10 @@ process_input					(	void	)
 	/*
 	 * Check for Keyboard inputs from the user
 	 */
-	CALL						(	ret,
-									SDL,
-									PollEvent,
-									event
-								);
+	ret							=	__CALL	(	SDL,
+												PollEvent,
+												event
+											);
 
 	switch						(	event->type		)
 	{
@@ -209,42 +198,12 @@ process_input					(	void	)
 
 
 static
-void
-get_s_normal					(	Triangle3d_t*	triangle	)
-{
-
-	TMP							(	Point3d_t,
-									p12,
-									1
-								);
-
-	TMP							(	Point3d_t,
-									p13,
-									1
-								);
-
-
-	SUB							(	Point3d_t,
-									p12,
-									&triangle->p2,
-									&triangle->p1
-								);
-
-	SUB							(	Point3d_t,
-									p13,
-									&triangle->p3,
-									&triangle->p1
-								);
-
-}
-
-static
 bool
 cull							(	Triangle3d_t*	triangle	)
 {
 
-	vec3_t							camera_ray	[ 1 ]	=	{ 0 };
-	vec3_t							camera		[ 1 ]	=	{ 0, 0, 0 };
+	Vec3_t							camera_ray	[ 1 ]	=	{ 0 };
+	Vec3_t							camera		[ 1 ]	=	{ 0, 0, 0 };
 
 
 	float							dotp	=	0;
@@ -272,30 +231,29 @@ update							(	Renderer_t*		renderer	)
 	int								ret		=	-1,
 									idx		=	0;
 
+	Mesh_t							*mesh	=	NULL;
 
-	PTR							(	Mesh_t,
-									mesh,
-									renderer->mesh
+	MSG							(	Renderer_t,
+									get_mesh,
+									renderer,
+									mesh
 								);
 
 
-	TMP							(	Triangle3d_t,
-									triangle,
-									1
+	Triangle3d_t					*triangle	=	NULL;
+	Vec3_t							*rotation	=	NULL;
+	Color_t							*color		=	NULL;
+
+	DEF							(	Triangle3d_t,
+									triangle
 								);
 
-	TMP							(	vec3_t,
+	NEW							(	Vec3_t,
 									rotation,
-									1
-								);
-	
-	TMP							(	Color_t,
-									color,
-									1
+									0.1f,	0.00f,	0.00f
 								);
 
-
-	COMPOSE						(	Color_t,
+	NEW							(	Color_t,
 									color,
 									0x00,
 									0xFF,
@@ -304,12 +262,7 @@ update							(	Renderer_t*		renderer	)
 								);
 
 
-	rotation->x					=	0.01f;
-	rotation->y					=	0.00f;
-	rotation->z					=	0.00f;
-
-
-	ROTATE						(	Mesh_t,
+	ROT							(	Mesh_t,
 									mesh,
 									rotation
 								);
@@ -317,30 +270,26 @@ update							(	Renderer_t*		renderer	)
 
 	for_each_triangle_in_mesh	(	triangle,	mesh,	idx		)
 	{
-
-		TMP						(	Triangle2d_t,
-									projection,
-									1
-								);
+		Triangle2d_t				*proj	=	NULL;
 
 		if						(	cull	(	triangle	)	)
 		{
 			continue;
 		}
 
-		triangle->p1.v.z += 5;
-		triangle->p2.v.z += 5;
-		triangle->p3.v.z += 5;
+		//triangle->p1.v.z += 5;
+		//triangle->p2.v.z += 5;
+		//triangle->p3.v.z += 5;
 
 
-		PROJECT					(	Triangle2d_t,		Triangle3d_t,
-									projection,			triangle,
+		PROJ					(	Triangle2d_t,		Triangle3d_t,
+									proj,				triangle,
 									ORTHOGRAPHIC
 								);
 
 
 		PUSH					(	Triangle2d_t,
-									projection,
+									proj,
 									&renderer->triangles_to_draw
 								);
 	}
@@ -361,13 +310,9 @@ render							(	Renderer_t*		renderer	)
 	int								ret		=	-1,
 									idx		=	0;
 
+	Color_t							*green	=	NULL;
 
-	TMP							(	Color_t,
-									green,
-									1
-								);
-
-	COMPOSE						(	Color_t,
+	NEW							(	Color_t,
 									green,
 									0x00,
 									0xFF,
@@ -376,16 +321,11 @@ render							(	Renderer_t*		renderer	)
 								);
 
 
-	for_each_item_in_array		(	&renderer->triangles_to_draw,	idx		)
+	for_each_item_in_array		(	ARRAY ( Triangle2d_t ), renderer->triangles_to_draw, idx	)
 	{
+		Triangle2d_t				*triangle	=	NULL;
 
-		TMP						(	Triangle2d_t,
-									triangle,
-									1
-								);
-
-
-		LOAD					(	Triangle2d_t,
+		LD						(	Triangle2d_t,
 									triangle,
 									&renderer->triangles_to_draw,
 									idx
@@ -433,10 +373,10 @@ render							(	Renderer_t*		renderer	)
 int
 main							(	int argc,	char** argv	)
 {
-	PTR							(	Renderer_t,	r,	NULL	);
+	Renderer_t						*renderer	=	NULL;
 
-	r							=	setup	(	);
-	if							(	!r	)
+	renderer					=	setup	(	);
+	if							(	!renderer	)
 	{
 		LOG						(	"Setup failed\n"	);
 		RETURN					(	1	);
@@ -445,8 +385,8 @@ main							(	int argc,	char** argv	)
 	LOOP						(	GAME	)
 	{
 		process_input			(	);
-		update					(	r	);
-		render					(	r	);
+		update					(	renderer	);
+		render					(	renderer	);
 	}
 	RETURN						(	0	);
 }

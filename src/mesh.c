@@ -10,13 +10,10 @@
 ////////////////////////////////////////////////////////////////////////////////
 //					Mesh Structures Implementation
 ////////////////////////////////////////////////////////////////////////////////
- 
-
 
 
 struct									Mesh
 {
-
 ////////////////////////////////////////////////////////////////////////////////
 //
 //		Points array is where we store all the vertices of our mesh from
@@ -25,7 +22,7 @@ struct									Mesh
 //
 ////////////////////////////////////////////////////////////////////////////////
 
-	const ARRAY ( Point3d_t ) *			points	;
+	const ARRAY ( Point3d_t ) *			points;
 
 ////////////////////////////////////////////////////////////////////////////////
 //
@@ -35,7 +32,7 @@ struct									Mesh
 //
 ////////////////////////////////////////////////////////////////////////////////
 
-	const ARRAY ( Face_t ) *			faces	;
+	const ARRAY ( Face_t ) *			faces;
 
 ////////////////////////////////////////////////////////////////////////////////
 //
@@ -46,11 +43,11 @@ struct									Mesh
 //
 ////////////////////////////////////////////////////////////////////////////////
 
-	ARRAY ( Triangle3d_t ) *			triangles	;
+	ARRAY ( Triangle3d_t ) *			triangles;
 
-	ARRAY ( Point3d_t ) *				normals	;
+	ARRAY ( Point3d_t ) *				normals;
 
-	Vec3_t *							rotation	;
+	Vec3_t *							rotation;
 }	;
 
 
@@ -96,26 +93,17 @@ struct									Mesh
 //////////////////////////////////////////////////////////////////////////////////
 
 
-struct									Face
-{
-	int									idx1	;
-
-	int									idx2	;
-
-	int									idx3	;
-}	;
+struct					Face		{	int		idx1;
+										int		idx2;
+										int		idx3;
+									};
 
 
-DECL_ARRAY							(	Face_t	)
-{
-	int *								idx1	;
-
-	int *								idx2	;
-
-	int *								idx3	;
-
-	int									count	;
-}	;
+DECL_ARRAY			( Face_t )		{	int *	idx1;
+										int *	idx2;
+										int *	idx3;
+										int		count;
+									};
 
 
 
@@ -125,33 +113,24 @@ DECL_ARRAY							(	Face_t	)
 ////////////////////////////////////////////////////////////////////////////////
 
 
-HOWTO_COPY							(	Face_t,		to,	from	)
+HOWTO_CPY							(	Face_t,		to,	from	)
 {
-	to->idx1						=	from->idx1	;
-
-	to->idx2						=	from->idx2	;
-
-	to->idx3						=	from->idx3	;
+	to->idx1						=	from->idx1;
+	to->idx2						=	from->idx2;
+	to->idx3						=	from->idx3;
 }
 
 
 HOWTO_CONSTRUCT						(	Face_t,
 										self,
-										int		idx1,
-										int		idx2,
-										int		idx3
+										int			idx1,
+										int			idx2,
+										int			idx3
 									)
 {
-	ALLOC_ZEROED					(	Face_t,
-										self,
-										1
-									);
-
-	ASSERT							(	self != NULL, " "	)	;
-
-	self->idx1						=	idx1	;
-	self->idx2						=	idx2	;
-	self->idx3						=	idx3	;
+	self->idx1						=	idx1;
+	self->idx2						=	idx2;
+	self->idx3						=	idx3;
 }
 
 
@@ -165,65 +144,43 @@ HOWTO_CONSTRUCT						(	Mesh_t,
 	char								buf [ 512 ]	= { 0 };
 
 
-	PTR								(	FILE,
-										file,
-										NULL
-									)	;
+	FILE								*file	=	NULL;
+	Face_t								*face	=	NULL;
 
 
-	TMP								(	Face_t,
-										face,
-										1
-									)	;
+	DEF								(	ARRAY ( Face_t ),
+										self->faces
+									);
+
+	DEF								(	ARRAY ( Point3d_t ),
+										self->points
+									);
+
+	DEF								(	ARRAY ( Point3d_t ),
+										self->normals
+									);
+
+	DEF								(	ARRAY ( Triangle3d_t ),
+										self->triangles
+									);	
 
 
-
-	ALLOC_ZEROED					(	Mesh_t,
-										self,
-										1
-									)	;
-
-	ASSERT							(	self != NULL, " "	)	;
-
-
-	CONSTRUCT						(	ARRAY ( Face_t ),
-										self->faces,
-										NULL
-									)	;
-
-	CONSTRUCT						(	ARRAY ( Point3d_t ),
-										self->points,
-										NULL
-									)	;
-
-	CONSTRUCT						(	ARRAY ( Point3d_t ),
-										self->normals,
-										NULL
-									)	;
-
-	CONSTRUCT						(	ARRAY ( Triangle3d_t ),
-										self->triangles,
-										NULL
-									)	;	
-
-
-	CONSTRUCT						(	Vec3_t,
-										self->rotation,
-										0,	0,	0
-									)	;
+	DEF								(	Vec3_t,
+										self->rotation
+									);
 
 
 	fopen							(	&file,
 										filename,
 										"r"
-									)	;
+									);
 
 	if								(	!file	)
 	{
 		LOG							(	"File not found: %s\n",
 										filename
 									)	;
-		RETURN						(	NULL	);
+		RETURN						(	EMPTY	);
 	}
 
 	while							(	fgets	(	buf,
@@ -232,58 +189,57 @@ HOWTO_CONSTRUCT						(	Mesh_t,
 												)
 									)
 	{
+		Point3d_t						*point	=	NULL;
 
-		PTR							(	Point3d_t,
-										point,
-										1
-									)	;
-
-		TMP							(	Face_t,
-										face,
-										1
-									)	;
-
-		int								tmp = 0;
-		int								x = 0,
-										y = 0,
-										z = 0;
+		int								tmp		=	0;
+		int								x		=	0,
+										y		=	0,
+										z		=	0;
 
 		if							(	!strncmp	(	buf, "v ", 2	)	)
 		{
 			sscanf					(	buf,
 										"v %f %f %f",
 										&x, &y, &z
-									)	;
+									);
 
-			CONSTRUCT				(	Point3d_t,
+			NEW						(	Point3d_t,
 										point,
 										x, y, z
-									)	;
+									);
 
 			PUSH					(	Point3d_t,
 										point,
-										&self->points
-									)	;
+										self->points
+									);
 
-			DESTRUCT				(	Point3d_t,
+			DEL						(	Point3d_t,
 										point
-									)	;
+									);
 		}
 
 
 		else if						(	!strncmp	(	buf, "f ", 2	)	)
 		{
+			DEF						(	Face_t,
+										face
+									);
+
 			sscanf					(	buf,
 										"f %d/%d/%d %d/%d/%d %d/%d/%d",
 										&face->idx1,	&tmp,	&tmp,
 										&face->idx2,	&tmp,	&tmp,
 										&face->idx3,	&tmp,	&tmp
-									)	;
+									);
 
 			PUSH					(	Face_t,
 										face,
 										self->faces
-									)	;
+									);
+
+			DEL						(	Face_t,
+										face
+									);
 		}
 	}
 
@@ -310,15 +266,15 @@ HOWTO_CONSTRUCT						(	Mesh_t,
 
 	for_each_face_in_mesh			(	face,	self,	idx	)
 	{
+		Triangle3d_t					*triangle	=	NULL;
 
-		TMP							(	Triangle3d_t,
-										triangle,
-										1
+		DEF							(	Triangle3d_t,
+										triangle
 									);
 
-		*triangle					=	create_triangle_from_face	(	face,	self	);
+		triangle					=	create_triangle_from_face ( face,	self );
 
-		STORE						(	Triangle3d_t,
+		STR							(	Triangle3d_t,
 										triangle,
 										self->triangles,
 										idx
@@ -336,21 +292,21 @@ HOWTO_CONSTRUCT						(	Mesh_t,
 
 
 
-HOWTO_ARRAY_INIT					(	Face_t,		self	)
+HOWTO_ARRAY_INIT					(	ARRAY ( Face_t ),	self	)
 {
-	self->idx1						=	NULL	;
-	self->idx2						=	NULL	;
-	self->idx3						=	NULL	;
+	self->idx1						=	EMPTY;
+	self->idx2						=	EMPTY;
+	self->idx3						=	EMPTY;
 
-	self->count						=	0	;
+	self->count						=	0;
 }
 
 
-HOWTO_ARRAY_RESET					(	Face_t,		self	)
+HOWTO_ARRAY_RESET					(	ARRAY ( Face_t ),	self	)
 {
-	array_free						(	self->idx1	)	;
-	array_free						(	self->idx2	)	;
-	array_free						(	self->idx3	)	;
+	array_free						(	self->idx1	);
+	array_free						(	self->idx2	);
+	array_free						(	self->idx3	);
 
 	self->count						=	0	;
 }
@@ -361,59 +317,27 @@ HOWTO_CONSTRUCT						(	ARRAY ( Face_t ),
 										void*	null
 									)
 {
-	ALLOC_ZEROED					(	ARRAY( Face_t ),
-										self,
-										1
-									);
-
-	ASSERT							(	self != NULL, " "	)	;
-
-	ARRAY_INIT						(	Face_t,	self	)	;
+	INIT							(	ARRAY ( Face_t ),	self	);
 }
 
 
-HOWTO_LOAD							(	Face_t,	self,	array,	idx	)
+HOWTO_DESTRUCT					(	ARRAY ( Face_t ),	self	)
 {
-	self->idx1						=	array->idx1	[ idx ]	;
-
-	self->idx2						=	array->idx2	[ idx ]	;
-
-	self->idx3						=	array->idx3	[ idx ]	;
-}
-
-HOWTO_PUSH							(	Face_t,	self,	array	)
-{
-	array_push						(	array->idx1,	self->idx1	)	;
-
-	array_push						(	array->idx2,	self->idx2	)	;
-
-	array_push						(	array->idx3,	self->idx3	)	;
-
-	array->count++	;
 }
 
 
-HOWTO_STORE							(	Face_t,	self,	array,	idx		)
+HOWTO_LD							(	Face_t,	self,	array,	idx	)
 {
+	self->idx1						=	array->idx1	[ idx ];
+	self->idx2						=	array->idx2	[ idx ];
+	self->idx3						=	array->idx3	[ idx ];
+}
 
-	TMP								(	Face_t,
-										zero,
-										1
-									)	;
-
-	while							(	array->count	<=	idx		)
-	{
-		PUSH						(	Face_t,
-										zero,
-										array
-									)	;
-	}
-
-	array->idx1 [ idx ]				=	self->idx1	;
-
-	array->idx2 [ idx ]				=	self->idx2	;
-
-	array->idx3 [ idx ]				=	self->idx3	;
+HOWTO_STR							(	Face_t,	self,	array,	idx		)
+{
+	array->idx1 [ idx ]				=	self->idx1;
+	array->idx2 [ idx ]				=	self->idx2;
+	array->idx3 [ idx ]				=	self->idx3;
 }
 
 
@@ -423,65 +347,56 @@ get_surface_normal					(	Face_t*			face,
 										Point3d_t*		normal
 									)
 {
+	Point3d_t							*p1		=	NULL,
+										*p2		=	NULL,
+										*p3		=	NULL;
 
-	TMP								(	Point3d_t,
-										point,
-										3
-									)	;
-
-	TMP								(	Point3d_t,
-										p12,
-										1
-									)	;
-
-	TMP								(	Point3d_t,
-										p13,
-										1
-									)	;
+	Point3d_t							*p12	=	NULL,
+										*p13	=	NULL;
 
 
-	LOAD							(	Point3d_t,
-										point,
+	LD								(	Point3d_t,
+										p1,
 										mesh->points,
 										face->idx1	-	1
-									)	;
+									);
 
-	LOAD							(	Point3d_t,
-										point + 1,
+	LD								(	Point3d_t,
+										p2,
 										mesh->points,
 										face->idx2	-	1
-									)	;
+									);
 
-	LOAD							(	Point3d_t,
-										point + 2,
+	LD								(	Point3d_t,
+										p3,
 										mesh->points,
 										face->idx3	-	1
-									)	;
+									);
 
 
 	SUB								(	Point3d_t,
 										p12,
-										point	+	1,
-										point
-									)	;
+										p2,
+										p1
+									);
 
 	SUB								(	Point3d_t,
 										p13,
-										point	+	2,
-										point
-									)	;
+										p3,
+										p1
+									);
 
 
 	CROSSP							(	Point3d_t,
 										normal,
 										p12,
 										p13
-									)	;
+									);
 
 
 	NORM							(	Point3d_t,
 										normal
-									)	;
+									);
 }
 
 
@@ -489,66 +404,83 @@ get_surface_normal					(	Face_t*			face,
 
 
 
-Triangle3d_t
-create_triangle_from_face			(	Face_t* face,	Mesh_t* mesh	)
+Triangle3d_t*
+create_triangle_from_face			(	Face_t * face,	Mesh_t * mesh	)
 {
+	Triangle3d_t						*triangle	=	NULL;
 
-	TMP								(	Triangle3d_t,
-										triangle,
-										1
-									);
+	Point3d_t							*p1	=	NULL,
+										*p2	=	NULL,
+										*p3	=	NULL;
 
-	TMP								(	Point3d_t,
-										point,
-										3
-									);
-
-	TMP								(	Point3d_t,
-										normal,
-										1
-									);
-
-	LOAD							(	Point3d_t,
-										point,
-										&mesh->points,
+	LD								(	Point3d_t,
+										p1,
+										mesh->points,
 										face->idx1	-	1
 									);
 
-	LOAD							(	Point3d_t,
-										point + 1,
-										&mesh->points,
+	LD								(	Point3d_t,
+										p2,
+										mesh->points,
 										face->idx2	-	1
 									);
 
-	LOAD							(	Point3d_t,
-										point + 2,
-										&mesh->points,
+	LD								(	Point3d_t,
+										p3,
+										mesh->points,
 										face->idx3	-	1
 									);
 
-	COMPOSE							(	Triangle3d_t,
-										triangle,
-										point,
-										point		+	1,
-										point		+	2
+	float								x1	=	0,
+										y1	=	0,
+										z1	=	0;
+
+	MSG								(	Point3d_t,
+										decompose,
+										p1,
+										&x1,	&y1,	&z1
 									);
 
-	RETURN							(	*triangle	);
+	float								x2	=	0,
+										y2	=	0,
+										z2	=	0;
+
+	MSG								(	Point3d_t,
+										decompose,
+										p2,
+										&x2,	&y2,	&z2
+									);
+
+	float								x3	=	0,
+										y3	=	0,
+										z3	=	0;
+
+	MSG								(	Point3d_t,
+										decompose,
+										p3,
+										&x3,	&y3,	&z3
+									);
+
+	NEW								(	Triangle3d_t,
+										triangle,
+										x1,		y1,		z1,
+										x2,		y2,		z2,
+										x3,		y3,		z3
+									);
+
+	RETURN							(	triangle	);
 }
 
 
 
-HOWTO_ROTATE						(	Mesh_t,
+HOWTO_ROT							(	Mesh_t,
 										self,
 										Vec3_t*		rotation
 									)
 {
 	int									idx	=	0;
 
-	PTR								(	Triangle3d_t,
-										triangle,
-										1
-									);
+	Triangle3d_t						*triangle	=	NULL:
 
 	INC								(	vec3_t,
 										self->rotation,
@@ -558,16 +490,66 @@ HOWTO_ROTATE						(	Mesh_t,
 
 	for_each_triangle_in_mesh		(	triangle,	self,	idx		)
 	{
-		ROTATE						(	Triangle3d_t,
+		ROT							(	Triangle3d_t,
 										triangle,
 										rotation
 									);
 
-		STORE						(	Triangle3d_t,
+		STR							(	Triangle3d_t,
 										triangle,
-										&mesh->triangles,
+										self->triangles,
 										idx
 									);
 	}
+}
+
+
+METHOD							(	Mesh_t,
+									create_triangle_from_face,
+									self,
+									Face_t *		face,
+									Triangle3d_t *	out
+								)
+{
+	Point3d_t						*p1	=	NULL,
+									*p2	=	NULL,
+									*p3	=	NULL;
+
+	Triangle3d_t					*triangle	=	NULL;
+
+
+	DEF							(	Point3d_t,
+									p1
+								);
+
+	DEF							(	Point3d_t,
+									p2
+								);
+
+	DEF							(	Point3d_t,
+									p3
+								);
+
+	DEF							(	Triangle3d_t,
+									triangle
+								);
+
+	LD							(	Point3d_t,
+									p1,
+									self->points,
+									face->idx1
+								);
+
+	LD							(	Point3d_t,
+									p2,
+									self->points,
+									face->idx2
+								);
+
+	LD							(	Point3d_t,
+									p3,
+									self->points,
+									face->idx3
+								);
 }
 

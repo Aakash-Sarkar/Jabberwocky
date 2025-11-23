@@ -4,18 +4,16 @@
 
 #pragma once
 
-#include "object.h"
 #include "point.h"
 #include "triangle.h"
-#include "geometry.h"
 
 
 
-typedef								struct Face							Face_t;
+typedef						struct Face							Face_t;
 
-typedef								DECL_ARRAY ( Face_t )				ARRAY( Face_t );
+typedef						DECL_ARRAY ( Face_t )				ARRAY ( Face_t );
 
-typedef								struct Mesh							Mesh_t;
+typedef						struct Mesh							Mesh_t;
 
 
 
@@ -25,29 +23,25 @@ typedef								struct Mesh							Mesh_t;
 ////////////////////////////////////////////////////////////////////////////////
 
 
-HOWTO_COPY						(	Face_t,		to,	from	)	;
+HOWTO_CPY						(	Face_t,		to,	from	);
 
 HOWTO_CONSTRUCT					(	Face_t,
 									self,
-									int		idx1,
-									int		idx2,
-									int		idx3
-								)	;
+									int			idx1,
+									int			idx2,
+									int			idx3
+								);
 
 HOWTO_CONSTRUCT					(	Mesh_t,
 									self,
-									char*		filename
-								)	;
+									char *		filename
+								);
 
 
-HOWTO_DESTRUCT					(	Face_t,
-									self
-								)	;
+HOWTO_DESTRUCT					(	Face_t,	self	);
 
 
-HOWTO_DESTRUCT					(	Mesh_t,
-									self
-								)	;
+HOWTO_DESTRUCT					(	Mesh_t,	self	);
 
 
 /////////////////////////////////////////////////////////////////////////////////
@@ -55,57 +49,65 @@ HOWTO_DESTRUCT					(	Mesh_t,
 /////////////////////////////////////////////////////////////////////////////////
 
 
-HOWTO_ARRAY_INIT				(	Face_t,		self	)	;
+HOWTO_ARRAY_INIT				(	ARRAY ( Face_t ),	self	);
 
-HOWTO_ARRAY_RESET				(	Face_t,		self	)	;
+HOWTO_ARRAY_RESET				(	ARRAY ( Face_t ),	self	);
 
 
 HOWTO_CONSTRUCT					(	ARRAY ( Face_t ),
 									self,
 									void*	null
-								)	;
+								);
 
-HOWTO_DESTRUCT					(	ARRAY ( Face_t ),
-									self
-								)	;
+HOWTO_DESTRUCT					(	ARRAY ( Face_t ),	self	);
 
-HOWTO_LOAD						(	Face_t,		self,	array,	idx		)	;
+HOWTO_LD						(	Face_t,		self,	array,	idx	);
 
-HOWTO_PUSH						(	Face_t,		self,	array	)	;
-
-HOWTO_STORE						(	Face_t,		self,	array,	idx		)	;
+HOWTO_STR						(	Face_t,		self,	array,	idx	);
 
 
-Triangle3d_t
-create_triangle_from_face		(	Face_t* face,	Mesh_t* mesh	)	;
+Triangle3d_t*
+create_triangle_from_face		(	Face_t * face,	Mesh_t * mesh	);
 
 
 void
-get_surface_normal				(	Face_t *			face,
-									Mesh_t *			mesh,
-									Point3d_t *			normal
-								)	;
+get_surface_normal				(	Face_t *		face,
+									Mesh_t *		mesh,
+									Point3d_t *		normal
+								);
 
 
 
-HOWTO_ROTATE					(	Mesh_t,
+HOWTO_ROT						(	Mesh_t,
 									self,
-									Vec3_t*		rotation
-								)	;
+									Vec3_t *	rotation
+								);
 
+
+
+
+METHOD							(	Mesh_t,
+									get_face_vertices,
+									self,
+									Face_t *	Face,
+									Point3d_t*	points[3]
+								);
 
 
 
 #define																					\
 for_each_face_in_mesh(	face,	mesh,	idx)	for	(	idx = 0,						\
-														LOAD	(	Face_t,				\
+														_LD		(	Face_t,				\
 																	face,				\
 																	mesh->faces,		\
 																	0					\
 																);						\
-														idx	<	mesh->faces->count;		\
+														idx	<	COUNT (					\
+																	ARRAY ( Face_t ),	\
+																	mesh->faces			\
+																);						\
 														idx++,							\
-														LOAD	(						\
+														_LD		(						\
 																	Face_t,				\
 																	face,				\
 																	mesh->faces,		\
@@ -117,14 +119,17 @@ for_each_face_in_mesh(	face,	mesh,	idx)	for	(	idx = 0,						\
 
 #define																					\
 for_each_point_in_mesh(point, mesh, idx)		for	(	idx = 0,						\
-														LOAD	(	Point3d_t,			\
+														_LD		(	Point3d_t,			\
 																	point,				\
 																	mesh->points,		\
 																	0					\
 																);						\
-														idx	<	mesh->points->count;	\
+														idx	<	COUNT (					\
+																	ARRAY ( Point3d_t ),\
+																	mesh->points		\
+																);						\
 														idx++,							\
-														LOAD	(						\
+														_LD		(						\
 																	Point3d_t,			\
 																	point,				\
 																	mesh->points,		\
@@ -137,14 +142,17 @@ for_each_point_in_mesh(point, mesh, idx)		for	(	idx = 0,						\
 
 #define																					\
 for_each_triangle_in_mesh(triangle, mesh, idx)	for	(	idx = 0,						\
-														LOAD	(	Triangle3d_t,		\
+														_LD		(	Triangle3d_t,		\
 																	triangle,			\
 																	mesh->triangles,	\
 																	0					\
 																);						\
-														idx	<	mesh->triangles->count;	\
+														idx	<	COUNT (					\
+																	ARRAY(Triangle3d_t),\
+																	mesh->triangles		\
+																);						\
 														idx++,							\
-														LOAD	(						\
+														_LD		(						\
 																	Triangle3d_t,		\
 																	triangle,			\
 																	mesh->triangles,	\

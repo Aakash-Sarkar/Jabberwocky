@@ -2,7 +2,6 @@
  * SPDX-License-Identifier: MIT
  */
 
-
 #pragma once
 
 #include "array.h"
@@ -18,76 +17,75 @@
 //////////////////////////////////////////////////////////////////////////////////
 //
 //
-//		Points are the building blocks of any 2D/3D object model. Any
-//		object model that we see in a video game (tables, chairs, enemies
-//		etc.) are all described as a collection of points (aka. vertices).
-//		These points collectively describe the silhouette of the object
-//		model on top of which we paint color.
+//		Points are one of the building blocks of a 3D model. Any object model
+//		that we see in a video game (tables, chairs, enemies e.t.c. ) are all
+//		described as a collection of points ( a.k.a. vertices ). These points
+//		collectively describe the silhouette of the object; on which we paint
+//		our colors.
 //
 //
-//		Typically, one would represent a point as a set of three numbers
-//		describing the X, Y and Z co-ordinates of the point. However, in
-//		Computer Graphics it is much more convenient to represent a point
-//		as a vector with three components. i.e. we treat the X, Y and Z
-//		co-ordinates of a 3D point as the components of a 3D vector.
+//		Typically, one would represent a point ( or vertex) as a set of three
+//		numbers describing the X, Y and Z co-ordinates of that point. However
+//		in Graphics it's much more convenient to think of a point as a vector
+//		with three components. i.e. we treat the X, Y and Z co-ordinates of a
+//		3D point as the components of a 3D vector.
 //
 //
-//		In other words, one can also think of each point in a 3D space as
-//		a vector starting from the origin to that point.
+//		In other words, one can think of each point in a 3D space as a vector
+//		starting from the origin to that point.
 //
 //
 //							Y
 //							^
 //							|
-//							|
+//							|		  Z
 //							|		/		@			-->  3D point
 //							|     /		+
 //							|   /	+					-->  Point vector
 //							| / +
-//							+------------------ >  X
+//							+ - - - - - - - - - >  X
 //
 //
 //
-//		This gives us several advantages:
+//		This representation provides us with several advantages:
 //
-//		1.	We can now perform vector operations on the points and follow
-//			the rules of vector algebra.
+//		1.	We can now perform vector operations on our points, and follow
+//			the rules of vector algebra. This spares us from inventing our
+//			own mathematics for vertex processing.
 //
 // 
-//		2.	We can change or tranform the position of a point in any way
-//			we like by multiplying it with a matrix. we can use this
-//			property of a line to move the object model around by moving
-//			the individual points on the model one by one.		
+//		2.	We can now change the position of any point in the manner that
+//			we want, by simply multiplying the corresponding vector with a
+//			matrix. we can use this property of vectors to move the object
+//			model around by moving the individual points on that model one
+//			by one.		
 //
 //
-//		3.	We can change the co-ordinate system of the point. i.e, how
-//			would the object look if viewed by someone else. When Artists
-//			create an object model, they choose the co-ordinate system as
-//			viewed by the object itself. i.e, the origin would be located
-//			near the centre of the object or somewhere inside the object
-//			itself. This co-ordinate system is also called as the object
-//			space. The game needs to change these points to a co-ordinate
-//			system as viewed by the user ( camera space ).
+//		3.	We can now transform the co-ordinate system of our point. That
+//			is, what will the point's (or vector's) co-ordinates look like
+//			if we take it to a new co-ordinate system. If we can determine
+//			the new co-ordinates for all of the points in our object, then
+//			we can find out how our object would look if viewed by someone
+//			else. This can be acheived by multiplying each point of object
+//			with an appropriate matrix (aka. linear transformations).
 //
 //
-//		How do we know which matrix to use with which point in order to get
-//		the desired movement? This is where game physics comes into play.
-//		By using simplified equations of physics, we can obtain matrices to
-//		create simple motions (oscillations, rotations etc). We can create
-//		more complex animations by composing together these simple motions.
+//		All of the operations listed above, are conducted by a shader program
+//		during the vetex processing stage of the graphics pipeline before the
+//		next frame can be displayed to the user. 
 //
 //
 //////////////////////////////////////////////////////////////////////////////////
 
 
-typedef						struct	Point3d							Point3d_t	;
+typedef						struct	Point3d							Point3d_t;
 
-typedef						struct	Point2d							Point2d_t	;
+typedef						struct	Point2d							Point2d_t;
 
 
-typedef						DECL_ARRAY	( Point2d_t )		ARRAY ( Point2d_t )	;
+typedef						DECL_ARRAY	( Point2d_t )		ARRAY ( Point2d_t );
 
-typedef						DECL_ARRAY	( Point3d_t )		ARRAY ( Point3d_t )	;
+typedef						DECL_ARRAY	( Point3d_t )		ARRAY ( Point3d_t );
 
 
 
@@ -99,46 +97,34 @@ typedef						DECL_ARRAY	( Point3d_t )		ARRAY ( Point3d_t )	;
 
 
 
-HOWTO_COPY					(	Point2d_t,	to,		from	)	;
+HOWTO_CPY					(	Point2d_t,	to,	from	);
 
-HOWTO_COPY					(	Point3d_t,	to,		from	)	;
+HOWTO_CPY					(	Point3d_t,	to,	from	);
 
 
-HOWTO_COMPOSE				(	Point2d_t,
-								self,
-								float		x,
-								float		y
-							)	;
-
-HOWTO_COMPOSE				(	Point3d_t,
-								self,
-								float		x,
-								float		y,
-								float		z
-							)	;
 
 
 HOWTO_CONSTRUCT				(	Point2d_t,
 								self,
 								float		x,
 								float		y
-							)	;
+							);
 
 HOWTO_CONSTRUCT				(	Point3d_t,
 								self,
 								float		x,
 								float		y,
 								float		z
-							)	;
+							);
 
 
 HOWTO_DESTRUCT				(	Point2d_t,
 								self
-							)	;
+							);
 
 HOWTO_DESTRUCT				(	Point3d_t,
 								self
-							)	;
+							);
 
 
 
@@ -150,48 +136,53 @@ HOWTO_DESTRUCT				(	Point3d_t,
 
 
 
-HOWTO_ARRAY_INIT			(	Point2d_t,	self	)	;
+HOWTO_ARRAY_INIT			(	ARRAY ( Point2d_t ),	self	);
 
-HOWTO_ARRAY_INIT			(	Point3d_t,	self	)	;
+HOWTO_ARRAY_INIT			(	ARRAY ( Point3d_t ),	self	);
 
 
-HOWTO_ARRAY_RESET			(	Point2d_t,	self	)	;
+HOWTO_ARRAY_RESET			(	ARRAY ( Point2d_t ),	self	);
 
-HOWTO_ARRAY_RESET			(	Point3d_t,	self	)	;
+HOWTO_ARRAY_RESET			(	ARRAY ( Point3d_t ),	self	);
 
 
 HOWTO_CONSTRUCT				(	ARRAY ( Point2d_t ),
 								self,
 								void*	null
-							)	;
+							);
 
 HOWTO_CONSTRUCT				(	ARRAY ( Point3d_t ),
 								self,
 								void*	null
-							)	;
+							);
 
 HOWTO_DESTRUCT				(	ARRAY ( Point2d_t ),
 								self
-							)	;
+							);
 
 HOWTO_DESTRUCT				(	ARRAY ( Point3d_t ),
 								self
-							)	;
+							);
 
 
-HOWTO_LOAD					(	Point2d_t,	self,	array,	idx	)	;
+HOWTO_LD					(	Point2d_t,	self,	array,	idx	);
 
-HOWTO_LOAD					(	Point3d_t,	self,	array,	idx	)	;
-
-
-HOWTO_STORE					(	Point2d_t,	self,	array,	idx	)	;
-
-HOWTO_STORE					(	Point3d_t,	self,	array,	idx	)	;
+HOWTO_LD					(	Point3d_t,	self,	array,	idx	);
 
 
-HOWTO_PUSH					(	Point2d_t,	self,	array	)	;
+HOWTO_STR					(	Point2d_t,	self,	array,	idx	);
 
-HOWTO_PUSH					(	Point3d_t,	self,	array	)	;
+HOWTO_STR					(	Point3d_t,	self,	array,	idx	);
+
+
+HOWTO_COUNT					(	ARRAY ( Point2d_t ),	self	);
+
+HOWTO_COUNT					(	ARRAY ( Point3d_t ),	self	);
+
+
+HOWTO_INC					(	ARRAY ( Point2d_t ),	self,	int inc	);
+
+HOWTO_INC					(	ARRAY ( Point3d_t ),	self,	int inc	);
 
 
 
@@ -202,37 +193,37 @@ HOWTO_PUSH					(	Point3d_t,	self,	array	)	;
 
 
 
-HOWTO_ROTATE				(	Point2d_t,
+HOWTO_ROT					(	Point2d_t,
 								self,
 								Vec2_t*		angle
-							)	;
+							);
 
-HOWTO_ROTATE				(	Point3d_t,
+HOWTO_ROT					(	Point3d_t,
 								self,
 								Vec3_t*		angle
-							)	;
+							);
 
 
 HOWTO_DRAW					(	Point2d_t,
 								self,
 								Color_t*			color,
 								Renderer_t*			renderer
-							)	;
+							);
 
 
 HOWTO_DRAW					(	Point3d_t,
 								self,
 								Color_t*			color,
 								Renderer_t*			renderer
-							)	;
+							);
 
 
 
 
-HOWTO_PROJECT				(	Point2d_t,			Point3d_t,
+HOWTO_PROJ					(	Point2d_t,			Point3d_t,
 								to,					from,
 								Projection_type_t	type
-							)	;
+							);
 
 
 
@@ -244,41 +235,41 @@ HOWTO_PROJECT				(	Point2d_t,			Point3d_t,
 
 
 
-HOWTO_ADD					(	Point2d_t,	dst,	op1,	op2	)	;
+HOWTO_ADD					(	Point2d_t,	dst,	op1,	op2	);
 
-HOWTO_ADD					(	Point3d_t,	dst,	op1,	op2	)	;
-
-
-HOWTO_SUB					(	Point2d_t,	dst,	op1,	op2	)	;
-
-HOWTO_SUB					(	Point3d_t,	dst,	op1,	op2	)	;
+HOWTO_ADD					(	Point3d_t,	dst,	op1,	op2	);
 
 
-HOWTO_MUL					(	Point2d_t,	dst,	src,	factor	)	;
+HOWTO_SUB					(	Point2d_t,	dst,	op1,	op2	);
 
-HOWTO_MUL					(	Point3d_t,	dst,	src,	factor	)	;
-
-
-HOWTO_DIV					(	Point2d_t,	dst,	src,	factor	)	;
-
-HOWTO_DIV					(	Point3d_t,	dst,	src,	factor	)	;
+HOWTO_SUB					(	Point3d_t,	dst,	op1,	op2	);
 
 
-HOWTO_NORM					(	Point2d_t,	self	)	;
+HOWTO_MUL					(	Point2d_t,	dst,	src,	factor	);
 
-HOWTO_NORM					(	Point3d_t,	self	)	;
-
-
-HOWTO_INC					(	Point2d_t,	self,	inc		)	;
-
-HOWTO_INC					(	Point3d_t,	self,	inc		)	;
+HOWTO_MUL					(	Point3d_t,	dst,	src,	factor	);
 
 
-HOWTO_DOTP					(	Point2d_t,	dst,	src1,	src2	)	;
+HOWTO_DIV					(	Point2d_t,	dst,	src,	factor	);
 
-HOWTO_DOTP					(	Point3d_t,	dst,	src1,	src2	)	;
+HOWTO_DIV					(	Point3d_t,	dst,	src,	factor	);
 
 
-HOWTO_CROSSP				(	Point3d_t,	dst,	src1,	src2	)	;
+HOWTO_NORM					(	Point2d_t,	self	);
+
+HOWTO_NORM					(	Point3d_t,	self	);
+
+
+HOWTO_INC					(	Point2d_t,	self,	Point2d_t * inc		);
+
+HOWTO_INC					(	Point3d_t,	self,	Point2d_t * inc		);
+
+
+HOWTO_DOTP					(	Point2d_t,	dst,	src1,	src2	);
+
+HOWTO_DOTP					(	Point3d_t,	dst,	src1,	src2	);
+
+
+HOWTO_CROSSP				(	Point3d_t,	dst,	src1,	src2	);
 
 

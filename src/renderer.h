@@ -37,18 +37,31 @@ METHOD							(	Renderer_t,
 METHOD							(	Renderer_t,
 									clear_color_buffer,
 									self,
-                                    void*		null
+                                    void*	EMPTY
 								);
 
 
 METHOD							(	Renderer_t,
 									render_color_buffer,
 									self,
-									void*		null
+									void*	EMPTY
 								);
 
 METHOD							(	Renderer_t,
 									store_triangle,
 									self,
-									Triangle2d_t*	triangle
+									Triangle2d_t *	triangle
+								);
+
+METHOD							(	Renderer_t,
+									get_origin,
+									self,
+									Point2d_t *	out
+								);
+
+METHOD							(	Renderer_t,
+									get_raw_buffer,
+									self,
+									int	idx,
+									uint32_t **	out
 								);

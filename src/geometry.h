@@ -10,31 +10,57 @@
 
 
 
-#define rotator(class)								concat3(rotate, _, class)
+#define rotator(class)								concat3			(rotate, _, class)
 
-#define	HOWTO_ROTATE(class, self, ...)				class*												\
-													rotator( class )	(	class*	self,				\
-																			__VA_ARGS__		)
+#define	HOWTO_ROT(class, self, ...)					class*												\
+													rotator			( class ) (	class* self,			\
+																				__VA_ARGS__		)
 
-#define	ROTATE( class, self, ... )					rotator( class )	( self,	__VA_ARGS__ )
+#define	_ROT( class, self, ... )					rotator			( class ) ( self,	__VA_ARGS__ )
+
+#define	ROT( class, self, ... )						do	{												\
+															assert	(	self	);						\
+															_ROT	(	class,							\
+																		self,							\
+																	__VA_ARGS__							\
+																	);									\
+													}	while		(	0	)
 
 
 
-
-#define projector( class1, class2 )					concat7(project, _, class2, _, to, _, class1)
 
 #define																									\
-HOWTO_PROJECT( class1, class2, to, from, ... )		void												\
-													projector( class1, class2 )	(	class1*	to,			\
-																					class2*	from,		\
-																					__VA_ARGS__			\
+projector( class1, class2 )							concat7 ( project, _, class2, _, to, _, class1 )
+
+#define																									\
+HOWTO_PROJ( class1, class2, to, from, ... )			void												\
+													projector ( class1, class2 )	(	class1*	to,		\
+																						class2*	from,	\
+																						__VA_ARGS__		\
+																					)
+
+#define																									\
+_PROJ( class1, class2, to, from, ... )				projector	( class1, class2 )	(	to,				\
+																						from,			\
+																						__VA_ARGS__		\
 																				)
 
 #define																									\
-PROJECT( class1, class2, to, from, ... )			projector( class1, class2 ) (	to,					\
-																					from,				\
-																					__VA_ARGS__			\
-																				)
+PROJ( class1, class2, to, from, ... )				do													\
+													{													\
+														assert			(	from	);					\
+														if				(	!to		)					\
+														{												\
+															DEF			(	class1,	to	);				\
+														}												\
+																										\
+														assert			(	to 	);						\
+																										\
+														_PROJ			(	class1,		class2,			\
+																			to,			from,			\
+																			__VA_ARGS__					\
+																		);								\
+													}	while			(	0	)
 
 
 
@@ -47,7 +73,20 @@ HOWTO_DRAW( class, self, ... )						class*												\
 																			__VA_ARGS__					\
 																		)
 
-#define	DRAW(class, obj, ...)						painter( class )	(	self,						\
+#define	_DRAW( class, self, ... )					painter( class )	(	self,						\
 																				__VA_ARGS__				\
 																		)
 
+
+
+#define																									\
+DRAW( class, self, ... )							do													\
+													{													\
+																										\
+														assert			(	self 	);					\
+																										\
+														_DRAW			(	class,						\
+																			self,						\
+																			__VA_ARGS__					\
+																		);								\
+													}	while			(	0	)

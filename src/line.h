@@ -7,6 +7,7 @@
 #include "point.h"
 #include "color.h"
 #include "geometry.h"
+#include "types.h"
 
 
 
@@ -19,13 +20,14 @@ typedef							struct Line						Line_t;
 ////////////////////////////////////////////////////////////////////////////////
 
 
-HOWTO_COPY						(	Line_t,	to,	from	);
+HOWTO_CPY						(	Line_t,				to,	from	);
 
 
-HOWTO_COMPOSE					(	Line_t,
+HOWTO_CONSTRUCT					(	Line_t,
 									self,
-									Point2d_t*	p1,
-									Point2d_t*	p2	);
+									Point2d_t*			p1,
+									Point2d_t*			p2
+								);
 
 
 

@@ -7,6 +7,7 @@
 
 #include "color.h"
 #include "point.h"
+#include "renderer.h"
 
 
 
@@ -74,15 +75,17 @@
 //////////////////////////////////////////////////////////////////////////////////
 
 
-typedef					struct Triangle3d						Triangle3d_t	;
-
-typedef					struct Triangle2d						Triangle2d_t	;
 
 
-typedef					DECL_ARRAY ( Triangle2d_t )		ARRAY ( Triangle2d_t )	;
+typedef					struct Triangle3d						Triangle3d_t;
+
+typedef					struct Triangle2d						Triangle2d_t;
 
 
-typedef					DECL_ARRAY ( Triangle3d_t )		ARRAY ( Triangle3d_t)	;
+typedef					DECL_ARRAY ( Triangle2d_t )		ARRAY ( Triangle2d_t );
+
+
+typedef					DECL_ARRAY ( Triangle3d_t )		ARRAY ( Triangle3d_t );
 
 
 
@@ -92,17 +95,11 @@ typedef					DECL_ARRAY ( Triangle3d_t )		ARRAY ( Triangle3d_t)	;
 ////////////////////////////////////////////////////////////////////////////////
 
 
-HOWTO_COPY						(	Triangle2d_t,	to,	from	)	;
-
-HOWTO_COPY						(	Triangle3d_t,	to,	from	)	;
 
 
-HOWTO_COMPOSE					(	Triangle3d_t,
-									self,
-									Point3d_t*		p1,
-									Point3d_t*		p2,
-									Point3d_t*		p3
-								)	;
+HOWTO_CPY						(	Triangle2d_t,	to,	from	);
+
+HOWTO_CPY						(	Triangle3d_t,	to,	from	);
 
 
 HOWTO_CONSTRUCT					(	Triangle2d_t,
@@ -110,7 +107,7 @@ HOWTO_CONSTRUCT					(	Triangle2d_t,
 									float	x1,		float	y1,
 									float	x2,		float	y2,
 									float	x3,		float	y3
-								)	;
+								);
 
 
 HOWTO_CONSTRUCT					(	Triangle3d_t,
@@ -118,55 +115,63 @@ HOWTO_CONSTRUCT					(	Triangle3d_t,
 									float	x1,		float	y1,		float	z1,
 									float	x2,		float	y2,		float	z2,
 									float	x3,		float	y3,		float	z3
-								)	;
+								);
+
 
 /////////////////////////////////////////////////////////////////////////////////
 //						Dynamic Array Operations
 /////////////////////////////////////////////////////////////////////////////////
 
 
-HOWTO_ARRAY_INIT				(	Triangle2d_t,	self	)	;
-
-HOWTO_ARRAY_INIT				(	Triangle3d_t,	self	)	;
 
 
-HOWTO_ARRAY_RESET				(	Triangle2d_t,	self	)	;
+HOWTO_ARRAY_INIT				(	ARRAY ( Triangle2d_t ),	self	);
 
-HOWTO_ARRAY_RESET				(	Triangle3d_t,	self	)	;
+HOWTO_ARRAY_INIT				(	ARRAY ( Triangle3d_t ),	self	);
+
+
+HOWTO_ARRAY_RESET				(	ARRAY ( Triangle2d_t ),	self	);
+
+HOWTO_ARRAY_RESET				(	ARRAY ( Triangle3d_t ),	self	);
 
 
 HOWTO_CONSTRUCT					(	ARRAY ( Triangle2d_t ),
 									self,
 									void*	null
-								)	;
+								);
 
 HOWTO_CONSTRUCT					(	ARRAY ( Triangle3d_t ),
 									self,
 									void*	null
-								)	;
+								);
 
 HOWTO_DESTRUCT					(	ARRAY ( Triangle2d_t ),
 									self
-								)	;
+								);
 
 HOWTO_DESTRUCT					(	ARRAY ( Triangle3d_t ),
 									self
-								)	;
+								);
 
 
-HOWTO_LOAD						(	Triangle2d_t,	self,	array,	idx		)	;
+HOWTO_LD						(	Triangle2d_t,	self,	array,	idx		);
 
-HOWTO_LOAD						(	Triangle3d_t,	self,	array,	idx		)	;
-
-
-HOWTO_PUSH						(	Triangle2d_t,	self,	array	)	;
-
-HOWTO_PUSH						(	Triangle3d_t,	self,	array	)	;
+HOWTO_LD						(	Triangle3d_t,	self,	array,	idx		);
 
 
-HOWTO_STORE						(	Triangle2d_t,	self,	array,	idx		)	;
+HOWTO_STR						(	Triangle2d_t,	self,	array,	idx		);
 
-HOWTO_STORE						(	Triangle3d_t,	self,	array,	idx		)	;
+HOWTO_STR						(	Triangle3d_t,	self,	array,	idx		);
+
+
+HOWTO_COUNT						(	ARRAY ( Triangle2d_t ),	self	);
+
+HOWTO_COUNT						(	ARRAY ( Triangle3d_t ),	self	);
+
+
+HOWTO_INC						(	ARRAY ( Triangle2d_t ), self, int inc	);
+
+HOWTO_INC						(	ARRAY ( Triangle3d_t ),	self, int inc	);
 
 
 
@@ -178,26 +183,26 @@ HOWTO_STORE						(	Triangle3d_t,	self,	array,	idx		)	;
 
 
 
-HOWTO_ROTATE					(	Triangle3d_t,	self,	Vec3_t* angle	)	;
+HOWTO_ROT						(	Triangle3d_t,	self,	Vec3_t* angle	);
 
-HOWTO_ROTATE					(	Triangle2d_t,	self,	Vec2_t* angle	)	;
+HOWTO_ROT						(	Triangle2d_t,	self,	Vec2_t* angle	);
 
 
 HOWTO_DRAW						(	Triangle2d_t,
 									self,
 									Color_t*			color,
 									Renderer_t*			renderer
-								)	;
+								);
 
 HOWTO_DRAW						(	Triangle3d_t,
 									self,
-									Color_t*			color,
-									Renderer_t*			renderer
-								)	;
+									Color_t *			color,
+									Renderer_t *		renderer
+								);
 
 
-HOWTO_PROJECT					(	Triangle2d_t,		Triangle3d_t,
+HOWTO_PROJ						(	Triangle2d_t,		Triangle3d_t,
 									to,					from,
 									Projection_type_t	type
-								)	;
+								);
 

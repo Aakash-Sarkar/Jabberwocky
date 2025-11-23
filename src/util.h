@@ -29,8 +29,20 @@
 
 
 
-#define SUCCESS							(true)
-#define FAIL							(false)
+#define SUCCESS							( true )
+#define FAIL							( false )
+
+#define EMPTY							NULL
+
+
+# define and							&&
+# define or								||
+
+
+#define VALID( ptr )					( ptr != NULL )
+#define INVALID( ptr )					( ptr == NULL )
+
+
 
 
 #ifdef __GNUC__
@@ -59,34 +71,7 @@
 #define str(label)						#label
 
 
-
-/////////////////////////////////////////////////////////////////////////////////
-//
-//
-//		This is just a fancy way of writing `retval = who_why(args)` aka
-//		function call!
-//
-//		But it's added here for a purpose. Writing it in this ways pulls
-//		the attention of the reader to the line. It also hilights to the
-//		reader that this function call is going out of our application
-//		and into the SDL Layer. It may make code browsing difficult but
-//		you can add your own style into your program!
-//
-//		You can also customize the CALL macro to add some extra logic
-//		before the function	call (for e.g. dumping the api name into a
-//		debug file before calling the api etc!).
-//
-//
-/////////////////////////////////////////////////////////////////////////////////
-
-
-
-
-#define CALL(retval, who, why, ...)		retval = concat3(who, _, why)(__VA_ARGS__)
-
 #define RETURN(x)						return x
-
-#define PTR(class, name, val)			class* name = val
 
 
 
@@ -121,11 +106,46 @@
 
 #define LOOP_VAR(x)						concat3(x, _, loop)
 
-#define DECLARE_LOOP(x)					volatile bool LOOP_VAR(x)
+#define DECLARE_LOOP(x)						volatile bool LOOP_VAR (	x	)
 
-#define LOOP(x)							for (LOOP_VAR(x) = true; LOOP_VAR(x) != false;)
+#define LOOP(x)								for		(	LOOP_VAR ( x )	=	true;	\
+														LOOP_VAR ( x ) !=	false;	\
+													)
 
-#define LOOP_BREAK(x)					(LOOP_VAR(x) = false)
+#define LOOP_BREAK(x)					(	LOOP_VAR ( x )	=	false	)
+
+
+
+
+#define LOG(...)								fprintf		(	stderr,  __VA_ARGS__ )
+
+#define																					\
+assert( cond )							do	{											\
+												if				(	!( cond )	)		\
+												{										\
+													LOG			(	"%s : %d\n",		\
+																	__FILE__,			\
+																	__LINE__			\
+																);						\
+													exit		(	1	);				\
+												}										\
+											}											\
+										while					(	0	)
+
+#define																					\
+ASSERT( cond, ... )						do {											\
+												if				(	!( cond )	)		\
+												{										\
+													LOG			(	"%s : %d\n",		\
+																	__FILE__,			\
+																	__LINE__			\
+																);						\
+																						\
+													LOG			(	__VA_ARGS__	 );		\
+													exit		(	1	);				\
+												}										\
+											}											\
+										while					(	0	)
 
 
 
@@ -148,7 +168,17 @@
 
 
 
-#define ALLOC_ZEROED(class, ptr, n)		ptr = (class *)	calloc (	n, sizeof(class)	)
+#define ALLOC_ZEROED( class, ptr, n )	do	{											\
+												ptr			=	( class * )				\
+																calloc ( n,				\
+																	sizeof(class)		\
+																);						\
+																						\
+												ASSERT		(	ptr,					\
+																"memory alloc error\n"	\
+															);							\
+											}											\
+										while				(	0	)
 
 
 /////////////////////////////////////////////////////////////////////////////////
@@ -178,10 +208,10 @@
 //		This is more or less to keep the theme going...
 //
 //		This is also to demonstrate an example usecase. Suppose it's
-//		required to always set the pointer to null after freeing for
+//		required to always set the pointer to EMPTY after freeing for
 //		whatever reason. Having the two operations packed inside a
 //		macro is much easier to use; and it's unlikely to forget to
-//		set the pointer to null. This also demonstrates an example of
+//		set the pointer to EMPTY. This also demonstrates an example of
 //		code reuse.
 //
 //
@@ -190,11 +220,13 @@
 
 
 
-#define DEALLOC(ptr)					do {								\
-												if(ptr)						\
-													free(ptr);				\
-												ptr = NULL;					\
-										}	while ( 0 )
+#define DEALLOC(ptr)					do	{										\
+												if			(	ptr	)				\
+													free	(	ptr	);				\
+																					\
+												ptr			=	NULL;				\
+											}										\
+												while		(	0	)
 
 
 #define TMP(class, x, n)				class x [ n ] = { 0 }
@@ -205,14 +237,8 @@
 
 #define BITS_TO_BYTES(n)				(( n ) /  ( BITS_PER_BYTE ))
 
+#define	container_of( self, class, member )		(class *) ( (size_t) self - offsetof( class, member ) )
 
-#define LOG(...)						fprintf	( stderr,  __VA_ARGS__ )
 
-#define ASSERT(cond, ...)				do {								\
-												if (!( cond )) {			\
-													LOG  ( __VA_ARGS__ );	\
-													exit ( 1 );				\
-												}							\
-										}	while  (0)
 
 

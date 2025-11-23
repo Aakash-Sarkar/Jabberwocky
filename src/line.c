@@ -8,46 +8,48 @@
 
 
 
-struct Line					{	Point2d_t*		p1;
-								Point2d_t*		p2;
-							};
+////////////////////////////////////////////////////////////////////////////////
+//						Line Structures Implementation
+////////////////////////////////////////////////////////////////////////////////
 
 
- ////////////////////////////////////////////////////////////////////////////////
- //						Line Operations Implementation
- ////////////////////////////////////////////////////////////////////////////////
+struct						Line		{	Point2d_t*		p1;
+											Point2d_t*		p2;
+										};
 
 
+////////////////////////////////////////////////////////////////////////////////
+//						Line Operations Implementation
+////////////////////////////////////////////////////////////////////////////////
 
 
-HOWTO_COMPOSE				(	Line_t,
+HOWTO_CONSTRUCT				(	Line_t,
 								self,
 								Point2d_t*		p1,
 								Point2d_t*		p2
 							)
 {
-
-	COPY					(	Point2d_t,
+	CPY						(	Point2d_t,
 								self->p1,
 								p1
 							);
 
-	COPY					(	Point2d_t,
+	CPY						(	Point2d_t,
 								self->p2,
 								p2
 							);
 }
 
 
-HOWTO_COPY					(	Line_t,		to,	from	)
+HOWTO_CPY					(	Line_t,		to,	from	)
 {
 
-	COPY					(	Point2d_t,
+	CPY						(	Point2d_t,
 								to->p1,
 								from->p1
 							);
 
-	COPY					(	Point2d_t,
+	CPY						(	Point2d_t,
 								to->p2,
 								from->p2
 							);
@@ -133,16 +135,8 @@ HOWTO_DRAW					(	Line_t,
 								Renderer_t*			renderer
 							)
 {
-
-	TMP						(	Point2d_t,
-								p12,
-								1
-							);
-
-	TMP						(	Point2d_t,
-								slope,
-								1
-							);
+	Point2d_t					*p12	=	NULL,
+								*slope	=	NULL;
 
 	SUB						(	Point2d_t,
 								p12,
@@ -150,19 +144,24 @@ HOWTO_DRAW					(	Line_t,
 								self->p1
 							);
 
-	float						run	= max	(	abs ( p12->v->x ),
-												abs ( p12->v->y )
-											);
+	float						x = 0,
+								y = 0;
+
+	MSG						(	Point2d_t,
+								decompose,
+								p12,
+								&x, &y
+							);
+
+	float						run	= max (	abs ( x ), abs ( y ) );
 
 
 //////////////////////////////////////////////////////////////////////////////
-//
 //
 //		Depending on which component becomes our run, our slope vector
 //		will have one of the component as (run/run) = 1, and the other
 //		as (rise/run) = slope
 //
-// 
 //////////////////////////////////////////////////////////////////////////////
 
 
@@ -172,19 +171,19 @@ HOWTO_DRAW					(	Line_t,
 								run
 							);
 
-	TMP						(	Point2d_t,
-								point,
-								1
-							);
+	Point2d_t					*point		=	NULL,
+								*o_point	=	NULL,
+								*origin		=	NULL;
 
-	TMP						(	Point2d_t,
-								o_point,
-								1
-							);
-
-	COPY					(	Point2d_t,
+	CPY						(	Point2d_t,
 								point,
 								self->p1
+							);
+
+	MSG						(	Renderer_t,
+								get_origin,
+								renderer,
+								origin
 							);
 
 	for						(	int i = 0;	i <= run;	i++		)
@@ -193,15 +192,25 @@ HOWTO_DRAW					(	Line_t,
 		ADD					(	Point2d_t,
 								o_point,
 								point,
-								&renderer->origin
+								origin
 							);
 
-		CALLM				(	Renderer_t,
+		float					posX	=	0,
+								posY	=	0;
+
+		MSG					(	Point2d_t,
+								decompose,
+								o_point,
+								&posX,
+								&posY
+							);
+
+		MSG					(	Renderer_t,
 								paint_color,
 								renderer,
 								color,
-								round ( o_point->v->x ),
-								round ( o_point->v->y ),
+								round ( posX ),
+								round ( posY ),
 								0
 							);
 
@@ -210,5 +219,27 @@ HOWTO_DRAW					(	Line_t,
 								slope
 							);
 	}
+
+	DEL						(	Point2d_t,
+								p12
+							);
+
+	DEL						(	Point2d_t,
+								slope
+							);
+
+	DEL						(	Point2d_t,
+								point
+							);
+
+	DEL						(	Point2d_t,
+								o_point
+							);
+
+	DEL						(	Point2d_t,
+								origin
+							);
+
+
 }
 

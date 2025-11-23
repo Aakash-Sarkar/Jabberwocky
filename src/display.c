@@ -42,32 +42,17 @@ HOWTO_CONSTRUCT					(	Window_t,
 									Format_type_t	format_type
 								)
 {
-
-	TMP							(	SDL_DisplayMode,
-									mode,
-									1
-								);
+	SDL_DisplayMode					mode = { 0 };
 
 	int								ret = -1;
-
-
-	// Allocate our window
-
-	ALLOC_ZEROED				(	Window_t,
-									self,
-									1
-								);
-
-	ASSERT						(	self != NULL, "Failed to alloc window\n" );
 
 	// This is a way to query from the OS what are the dimensions of the
 	// screen
 
-	CALL						(	ret,
-									SDL,
+	CALL						(	SDL,
 									GetCurrentDisplayMode,
 									0,
-									mode
+									&mode
 								);
 
 
@@ -83,8 +68,8 @@ HOWTO_CONSTRUCT					(	Window_t,
 
 	// Setup Dimensions of the Window
 
-	self->width					=	mode->w;
-	self->height				=	mode->h;
+	self->width					=	mode.w;
+	self->height				=	mode.h;
 
 	self->format_type			=	format_type;
 
@@ -94,16 +79,15 @@ HOWTO_CONSTRUCT					(	Window_t,
 
 	// Call SDL to create our window
 
-	CALL						(	self->sdl,
-									SDL,
-									CreateWindow,
-									NULL,			// window name
-									self->posX,
-									self->posY,
-									self->width,
-									self->height,
-									self->flags
-								);
+	self->sdl					=	__CALL	(	SDL,
+												CreateWindow,
+												NULL,			// window name
+												self->posX,
+												self->posY,
+												self->width,
+												self->height,
+												self->flags
+											);
 
 	// Set window to fullscreen
 
@@ -130,41 +114,28 @@ HOWTO_DESTRUCT					(	Window_t,
 
 HOWTO_CONSTRUCT					(	Texture_t,
 									self,
-									Renderer_t*		renderer,
-									int				width,
-									int				height,
-									Format_type_t	format_type
+									SDL_Renderer *		sdl_renderer,
+									int					width,
+									int					height,
+									Format_type_t		format_type
 								)
 {
-
-	PTR							(	Format_t,
-									format,
-									NULL
-								);
+	Format_t						*format	=	NULL;
 
 	int								sdl_type	= 0,
 									pitch		= 0;
 
 	format						=	lookup_format (	format_type	);
 
-	ASSERT						(	format != NULL,
+	ASSERT						(	format,
 									"Unsupported format!\n"
-								);
-
-	ALLOC_ZEROED				(	Texture_t,
-									self,
-									1
-								);
-
-	ASSERT						(	self != NULL,
-									"failed to allocate texture\n"
 								);
 
 	self->width					=	width;
 	self->height				=	height;
 	self->format_type			=	format_type;
 
-    CALLM                       (   Format_t,
+    MSG							(   Format_t,
                                     get_pitch,
                                     format,
                                     width,
@@ -173,23 +144,22 @@ HOWTO_CONSTRUCT					(	Texture_t,
 
 	self->pitch					=	pitch;
 
-	CALLM						(	Format_t,
+	MSG							(	Format_t,
 									get_sdl_type,
 									format,
 									&sdl_type
 								);
 
-	CALL						(	self->sdl,
-									SDL,
-									CreateTexture,
-									renderer->sdl,
-									sdl_type,
-									SDL_TEXTUREACCESS_STREAMING,
-									self->width,
-									self->height
-								);
+	self->sdl					=	__CALL	(	SDL,
+												CreateTexture,
+												sdl_renderer,
+												sdl_type,
+												SDL_TEXTUREACCESS_STREAMING,
+												self->width,
+												self->height
+											);
 
-	ASSERT						(	self->sdl != NULL,
+	ASSERT						(	self->sdl != EMPTY,
 									"SDL_CreateTexture failed\n"
 								);
 
@@ -207,22 +177,11 @@ HOWTO_CONSTRUCT					(	Choreographer_t,
 									void*	null
 								)
 {
-
-	ALLOC_ZEROED				(	Choreographer_t,
-									self,
-									1
-								);
-	if							(	!self	)
-	{
-		RETURN					(	NULL	);
-	}
-
 	self->previous_ticks_ms		=	0;
 
-	CALL						(	self->current_ticks,
-									SDL,
-									GetTicks
-								);
+	self->current_ticks			=	__CALL	(	SDL,
+												GetTicks
+											);
 	RETURN						(	self	);
 }
 
@@ -236,12 +195,11 @@ METHOD							(	Window_t,
 	int								ret = -1;
 	// Set window to fullscreen
 
-	CALL						(	ret,
-									SDL,
-									SetWindowFullscreen,
-									self->sdl,
-									SDL_WINDOW_FULLSCREEN
-								);
+	ret							=	__CALL	(	SDL,
+												SetWindowFullscreen,
+												self->sdl,
+												SDL_WINDOW_FULLSCREEN
+											);
 }
 
 
@@ -252,7 +210,7 @@ METHOD                              (   Window_t,
                                         int*    out_h
                                     )
 {
-    ASSERT                          (   self != NULL && out_w != NULL && out_h != NULL,
+    ASSERT                          (   self  and  out_w  and  out_h,
                                         "Invalid args\n"
                                     );
 
@@ -267,7 +225,7 @@ METHOD                              (   Window_t,
                                         int*    out
                                     )
 {
-    ASSERT                          (   self != NULL && out != NULL,
+    ASSERT                          (   self  and  out,
                                         "Invalid args\n"
                                     );
 

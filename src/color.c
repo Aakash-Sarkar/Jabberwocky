@@ -167,18 +167,18 @@ lookup_format                       (   Format_type_t format_type   )
 
             RETURN                  (   &formats_lut [ format_type ]  );
         default:
-            RETURN                  (   NULL    );
+            RETURN                  (   EMPTY    );
     }
 }
 
 
 
-HOWTO_COMPOSE                       (   Color_t,
+HOWTO_CONSTRUCT                     (   Color_t,
                                         self,
-                                        uint8_t     red,
-                                        uint8_t     green,
-                                        uint8_t     blue,
-                                        uint8_t     alpha
+                                        uint8_t         red,
+                                        uint8_t         green,
+                                        uint8_t         blue,
+                                        uint8_t         alpha
                                     )
 {
     self->rgba.r                    =   red;
@@ -195,13 +195,10 @@ METHOD                              (   Color_t,
                                         uint32_t*       out
                                     )
 {
-    PTR                             (   Format_t,
-                                        format,
-                                        NULL
-                                    );
+    Format_t                            *format =   NULL;
 
     format                          =   lookup_format   (   format_type   );
-    ASSERT                          (   format != NULL,
+    ASSERT                          (   format,
                                         "Unsupported Format type %d\n",
                                         format_type
                                     );
@@ -228,36 +225,24 @@ HOWTO_CONSTRUCT                     (   Color_buffer_t,
                                         Format_type_t       format_type
                                     )
 {
+    Format_t                            *format =   NULL;
 
-    PTR                             (   Format_t,
-                                        format,
-                                        NULL
-                                    );
-
-    uint32_t                            *buf  = NULL,
-                                        *prev = NULL;
+    uint32_t                            *buf  = EMPTY,
+                                        *prev = EMPTY;
 
     int                                 pitch = 0;
 
     format                          =   lookup_format   (   format_type   );
 
-    ASSERT                          (   format != NULL,
+    ASSERT                          (   format != EMPTY,
                                         "Unsupported Format type %d\n",
                                         format_type
                                     );
 
-    ALLOC_ZEROED                    (   Color_buffer_t,
-                                        self,
-                                        1
-                                    );
-
-    if                              (   !self   )
-        RETURN                      (   NULL   );
-
     self->width                     =   width;
     self->height                    =   height;
 
-    CALLM                           (   Format_t,
+    MSG                             (   Format_t,
                                         get_pitch,
                                         format,
                                         width,
@@ -271,9 +256,7 @@ HOWTO_CONSTRUCT                     (   Color_buffer_t,
 
     buf                             =   ALLOC_NONZEROED (   width * height,   uint32_t   );
 
-    ASSERT                          (   buf != NULL,
-                                        "Couldn't allocate memory\n"
-                                    );
+    assert                          (    buf    );
 
     self->buffer[0]                 =   buf;
     buf                             =   NULL;
@@ -285,10 +268,10 @@ HOWTO_CONSTRUCT                     (   Color_buffer_t,
 
         buf                         =   ALLOC_NONZEROED (   width * height,   uint32_t   );
 
-        ASSERT                      (   buf != NULL, "" );
+        assert                      (    buf    );
 
         self->buffer[i]             =   buf;
-            buf                     =   NULL;
+            buf                     =   EMPTY;
     }
 
     RETURN                          (   self    );
@@ -308,7 +291,7 @@ METHOD                              (   Format_t,
                                         int*    out
                                     )
 {
-    ASSERT                          (   self != NULL && out != NULL,
+    ASSERT                          (   self  and  out,
                                         "Invalid args\n"
                                     );
 
@@ -322,7 +305,7 @@ METHOD                              (   Format_t,
                                         int*    out
                                     )
 {
-    ASSERT                          (   self != NULL && out != NULL,
+    ASSERT                          (   self  and  out,
                                         "Invalid args\n"
                                     );
 
@@ -337,7 +320,7 @@ METHOD                              (   Color_buffer_t,
                                         int*    out_h
                                     )
 {
-    ASSERT                          (   self != NULL && out_w != NULL && out_h != NULL,
+    ASSERT                          (   self  and  out_w  and  out_h,
                                         "Invalid args\n"
                                     );
 
@@ -355,19 +338,19 @@ METHOD                              (   Color_buffer_t,
                                     )
 {
 
-    uint32_t                            *buf = NULL,
-                                        val  = 0;
+    uint32_t                            *buf    =   NULL,
+                                        val     =   0;
 
-    int                                 offset = 0;
-    bool                                ret    = FAIL;
+    int                                 offset  =   0;
+    bool                                ret     =   FAIL;
 
-    ASSERT                          (   color != NULL,
+    ASSERT                          (   color,
 					    			    "Invalid args: color\n"
 						    		);
 
-    ASSERT                          (   ( posX => 0 )            &&
-                                        ( posX <= self->width )  &&
-                                        ( posY => 0 )            &&
+    ASSERT                          (   ( posX >= 0 )            and
+                                        ( posX <= self->width )  and
+                                        ( posY >= 0 )            and
                                         ( posY <= self->height ),
 								    	"Invalid args: posX: %d, posY: %d\n",
                                         posX, posY
@@ -383,12 +366,12 @@ METHOD                              (   Color_buffer_t,
 
     buf                             =   self->buffer [ plane ];
 
-    ASSERT                          (   ( buf != NULL ), " colorbuf: buffer[%d] is NULL\n", plane    );
+    ASSERT                          (   ( buf != EMPTY ), " colorbuf: buffer[%d] is EMPTY\n", plane    );
 
 
     // Get the offset in buffer for pixel co-ordinate ( posX, posY )
 
-	CALLM						    (	Color_buffer_t,
+	MSG		    				    (	Color_buffer_t,
 								    	get_pixel_offset,
 								    	self,
 								    	posX,
@@ -397,7 +380,7 @@ METHOD                              (   Color_buffer_t,
 								    );
 
     // Get the color value
-	CALLM						    (	Color_t,
+	MSG	    					    (	Color_t,
 								    	get_color_val,
 								    	color,
 								    	self->format_type,
@@ -420,4 +403,15 @@ METHOD							    (	Color_buffer_t,
 								    )
 {
 	*out						    =	self->width * posY  +  posX;
+}
+
+
+METHOD							(	Color_buffer_t,
+									get_raw_buffer,
+									self,
+									int	idx,
+									uint32_t **	out
+								)
+{
+    *out                        =   self->buffer[idx];
 }
