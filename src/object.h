@@ -1,4 +1,4 @@
-/* Copyright © 2025 Intel Corporation
+/* Copyright Â© 2025 Intel Corporation
  * SPDX-License-Identifier: MIT
  */
 
@@ -343,13 +343,6 @@ HOWTO_DESTRUCT(class, this)			void				dtor	(	class	)		\
 																(	class* this		)
 
 
-
-/////////////////////////////////////////////////////////////////////////////////
-//
-//		This is what Linus Torvalds likes to call Grabage Code. This is also
-//		a wierd example of Metaprogramming in C
-//
-/////////////////////////////////////////////////////////////////////////////////
 
 #define																				\
 __NEW( class, this )						Object_t		*obj	=	NULL;		\
