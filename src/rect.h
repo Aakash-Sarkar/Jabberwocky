@@ -25,12 +25,14 @@
 typedef						struct		Rect	{	int					posX;
 													int					posY;
 													int					width;
-													int					height;		}	Rect_t;
+													int					height;
+												}	Rect_t;
 
 
 typedef						struct		Grid	{	int					width;
 													int					height;
-													int					border_len;	}	Grid_t;
+													int					border_len;
+												}	Grid_t;
 
 
 /* Here beginneth the declarations of functions */
@@ -58,7 +60,7 @@ bool						pixel_at_border		(	Rect_t*				rect,
  * @return: SUCCESS if operation succeeds, FAIL otherwise
  */
 HOWTO_DRAW										(	Rect_t,
-													rect,
+													self,
 													Color_t*			color,
 													Color_buffer_t*		colorbuf	);
 
@@ -69,6 +71,15 @@ HOWTO_DRAW										(	Grid_t,
 													Color_buffer_t*		colorbuf	);
 
 
+HOWTO_CONSTRUCT									(	Rect_t,
+													self,
+													int				posx,
+													int				posY,
+													int				width,
+													int				height
+												);
+
+HOWTO_DESTRUCT									(	Rect_t,			self	);
 
 /**
  * Helper macro to iterate over all rectangles in a color buffer

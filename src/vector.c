@@ -1,5 +1,5 @@
-/* Copyright © 2025 Intel Corporation
- * SPDX-License-Identifier: MIT
+/*	Copyright © 2025 Intel Corporation
+ *	SPDX-License-Identifier: MIT
  */
 
 #include <math.h>
@@ -11,12 +11,14 @@
 
 
 
-float						fov_scale = 256;
+float						fov_scale = 680;
 
-vec3_t						camera[1] = {{	.x = 0.0,
-											.y = 0.0,
-											.z = -5.0	}};
+//Vec3_t						camera[1] = {{	.x = 0.0,
+//											.y = 0.0,
+//											.z = -5.0
+//										}};
 
+Vec3_t						*Camera	=	NULL;
 
 
 
@@ -25,96 +27,326 @@ vec3_t						camera[1] = {{	.x = 0.0,
 ////////////////////////////////////////////////////////////////////////////////
 
 
+HOWTO_DEF						(	Vec2_t,		self	)
+{
+	DEF							(	float,
+									self->x
+								);
 
+	DEF							(	float,
+									self->y
+								);
+
+	RET							(	self	);
+}
+
+HOWTO_CONSTRUCT					(	Vec2_t,
+									self,
+									float		x,
+									float		y	)
+{
+	NEW							(	float,
+									self->x,
+									x
+								);
+
+	NEW							(	float,
+									self->y,
+									y
+								);
+
+	RET							(	self	);
+}
+
+HOWTO_DESTRUCT					(	Vec2_t,	self	)
+{
+	DEL							(	float,
+									self->x
+								);
+
+	DEL							(	float,
+									self->y
+								);
+}
+
+HOWTO_DEF						(	Vec3_t,		self	)
+{
+	DEF							(	float,
+									self->x
+								);
+
+	DEF							(	float,
+									self->y
+								);
+
+	DEF							(	float,
+									self->z
+								);
+
+	RET							(	self	);
+}
+
+HOWTO_CONSTRUCT					(	Vec3_t,
+									self,
+									float		x,
+									float		y,
+									float		z
+								)
+{
+
+	NEW							(	float,
+									self->x,
+									x
+								);
+
+	NEW							(	float,
+									self->y,
+									y
+								);
+
+	NEW							(	float,
+									self->z,
+									z
+								);
+
+	RET							(	self	);
+}
+
+HOWTO_DESTRUCT					(	Vec3_t,	self	)
+{
+
+	DEL							(	float,
+									self->x
+								);
+
+	DEL							(	float,
+									self->y
+								);
+
+	DEL							(	float,
+									self->z
+								);
+}
 
 /////////////////////////////////////////////////////////////////////////////////
 //		Dynamic Array Operations Implementation
 /////////////////////////////////////////////////////////////////////////////////
 
-HOWTO_ARRAY_INIT			(	vec2_t,	array	)
+HOWTO_DEF					(	ARRAY	(	Vec2_t	),	self	)
 {
-	array->x				=	NULL;
-	array->y				=	NULL;
-	array->count			=	0;
+
+	DEF						(	ARRAY	(	float	),
+								self->x
+							);
+
+	DEF						(	ARRAY	(	float	),
+								self->y
+							);
+	self->count				=	0;
+
+	RET						(	self	);
 }
 
-HOWTO_ARRAY_INIT			(	vec3_t,	array	)
+HOWTO_DEF					(	ARRAY	(	Vec3_t	),	self	)
 {
-	array->x				=	NULL;
-	array->y				=	NULL;
-	array->z				=	NULL;
-	array->count			=	0;
-}
 
+	DEF						(	ARRAY	(	float	),
+								self->x
+							);
 
-HOWTO_ARRAY_RESET			(	vec2_t,	array	)
-{
-	array_free				(	array->x	);
-	array_free				(	array->y	);
+	DEF						(	ARRAY	(	float	),
+								self->y
+							);
 
-	array->x				=	NULL;
-	array->y				=	NULL;
-	array->count			=	0;
-}
+	DEF						(	ARRAY	(	float	),
+								self->z
+							);
 
-HOWTO_ARRAY_RESET			(	vec3_t,	array	)
-{
-	array_free				(	array->x	);
-	array_free				(	array->y	);
-	array_free				(	array->z	);
+	self->count				=	0;
 
-
-	array->x				=	NULL;
-	array->y				=	NULL;
-	array->z				=	NULL;
-	array->count			=	0;
+	RET						(	self	);
 }
 
 
-HOWTO_LOAD					(	vec2_t,		ptr,	array,	idx	)
+HOWTO_DESTRUCT				(	ARRAY	(	Vec2_t	),	self	)
 {
-	ptr->x					=	array->x [ idx ];
-	ptr->y					=	array->y [ idx ];
+
+	DEL						(	ARRAY	(	float	),
+								self->x
+							);
+
+	DEL						(	ARRAY	(	float	),
+								self->y
+							);
+
+	self->count				=	0;
 }
 
-HOWTO_LOAD					(	vec3_t,		ptr,	array,	idx	)
+HOWTO_DESTRUCT				(	ARRAY	(	Vec3_t	),	self	)
 {
-	ptr->x					=	array->x [ idx ];
-	ptr->y					=	array->y [ idx ];
-	ptr->z					=	array->z [ idx ];
-}
 
-HOWTO_STORE					(	vec2_t,		ptr,	array	)
-{
-	array_push				(	array->x,	ptr->x	);
-	array_push				(	array->y,	ptr->y	);
+	DEL						(	ARRAY	(	float	),
+								self->x
+							);
 
-	array->count++;
-}
+	DEL						(	ARRAY	(	float	),
+								self->y
+							);
 
-HOWTO_STORE					(	vec3_t,		ptr,	array	)
-{
-	array_push				(	array->x,	ptr->x	);
-	array_push				(	array->y,	ptr->y	);
-	array_push				(	array->z,	ptr->z	);
+	DEL						(	ARRAY	(	float	),
+								self->y
+							);
 
-	array->count++;
+	self->count				=	0;
 }
 
 
-
-
-HOWTO_COPY					(	vec2_t,		to,	from	)
+HOWTO_LD					(	Vec2_t,		ptr,	arr,	idx	)
 {
-	to->x					=	from->x;
-	to->y					=	from->y;
+
+	LD						(	float,
+								ptr->x,
+								arr->x,
+								idx
+							);
+
+	LD						(	float,
+								ptr->y,
+								arr->y,
+								idx
+							);
 }
 
-HOWTO_COPY					(	vec3_t,		to,	from	)
+HOWTO_LD					(	Vec3_t,		ptr,	arr,	idx	)
 {
-	to->x					=	from->x;
-	to->y					=	from->y;
-	to->z					=	from->z;
+
+	LD						(	float,
+								ptr->x,
+								arr->x,
+								idx
+							);
+
+	LD						(	float,
+								ptr->y,
+								arr->y,
+								idx
+							);
+
+	LD						(	float,
+								ptr->z,
+								arr->z,
+								idx
+							);
+}
+
+HOWTO_STR					(	Vec2_t,		ptr,	arr,	idx	)
+{
+
+	STR						(	float,
+								ptr->x,
+								arr->x,
+								idx
+							);
+
+	STR						(	float,
+								ptr->y,
+								arr->y,
+								idx
+							);
+}
+
+HOWTO_STR					(	Vec3_t,		ptr,	arr,	idx	)
+{
+
+	STR						(	float,
+								ptr->x,
+								arr->x,
+								idx
+							);
+
+	STR						(	float,
+								ptr->y,
+								arr->y,
+								idx
+							);
+
+	STR						(	float,
+								ptr->z,
+								arr->z,
+								idx
+							);
+}
+
+
+HOWTO_PUSH					(	Vec2_t,		ptr,	arr	)
+{
+
+	PUSH					(	float,
+								ptr->x,
+								arr->x
+							);
+
+	PUSH					(	float,
+								ptr->y,
+								arr->y
+							);
+
+	arr->count++;
+}
+
+HOWTO_PUSH					(	Vec3_t,		ptr,	arr	)
+{
+
+	PUSH					(	float,
+								ptr->x,
+								arr->x
+							);
+
+	PUSH					(	float,
+								ptr->y,
+								arr->y
+							);
+
+	PUSH					(	float,
+								ptr->z,
+								arr->z
+							);
+
+	arr->count++;
+}
+
+
+
+
+HOWTO_CPY					(	Vec2_t,		to,		from	)
+{
+	CPY						(	float,
+								to->x,
+								from->x
+							);
+
+	CPY						(	float,
+								to->y,
+								from->y
+							);
+}
+
+HOWTO_CPY					(	Vec3_t,		to,		from	)
+{
+	CPY						(	float,
+								to->x,
+								from->x
+							);
+
+	CPY						(	float,
+								to->y,
+								from->y
+							);
+
+	CPY						(	float,
+								to->z,
+								from->z
+							);
 }
 
 
@@ -124,66 +356,132 @@ HOWTO_COPY					(	vec3_t,		to,	from	)
 //				Geomertic Operations Implementations
 //////////////////////////////////////////////////////////////////////////////////
 
+
 static
-vec3_t
-rotate_vector_x				(	vec3_t* v,		float angle	)
+void
+rotate_vector_x				(	Vec3_t		*to,
+								Vec3_t		*from,
+								float		angle
+							)
 {
-	MEM						(	vec3_t,
-								transform_v,	1	);
 
-	// X component remains same
-	transform_v->x			=	v->x;
-	transform_v->y			=	v->y * cos(	angle	)	-	v->z * sin(	angle	);
-	transform_v->z			=	v->z * cos(	angle	)	+	v->y * sin(	angle	);
+	//	X component remains same
 
-	RETURN					(	*transform_v	);
+	CPY						(	float,
+								to->x,
+								from->x
+							);
+
+	float						y	=	*from->y	*	cos(	angle	)
+									-	*from->z	*	sin(	angle	);
+
+	CPY						(	float,
+								to->y,
+								&y
+							);
+
+	float						z	=	*from->z	*	cos(	angle	)
+									+	*from->y	*	sin(	angle	);
+
+	CPY						(	float,
+								to->z,
+								&z
+							);
 }
 
 static
-vec3_t
-rotate_vector_y				(	vec3_t*	v,	float angle		)
+void
+rotate_vector_y				(	Vec3_t		*to,
+								Vec3_t		*from,
+								float		angle
+							)
 {
-	MEM						(	vec3_t,		transform_v,	1	);
+	float						x	=	*from->x	*	cos(	angle	)
+									-	*from->z	*	sin(	angle	);
 
-	// Y component remains same
-	transform_v->x			=	v->x * cos(	angle	)	-	v->z * sin(	angle	);
-	transform_v->y			=	v->y;
-	transform_v->z			=	v->z * cos(	angle	)	+	v->x * sin(	angle	);
+	CPY						(	float,
+								to->x,
+								&x
+							);
 
-	RETURN					(	*transform_v	);
+	//	Y component remains same
+
+	CPY						(	float,
+								to->y,
+								from->y
+							);
+
+	float						z	=	*from->z	*	cos(	angle	)
+									+	*from->x	*	sin(	angle	);
+
+	CPY						(	float,
+								to->z,
+								&z
+							);
 }
 
 
 static
-vec3_t
-rotate_vector_z				(	vec3_t* v,	float angle	)
+void
+rotate_vector_z				(	Vec3_t		*to,
+								Vec3_t		*from,
+								float		angle
+							)
 {
-	MEM						(	vec3_t,		transform_v,	1	);
+	float						x	=	*from->x	*	cos(	angle	)
+									-	*from->y	*	sin(	angle	);
 
-	// Z component remains same
-	transform_v->x			=	v->x * cos(	angle	)	-	v->y * sin(	angle	);
-	transform_v->y			=	v->y * cos(	angle	)	+	v->x * sin(	angle	);
-	transform_v->z			=	v->z;
+	CPY						(	float,
+								to->x,
+								&x
+							);
 
-	RETURN					(	*transform_v	);
+	float						y	=	*from->y	*	cos(	angle	)
+									+	*from->x	*	sin(	angle	);
+
+	CPY						(	float,
+								to->y,
+								&y
+							);
+
+	//	Z component remains same
+
+	CPY						(	float,
+								to->z,
+								from->z
+							);
 }
 
 
-HOWTO_ROTATE				(	vec3_t,		to,	from,	vec3_t* angle	)
+HOWTO_ROT					(	Vec3_t,
+								to,			from,
+								Vec3_t*		angle
+							)
 {
-	if						(	angle->x != 0	)
+	assert					(	to	&&	from	&&	angle	);
+
+	if						(	*angle->x	!=	0	)
 	{
-		*to					=	rotate_vector_x	(	from,	angle->x	);
+		rotate_vector_x		(	to,
+								from,
+								*angle->x
+							);
 	}
 
-	if						(	angle->y != 0	)
+	if						(	*angle->y	!=	0	)
 	{
-		*to					=	rotate_vector_y	(	from,	angle->y	);
+		rotate_vector_y		(	to,
+								from,
+								*angle->y
+							);
 	}
 
-	if						(	angle->z != 0	)
+	if						(	*angle->z	!=	0	)
 	{
-		*to					=	rotate_vector_z	(	from,	angle->z	);
+		rotate_vector_z		(	to,
+								from,
+								*angle->z
+							);
 	}
 }
 
@@ -191,60 +489,110 @@ HOWTO_ROTATE				(	vec3_t,		to,	from,	vec3_t* angle	)
 
 
 static
-vec2_t
-project_orthographic		(	vec3_t*		vector		)
+void
+project_orthographic		(	Vec2_t	*to,	Vec3_t	*from	)
 {
-	MEM						(	vec2_t,		projection,	1	);
+	float						*x	=	NULL,
+								*y	=	NULL;
+	
+	NEW						(	float,
+								x,
+								fov_scale	*	*( from->x )
+							);
 
-	projection->x			=	fov_scale	*	vector->x;
-	projection->y			=	fov_scale	*	vector->y;
+	CPY						(	float,
+								to->x,
+								x
+							);
+	
+	NEW						(	float,
+								y,
+								fov_scale	*	*( from->y )
+							);
 
-	RETURN					(	*projection		);
+	CPY						(	float,
+								to->y,
+								y
+							);
+
+	DEL						(	float,
+								x
+							);
+
+	DEL						(	float,
+								y
+							);
 }
 
 static
-vec2_t
-project_isometric			(	vec3_t*		vector	)
+void
+project_isometric			(	Vec2_t	*to,	Vec3_t	*from	)
 {
-	MEM						(	vec2_t,		projection,	1	);
 	// TODO: Implement this
-	RETURN					(	*projection		);
 }
 
 static
-vec2_t
-project_perspective			(	vec3_t*	vector	)
+void
+project_perspective			(	Vec2_t	*to,	Vec3_t	*from	)
 {
-	float						z = (	vector->z + camera->z	);
+	Vec3_t						*cam	=	NULL;
 
-	MEM						(	vec2_t,	projection,	1	);
+	float						*z		=	NULL;
 
-	projection->x			=	((	vector->x * fov_scale	) / z	)
-									*	camera->z;
+	NEW						(	Vec3_t,
+								cam,
+								0.0,	0.0,	-5.0
+							);
 
-	projection->y			=	((	vector->y * fov_scale	) / z	)
-									*	camera->z;
+	NEW						(	float,
+								z,
+								*from->z
+							);
 
-	RETURN					(	*projection		);
+	ADD						(	float,
+								z,
+								from->z,
+								cam->z
+							);
+
+	float						x	=	((	*( from->x ) * fov_scale	) / *z	);
+
+	CPY						(	float,
+								to->x,
+								&x
+							);
+
+	float						y	=	((	*( from->y ) * fov_scale	) / *z	);
+
+	CPY						(	float,
+								to->y,
+								&y
+							);
+
+	DEL						(	Vec3_t,
+								cam
+							);
 }
 
 
 
 
-HOWTO_PROJECT				(	vec2_t,	vec3_t,
-								to,		from,
+HOWTO_PROJ					(	Vec2_t,				Vec3_t,
+								to,					from,
 								Projection_type_t	type	)
 {
+	assert					(	to &&	from	);
+
 	switch					(	type	)
 	{
 		case				(	ORTHOGRAPHIC	):
-			*to				=	project_orthographic	(	from	);
+			project_orthographic	(	to,	from	);
 			break;
 		case				(	ISOMETRIC		):
-			*to				=	project_isometric		(	from	);
+			project_isometric		(	to,	from	);
 			break;
 		case				(	PERSPECTIVE		):
-			*to				=	project_perspective		(	from	);
+			project_perspective		(	to,	from	);
 			break;
 		default:
 			LOG				(	"Unsupported projection type: %d\n",
@@ -262,71 +610,254 @@ HOWTO_PROJECT				(	vec2_t,	vec3_t,
 //////////////////////////////////////////////////////////////////////////////////
 
 
-HOWTO_ADD					(	vec2_t,	dst,	op1,	op2	)
+HOWTO_ADD					(	Vec2_t,	dst,	op1,	op2	)
 {
-	dst->x					=	op1->x	+	op2->x;
-	dst->y					=	op1->y	+	op2->y;
+	ADD						(	float,
+								dst->x,
+								op1->x,
+								op2->x
+							);
+
+	ADD						(	float,
+								dst->y,
+								op1->y,
+								op2->y
+							);
 }
 
-HOWTO_ADD					(	vec3_t,	dst,	op1,	op2	)
+HOWTO_ADD					(	Vec3_t,	dst,	op1,	op2	)
 {
-	dst->x					=	op1->x	+	op2->x;
-	dst->y					=	op1->y	+	op2->y;
-	dst->z					=	op1->z	+	op2->z;
-}
 
+	ADD						(	float,
+								dst->x,
+								op1->x,
+								op2->x
+							);
 
-HOWTO_SUB					(	vec2_t,	dst,	op1,	op2	)
-{
-	dst->x					=	op1->x	-	op2->x;
-	dst->y					=	op1->y	-	op2->y;
-}
+	ADD						(	float,
+								dst->y,
+								op1->y,
+								op2->y
+							);
 
-HOWTO_SUB					(	vec3_t,	dst,	op1,	op2	)
-{
-	dst->x					=	op1->x	-	op2->x;
-	dst->y					=	op1->y	-	op2->y;
-	dst->z					=	op1->z	-	op2->z;
-}
-
-
-HOWTO_MUL					(	vec2_t,	dst,	src,	factor	)
-{
-	dst->x					=	factor	*	src->x;
-	dst->y					=	factor	*	src->y;
-}
-
-HOWTO_MUL					(	vec3_t,	dst,	src,	factor	)
-{
-	dst->x					=	factor	*	src->x;
-	dst->y					=	factor	*	src->y;
-	dst->z					=	factor	*	src->z;
-
+	ADD						(	float,
+								dst->z,
+								op1->z,
+								op2->z
+							);
 }
 
 
-HOWTO_DOTP					(	vec2_t,	dst,	src1,	src2	)
+HOWTO_SUB					(	Vec2_t,	dst,	op1,	op2	)
 {
-	*dst					=	src1->x		*	src2->x
-							+	src1->y		*	src2->y;
+
+	SUB						(	float,
+								dst->x,
+								op1->x,
+								op2->x
+							);
+
+	SUB						(	float,
+								dst->y,
+								op1->y,
+								op2->y
+							);
 }
 
-HOWTO_DOTP					(	vec3_t,	dst,	src1,	src2	)
+HOWTO_SUB					(	Vec3_t,	dst,	op1,	op2	)
 {
-	*dst					=	src1->x		*	src2->x
-							+	src1->y		*	src2->y
-							+	src1->z		*	src2->z;
+
+	SUB						(	float,
+								dst->x,
+								op1->x,
+								op2->x
+							);
+
+	SUB						(	float,
+								dst->y,
+								op1->y,
+								op2->y
+							);
+
+	SUB						(	float,
+								dst->z,
+								op1->z,
+								op2->z
+							);
 }
 
 
-HOWTO_CROSSP				(	vec3_t,	dst,	src1,	src2	)
+HOWTO_MUL					(	Vec2_t,	dst,	src,	factor	)
 {
-	dst->x					=	src1->y		*	src2->z
-							+	src2->y		*	src1->z;
 
-	dst->y					=	src1->x		*	src2->z
-							-	src1->z		*	src2->x;
+	MUL						(	float,
+								dst->x,
+								src->x,
+								factor
+							);
 
-	dst->z					=	src1->x		*	src2->y
-							-	src1->y		*	src2->x;
+	MUL						(	float,
+								dst->y,
+								src->y,
+								factor
+							);
+}
+
+HOWTO_MUL					(	Vec3_t,	dst,	src,	factor	)
+{
+
+	MUL						(	float,
+								dst->x,
+								src->x,
+								factor
+							);
+
+	MUL						(	float,
+								dst->y,
+								src->y,
+								factor
+							);
+
+	MUL						(	float,
+								dst->z,
+								src->z,
+								factor
+							);
+}
+
+
+HOWTO_DIV					(	Vec2_t,	dst,	src,	factor	)
+{
+
+	DIV						(	float,
+								dst->x,
+								src->x,
+								factor
+							);
+
+	DIV						(	float,
+								dst->y,
+								src->y,
+								factor
+							);
+}
+
+HOWTO_DIV					(	Vec3_t,	dst,	src,	factor	)
+{
+
+	DIV						(	float,
+								dst->x,
+								src->x,
+								factor
+							);
+
+	DIV						(	float,
+								dst->y,
+								src->y,
+								factor
+							);
+
+	DIV						(	float,
+								dst->z,
+								src->z,
+								factor
+							);
+}
+
+
+
+
+HOWTO_DOTP					(	Vec2_t,	dst,	src1,	src2	)
+{
+	//*dst					=	*( src1->x )	*	*( src2->x )
+	//						+	*( src1->y )	*	*( src2->y );
+
+	float						*tmp	=	NULL;
+
+	DEF						(	float,
+								tmp
+							);
+
+	MUL						(	float,
+								dst,
+								src1->x,
+								*src2->x
+							);
+
+	MUL						(	float,
+								tmp,
+								src1->y,
+								*src2->y
+							);
+
+	ADD						(	float,
+								dst,
+								dst,
+								tmp
+							);
+
+	DEL						(	float,
+								tmp
+							);
+}
+
+HOWTO_DOTP					(	Vec3_t,	dst,	src1,	src2	)
+{
+	//*dst					=	*( src1->x )	*	*( src2->x )
+	//						+	*( src1->y )	*	*( src2->y )
+	//						+	*( src1->z )	*	*( src2->z );
+
+	float						*y12	=	NULL,
+								*z12	=	NULL;
+
+	MUL						(	float,
+								dst,
+								src1->x,
+								*src2->x
+							);
+
+	MUL						(	float,
+								y12,
+								src1->y,
+								*src2->y
+							);
+
+	ADD						(	float,
+								dst,
+								dst,
+								y12
+							);
+
+	MUL						(	float,
+								z12,
+								src1->z,
+								*src2->z
+							);
+
+	ADD						(	float,
+								dst,
+								dst,
+								z12
+							);
+
+	DEL						(	float,
+								y12
+							);
+
+	DEL						(	float,
+								z12
+							);
+}
+
+
+HOWTO_CROSSP				(	Vec3_t,	dst,	src1,	src2	)
+{
+	*( dst->x )				=	*( src1->y )	*	*( src2->z )
+							+	*( src2->y )	*	*( src1->z );
+
+	*( dst->y )				=	*( src1->x )	*	*( src2->z )
+							-	*( src1->z )	*	*( src2->x );
+
+	*( dst->z )				=	*( src1->x )	*	*( src2->y )
+							-	*( src1->y )	*	*( src2->x );
 }

@@ -1,5 +1,5 @@
-/* Copyright © 2025 Intel Corporation
- * SPDX-License-Identifier: MIT
+/*	Copyright © 2025 Intel Corporation
+ *	SPDX-License-Identifier: MIT
  */
 
 #pragma once
@@ -13,55 +13,98 @@
 
 
  /////////////////////////////////////////////////////////////////////////////////
- //								VECTORS:
+ //									VECTORS:
  /////////////////////////////////////////////////////////////////////////////////
 
 
-typedef					struct				Vec2	{	float x;
-														float y;	}	vec2_t;
+typedef
+struct							Vec2	{	float		*x;
+											float		*y;
+										}						Vec2_t;
 
-typedef					struct				Vec3	{	float x;
-														float y;
-														float z;	}	vec3_t;
+typedef	
+struct							Vec3	{	float		*x;
+											float		*y;
+											float		*z;
+										}						Vec3_t;
 
-typedef					struct				Vec4	{	float x;
-														float y;
-														float z;
-														float w;	}	vec4_t;
+typedef
+struct							Vec4	{	float		*x;
+											float		*y;
+											float		*z;
+											float		*w;
+										}						Vec4_t;
 
 
 
 
-typedef					DECL_ARRAY					(	vec2_t,
-														float*	x;
-														float*	y;	);
+DECL_ARRAY					(	Vec2_t,
+								ARRAY	(	float	)	*x;
+								ARRAY	(	float	)	*y;
+							);
 
-typedef					DECL_ARRAY					(	vec3_t,
-														float*	x;
-														float*	y;
-														float*	z;	);
+DECL_ARRAY					(	Vec3_t,
+								ARRAY	(	float	)	*x;
+								ARRAY	(	float	)	*y;
+								ARRAY	(	float	)	*z;
+							);
 
-typedef					DECL_ARRAY					(	vec4_t,
-														float*	x;
-														float*	y;
-														float*	z;
-														float*	w;	);
+DECL_ARRAY					(	Vec4_t,
+								ARRAY	(	float	)	*x;
+								ARRAY	(	float	)	*y;
+								ARRAY	(	float	)	*z;
+								ARRAY	(	float	)	*w;
+							);
 
 
 
 /////////////////////////////////////////////////////////////////////////////////
-//						PROJECTION:
+//									PROJECTION:
 /////////////////////////////////////////////////////////////////////////////////
 //
-//	Projection is the method by which a 3D object is represented on a 2D plane.
-//	The methods of projection is used to determine how a 3D object will look when
-//	viewed from a certain angle.
 //
+//		Projection is the method by which a 3D object is represented on a 2D
+//		plane. The methods of projection is used to determine how a 3D object
+//		would look when viewed from a certain angle.
+//
+//
+//										^						+ C
+//										|               +		
+//										|		+				
+//										+ A              - - - - - - - - -
+//								+		:              -:              - :
+//						+		        :           -   :            -   :
+//		E		+		   				: F       - - - - - - - - - -    :
+//		< 0 ) - - - - - - - - - - - - - +         :     :           :    :
+//		  :		+			1			:         :     :           :    :
+//		  :				+	:		    :         :     :- - - - - -:- - -
+//		  :					:	+       :         :    -            :   -
+//		  :					:			+ B       :  -              : -
+//		  :					:			|		+ - - - - - - - - - -
+//		  :					:			|				+	:
+//		  :					:			|					:    +
+//		  v					v			v					v       D
+//
+//		Eye Frame		  focal		Image Plane			Virtual 3D
+//		( Camera )		 length							Object
+// 
+// 
+//		In the above diagram, assume that E is the eye of the player, and AB
+//		is the length of our display. Let's also assume that between A and B
+//		is sitting an array of pixels each one at an equal distance from the
+//		another. Our job then is to light each of these pixels in such a way
+//		that it gives the impression of a 3D cube sitting behind the monitor
+//		(AB).
+// 
+// 
+// 
 /////////////////////////////////////////////////////////////////////////////////
+
 
 typedef					enum	Projection_type	{	ORTHOGRAPHIC = 0,
 													ISOMETRIC,
-													PERSPECTIVE		}	Projection_type_t;
+													PERSPECTIVE
+												}				Projection_type_t;
 
 
 
@@ -71,9 +114,29 @@ typedef					enum	Projection_type	{	ORTHOGRAPHIC = 0,
 ////////////////////////////////////////////////////////////////////////////////
 
 
-HOWTO_COPY							(	vec2_t,		to,	from	);
+HOWTO_DEF							(	Vec2_t,		self	);
 
-HOWTO_COPY							(	vec3_t,		to,	from	);
+HOWTO_CONSTRUCT						(	Vec2_t,
+										self,
+										float		x,
+										float		y		);
+
+HOWTO_DESTRUCT						(	Vec2_t,		self	);
+
+HOWTO_DEF							(	Vec3_t,		self	);
+
+HOWTO_CONSTRUCT						(	Vec3_t,
+										self,
+										float		x,
+										float		y,
+										float		z		);
+
+HOWTO_DESTRUCT						(	Vec3_t,		self	);
+
+
+HOWTO_CPY							(	Vec2_t,		to,	from	);
+
+HOWTO_CPY							(	Vec3_t,		to,	from	);
 
 
 /////////////////////////////////////////////////////////////////////////////////
@@ -81,24 +144,29 @@ HOWTO_COPY							(	vec3_t,		to,	from	);
 /////////////////////////////////////////////////////////////////////////////////
 
 
-HOWTO_ARRAY_INIT					(	vec2_t,	array	);
+HOWTO_DEF							(	ARRAY	( Vec2_t ),		self	);
 
-HOWTO_ARRAY_INIT					(	vec3_t,	array	);
-
-
-HOWTO_ARRAY_RESET					(	vec2_t,	array	);
-
-HOWTO_ARRAY_RESET					(	vec3_t,	array	);
+HOWTO_DEF							(	ARRAY	( Vec3_t ),		self	);
 
 
-HOWTO_LOAD							(	vec2_t,	ptr,	array,	idx	);
+HOWTO_DESTRUCT						(	ARRAY	( Vec2_t ),		self	);
 
-HOWTO_LOAD							(	vec3_t,	ptr,	array,	idx	);
+HOWTO_DESTRUCT						(	ARRAY	( Vec3_t ),		self	);
 
 
-HOWTO_STORE							(	vec2_t,	ptr,	array	);
+HOWTO_LD							(	Vec2_t,	ptr,	arr,	idx	);
 
-HOWTO_STORE							(	vec3_t,	ptr,	array	);
+HOWTO_LD							(	Vec3_t,	ptr,	arr,	idx	);
+
+
+HOWTO_STR							(	Vec2_t,	ptr,	arr,	idx	);
+
+HOWTO_STR							(	Vec3_t,	ptr,	arr,	idx	);
+
+
+HOWTO_PUSH							(	Vec2_t,	ptr,	arr		);
+
+HOWTO_PUSH							(	Vec3_t,	ptr,	arr		);
 
 
 /////////////////////////////////////////////////////////////////////////////////
@@ -106,36 +174,42 @@ HOWTO_STORE							(	vec3_t,	ptr,	array	);
 /////////////////////////////////////////////////////////////////////////////////
 
 
-HOWTO_ROTATE						(	vec3_t,	to,	from,	vec3_t* angle	);
+HOWTO_ROT							(	Vec3_t,	to,	from,	Vec3_t* angle	);
 
-HOWTO_PROJECT						(	vec2_t,		vec3_t,
-										to,			from,
-										Projection_type_t	type	);
+HOWTO_PROJ							(	Vec2_t,				Vec3_t,
+										to,					from,
+										Projection_type_t	type
+									);
 
 
 /////////////////////////////////////////////////////////////////////////////////
 //				Arithmetic Operations
 /////////////////////////////////////////////////////////////////////////////////
 
-HOWTO_ADD							(	vec2_t,	dst,	op1,	op2	);
+HOWTO_ADD							(	Vec2_t,	dst,	op1,	op2		);
 
-HOWTO_ADD							(	vec3_t,	dst,	op1,	op2	);
-
-
-HOWTO_SUB							(	vec2_t,	dst,	op1,	op2	);
-
-HOWTO_SUB							(	vec3_t,	dst,	op1,	op2	);
+HOWTO_ADD							(	Vec3_t,	dst,	op1,	op2		);
 
 
-HOWTO_MUL							(	vec2_t,	dst,	src,	factor	);
+HOWTO_SUB							(	Vec2_t,	dst,	op1,	op2		);
 
-HOWTO_MUL							(	vec3_t,	dst,	src,	factor	);
-
-
-HOWTO_DOTP							(	vec2_t, dst,	src1,	src2	);
-
-HOWTO_DOTP							(	vec3_t, dst,	src1,	src2	);
+HOWTO_SUB							(	Vec3_t,	dst,	op1,	op2		);
 
 
-HOWTO_CROSSP						(	vec3_t,	dst,	src1,	src2	);
+HOWTO_MUL							(	Vec2_t,	dst,	src,	factor	);
+
+HOWTO_MUL							(	Vec3_t,	dst,	src,	factor	);
+
+
+HOWTO_DIV							(	Vec2_t,	dst,	src,	factor	);
+
+HOWTO_DIV							(	Vec3_t,	dst,	src,	factor	);
+
+
+HOWTO_DOTP							(	Vec2_t, dst,	src1,	src2	);
+
+HOWTO_DOTP							(	Vec3_t, dst,	src1,	src2	);
+
+
+HOWTO_CROSSP						(	Vec3_t,	dst,	src1,	src2	);
 

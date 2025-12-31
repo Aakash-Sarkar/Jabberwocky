@@ -7,6 +7,7 @@
 #include "object.h"
 #include "point.h"
 #include "triangle.h"
+#include "mesh.h"
 
 
 
@@ -14,13 +15,14 @@ typedef							struct Cube	{	int			len;
 												int			width;
 												int			height;
 												int			num_points;
-												Point3d_t*	points;		}	Cube_t;
+												Point3d_t*	points;
+											}							Cube_t;
 
 
 
 
-extern						vec3_t			cube_vertices[];
-extern						Face_t			cube_faces[];
+extern						Vec3_t			*cube_vertices;
+extern						Face_t			*cube_faces;
 
 #define																				\
 for_each_point_in_cube(cube, point, itr)		for (	itr		= 0,				\
@@ -31,9 +33,5 @@ for_each_point_in_cube(cube, point, itr)		for (	itr		= 0,				\
 													)
 
 
-CONSTRUCTOR				(	Cube_t,
-							int			len,
-							int			width,
-							int			height	);
 
 

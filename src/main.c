@@ -83,7 +83,7 @@ static
 bool
 yo_sdl_init_everything			(	void	)
 {
-	int								ret = -1;
+	int								ret	=	-1;
 
 	CALL						(	ret,
 									SDL,
@@ -94,7 +94,7 @@ yo_sdl_init_everything			(	void	)
 	if							(	ret != 0	)
 	{
 		LOG						(	"BITCH!\n"	);
-		RETURN					(	FAIL	);
+		RET						(	FAIL	);
 	}
 
 	// Use the force, Luke!
@@ -106,49 +106,41 @@ Renderer_t*
 setup							(	void	)
 {
 
-	PTR							(	Window_t,	w,	NULL	);
-	PTR							(	Renderer_t,	r,	NULL	);
+	Window_t						*window		=	NULL;
+	Renderer_t						*renderer	=	NULL;
 
-	int								numbufs	= 1;
+	int								numbufs		=	1;
 
 	// Initialze SDL
 	if							(	yo_sdl_init_everything ( )
-									!= SUCCESS	)
-	{
-		RETURN					(	NULL	);
-	}
+									!= SUCCESS
+								)
+		RET						(	NULL	);
 
-	/**
-	 * Ask SDL to create a window for us where we can render (show) our images.
-	 */
-	CONSTRUCT					(	w, Window_t	);
-	if							(	!w	)
-	{
-		LOG						(	"Couldn't create window\n"	);
-		RETURN					(	NULL	);
-	}
+	//	Create a new window
+
+	NEW							(	Window_t,
+									window,
+									NULL
+								);
 
 	/**
 	 * Create a renderer so that we can talk to the SDL layer.
 	 */
-	CONSTRUCT					(	r, Renderer_t, w	);
-	if							(	!r	)
-	{
-		LOG						(	"Couldn't create renderer\n"	);
-		DESTRUCT				(	w, Window_t	);
-		RETURN					(	NULL	);
-	}
+	NEW							(	Renderer_t,
+									renderer,
+									window
+								);
 
-	RETURN						(	r	);
+	RET							(	renderer	);
 }
 
 static
 void
 process_input					(	void	)
 {
-	int								ret	= -1;
-
-	MEM							(	SDL_Event,	event,	1	);
+	SDL_Event						event	=	{ 0 };
+	int								ret		=	-1;
 
 	/*
 	 * Check for Keyboard inputs from the user
@@ -156,10 +148,10 @@ process_input					(	void	)
 	CALL						(	ret,
 									SDL,
 									PollEvent,
-									event
+									&event
 								);
 
-	switch						(	event->type	)
+	switch						(	event.type	)
 	{
 		// Window close
 		case					(	SDL_QUIT	):
@@ -168,7 +160,7 @@ process_input					(	void	)
 
 		// Escape key
 		case					(	SDL_KEYDOWN	):
-			if					(	event->key.keysym.sym == SDLK_ESCAPE	)
+			if					(	event.key.keysym.sym == SDLK_ESCAPE	)
 				LOOP_BREAK		(	GAME	);
 			break;
 		default:
@@ -181,57 +173,106 @@ bool
 update							(	Renderer_t*		renderer	)
 {
 
-	int								ret = -1,
-									idx = 0;
+	int								ret		=	-1,
+									idx		=	0;
 
-	PTR							(	Mesh_t,			mesh,	renderer->mesh	);
+	Mesh_t							*mesh	=	NULL;
+	Face_t							*face	=	NULL;
 
-	for_each_item_in_array		(	&mesh->faces,	idx	)
+	Triangle3d_t					*tr		=	NULL,
+									*rot_tr	=	NULL;
+
+	Triangle2d_t					*prj	=	NULL;
+
+	Vec3_t							*rot	=	NULL;
+
+	DEF							(	Triangle3d_t,
+									tr
+								);
+
+	DEF							(	Triangle3d_t,
+									rot_tr
+								);
+
+	DEF							(	Triangle2d_t,
+									prj
+								);
+
+	DEF							(	Face_t,
+									face
+								);
+
+	NEW							(	Vec3_t,
+									rot,
+									0.01f,	0.00f,	0.00f
+								);
+
+	if							(	!renderer->triangles_to_draw	)
 	{
-		MEM						(	Triangle3d_t,	triangle,		2	);
-
-		MEM						(	Triangle2d_t,	proj_triangle,	1	);
-
-		MEM						(	Face_t,			face,			1	);
-
-
-		LOAD					(	Face_t,
-									face,			&mesh->faces,	idx	);
-
-		*triangle				=	create_triangle_from_face	(	face,
-																	mesh	);
-		ROTATE					(	Triangle3d_t,
-									triangle + 1,	triangle,	&mesh->rotation	);
-
-		PROJECT					(	Triangle2d_t,	Triangle3d_t,
-									proj_triangle,	triangle + 1,	PERSPECTIVE	);
-
-		STORE					(	Triangle2d_t,
-									proj_triangle,
-									&renderer->triangles_to_draw	);
+		DEF						(	ARRAY	( Triangle2d_t ),
+									renderer->triangles_to_draw
+								);
 	}
 
-	mesh->rotation.x			+=	0.01;
+	GET							(	mesh,	renderer->mesh	);
+
+	for_each_item_in_array		(	mesh->faces,	idx	)
+	{
+		LD						(	Face_t,
+									face,
+									mesh->faces,
+									idx
+								);
+
+		*tr						=	create_triangle_from_face	(	face,
+																	mesh	);
+		ROT						(	Triangle3d_t,
+									rot_tr,
+									tr,
+									mesh->rotation
+								);
+
+		PROJ					(	Triangle2d_t,			Triangle3d_t,
+									prj,					rot_tr,
+									PERSPECTIVE
+								);
+
+		PUSH					(	Triangle2d_t,
+									prj,
+									renderer->triangles_to_draw
+								);
+	}
+
+	ADD							(	Vec3_t,
+									mesh->rotation,
+									mesh->rotation,
+									rot
+								);
+
+	DEL							(	Vec3_t,
+									rot
+								);
 
 	// Use the force, Luke!
 	return SUCCESS;
 }
 
 
-/**
- * This is the part of game loop that does the actual drawing on the screen. 
- */
+
+//	This is the part of game loop that does the actual drawing on the screen. 
+
 static
 bool
-render							(	Renderer_t* renderer	)
+render							(	Renderer_t*		renderer	)
 {
 
-	int								ret = -1,
-									idx	= 0;
+	int								ret		=	-1,
+									idx		=	0;
 
-	MEM							(	Color_t,	green,	1	);
+	Color_t							*green	=	NULL;
+	Triangle2d_t					*tr		=	NULL;
 
-	MAKE						(	Color_t,
+	NEW							(	Color_t,
 									green,
 									0x00,
 									0xFF,
@@ -239,34 +280,39 @@ render							(	Renderer_t* renderer	)
 									0xFF
 								);
 
-	for_each_item_in_array		(	&renderer->triangles_to_draw,	idx	)
-	{
-		MEM						(	Triangle2d_t,	triangle,	1	);
+	DEF							(	Triangle2d_t,
+									tr
+								);
 
-		LOAD					(	Triangle2d_t,
-									triangle,
-									&renderer->triangles_to_draw,
+	for_each_item_in_array		(	renderer->triangles_to_draw,	idx	)
+	{
+		LD						(	Triangle2d_t,
+									tr,
+									renderer->triangles_to_draw,
 									idx
 								);
 
 		DRAW					(	Triangle2d_t,
-									triangle,
-									&renderer->origin,
+									tr,
+									renderer->origin,
 									green,
 									renderer->buffer
 								);
+
+		//LOG						(	"idx: %d\n", idx	);
 	}
 
 
-	ARRAY_RESET					(	Triangle2d_t,
-									&renderer->triangles_to_draw	);
+	DEL							(	ARRAY	( Triangle2d_t ),
+									renderer->triangles_to_draw
+								);
 
 	ret							=	render_color_buffer	(	renderer	);
 
 	if							(	( !!ret ) != SUCCESS	)
 	{
 		LOG						(	"Failed to render color buffer\n"	);
-		RETURN					(	FAIL	);
+		RET						(	FAIL	);
 	}
 
 	ret							=	clear_color_buffer	(	renderer->buffer	);
@@ -274,7 +320,7 @@ render							(	Renderer_t* renderer	)
 	if							(	( !!ret ) != SUCCESS	)
 	{
 		LOG						(	"Failed to clear buffer\n"	);
-		RETURN					(	FAIL	);
+		RET						(	FAIL	);
 	}
 
 	SDL_RenderPresent			(	renderer->sdl	);
@@ -288,20 +334,20 @@ render							(	Renderer_t* renderer	)
 int
 main							(	int argc, char** argv	)
 {
-	PTR							(	Renderer_t,	r,	NULL	);
+	Renderer_t						*renderer	=	NULL;
 
-	r							=	setup	(	);
-	if							(	!r	)
+	renderer					=	setup	(	);
+	if							(	!renderer	)
 	{
 		LOG						(	"Setup failed\n"	);
-		RETURN					(	1	);
+		RET						(	1	);
 	}
 
 	LOOP						(	GAME	)
 	{
 		process_input			(	);
-		update					(	r	);
-		render					(	r	);
+		update					(	renderer	);
+		render					(	renderer	);
 	}
-	RETURN						(	0	);
+	RET							(	0	);
 }

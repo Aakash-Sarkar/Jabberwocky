@@ -50,13 +50,13 @@ typedef					INHERIT (	SDL,
 
 typedef					INHERIT (	SDL,
 									Renderer,
-									Color_buffer_t*			buffer;
-									Texture_t*				texture;
-									Window_t*				window;
-									Choreographer_t*		c_grapher;
-									ARRAY ( Triangle2d_t )	triangles_to_draw;
-									Mesh_t*					mesh;
-									Point2d_t				origin;		)	Renderer_t;
+									Color_buffer_t			*buffer;
+									Texture_t				*texture;
+									Window_t				*window;
+									Choreographer_t			*c_grapher;
+									ARRAY ( Triangle2d_t )	*triangles_to_draw;
+									Mesh_t					*mesh;
+									Point2d_t				*origin;	)	Renderer_t;
 
 
 
@@ -64,30 +64,40 @@ typedef					INHERIT (	SDL,
 /* Beginning of function declarations */
 
 
-CONSTRUCTOR				(	Window_t	);
+HOWTO_CONSTRUCT				(	Window_t,
+								self,
+								void				*null
+							);
 
 
-DESTRUCTOR				(	Window_t	);
+HOWTO_DESTRUCT				(	Window_t,			self	);
 
 
-CONSTRUCTOR				(	Renderer_t,
-							Window_t*	w	);
+HOWTO_CONSTRUCT				(	Renderer_t,
+								self,
+								Window_t			*window
+							);
 
 
-DESTRUCTOR				(	Renderer_t	);
+HOWTO_DESTRUCT				(	Renderer_t,			self	);
 
 
 
-CONSTRUCTOR				(	Texture_t,
-							Renderer_t*		r,
-							int				w,
-							int				h,
-							Format_type_t	f_t	);
+HOWTO_CONSTRUCT				(	Texture_t,
+								self,
+								Renderer_t*			r,
+								int					w,
+								int					h,
+								Format_type_t		f_t
+							);
 
-DESTRUCTOR				(	Texture_t	);
+HOWTO_DESTRUCT				(	Texture_t,			self	);
 
-CONSTRUCTOR				(	Choreographer_t	);
+HOWTO_CONSTRUCT				(	Choreographer_t,
+								self,
+								void				*null
+							);
 
 bool
-render_color_buffer		(	Renderer_t*	renderer	);
+render_color_buffer			(	Renderer_t*			renderer	);
 
