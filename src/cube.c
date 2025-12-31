@@ -45,10 +45,12 @@ Face_t	cube_faces[] =
 
 
 
-CONSTRUCTOR							(	Cube_t,
+HOWTO_CONSTRUCT						(	Cube_t,
+										self,
 										int			len,
 										int			width,
-										int			height	)
+										int			height
+									)
 {
 
 	PTR								(	Cube_t,		cube,	NULL	);

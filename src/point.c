@@ -1,5 +1,5 @@
-/* Copyright © 2025 Intel Corporation
- * SPDX-License-Identifier: MIT
+/*	Copyright © 2025 Intel Corporation
+ *	SPDX-License-Identifier: MIT
  */
 
 #include "point.h"
@@ -7,137 +7,293 @@
 
 
 
-
-HOWTO_ARRAY_INIT				(	Point2d_t,	array		)
+HOWTO_DEF						(	Point2d_t,	self	)
 {
-	ARRAY_INIT					(	vec2_t,		&array->v	);
-	array->count				=	0;
+	DEF							(	Vec2_t,
+									self->v
+								);
 }
 
-HOWTO_ARRAY_INIT				(	Point3d_t,	array		)
+HOWTO_CONSTRUCT					(	Point2d_t,
+									self,
+									float		x,
+									float		y
+								)
 {
-	ARRAY_INIT					(	vec3_t,		&array->v	);
-	array->count				=	0;
+	NEW							(	Vec2_t,
+									self->v,
+									x,	y
+								);
+}
+
+HOWTO_DESTRUCT					(	Point2d_t,	self	)
+{
+	DEL							(	Vec2_t,
+									self->v
+								);
+}
+
+HOWTO_DEF						(	Point3d_t,	self	)
+{
+	DEF							(	Vec3_t,
+									self->v
+								);
+}
+
+HOWTO_CONSTRUCT					(	Point3d_t,
+									self,
+									float		x,
+									float		y,
+									float		z
+								)
+{
+	NEW							(	Vec3_t,
+									self->v,
+									x,	y,	z
+								);
+}
+
+HOWTO_DESTRUCT					(	Point3d_t,	self	)
+{
+	DEL							(	Vec3_t,
+									self->v
+								);
+}
+
+HOWTO_DEF						(	ARRAY	(	Point2d_t	),	self	)
+{
+	DEF							(	ARRAY	(	Vec2_t	),
+									self->v
+								);
+
+	self->count					=	0;
+}
+
+HOWTO_DEF						(	ARRAY	(	Point3d_t	),	self	)
+{
+	DEF							(	ARRAY	(	Vec3_t	),
+									self->v
+								);
+
+	self->count					=	0;
 }
 
 
-HOWTO_ARRAY_RESET				(	Point2d_t,	array		)
+HOWTO_DESTRUCT					(	ARRAY	(	Point2d_t	),	self	)
 {
-	ARRAY_RESET					(	vec2_t,		&array->v	);
-	array->count				=	0;
+	DEL							(	ARRAY	(	Vec2_t	),
+									self->v
+								);
+
+	self->count				=	0;
 }
 
-HOWTO_ARRAY_RESET				(	Point3d_t,	array		)
+HOWTO_DESTRUCT					(	ARRAY	(	Point3d_t	),	self	)
 {
-	ARRAY_RESET					(	vec3_t,		&array->v	);
-	array->count				=	0;
-}
+	DEL							(	ARRAY	(	Vec3_t	),
+									self->v
+								);
 
-
-HOWTO_LOAD						(	Point2d_t,
-									ptr,		array,		idx	)
-{
-	LOAD						(	vec2_t,		&ptr->v,	&array->v,	idx	);
-}
-
-HOWTO_LOAD						(	Point3d_t,
-									ptr,		array,		idx	)
-{
-	LOAD						(	vec3_t,		&ptr->v,	&array->v,	idx	);
-}
-
-HOWTO_STORE						(	Point2d_t,	ptr,		array	)
-{
-	STORE						(	vec2_t,		&ptr->v,	&array->v	);
-
-	array->count++;
-}
-
-HOWTO_STORE						(	Point3d_t,	ptr,		array	)
-{
-	STORE						(	vec3_t,		&ptr->v,	&array->v	);
-
-	array->count++;
+	self->count				=	0;
 }
 
 
-HOWTO_COPY						(	Point2d_t,	to,			from	)
+HOWTO_LD						(	Point2d_t,
+									ptr,
+									arr,
+									idx
+								)
 {
-	COPY						(	vec2_t,		&to->v,		&from->v	);
+	LD							(	Vec2_t,
+									ptr->v,
+									arr->v,
+									idx
+								);
 }
 
-HOWTO_COPY						(	Point3d_t,	to,			from	)
+HOWTO_LD						(	Point3d_t,
+									ptr,
+									arr,
+									idx
+								)
 {
-	COPY						(	vec3_t,		&to->v,		&from->v	);
+	LD							(	Vec3_t,
+									ptr->v,
+									arr->v,
+									idx
+								);
+}
+
+HOWTO_STR						(	Point2d_t,	ptr,	arr,	idx	)
+{
+	STR							(	Vec2_t,
+									ptr->v,
+									arr->v,
+									idx
+								);
+}
+
+HOWTO_STR						(	Point3d_t,	ptr,	arr,	idx	)
+{
+	STR							(	Vec3_t,
+									ptr->v,
+									arr->v,
+									idx
+								);
+}
+
+
+HOWTO_PUSH						(	Point2d_t,	ptr,	arr		)
+{
+	PUSH						(	Vec2_t,
+									ptr->v,
+									arr->v
+								);
+
+	arr->count++;
+}
+
+HOWTO_PUSH						(	Point3d_t,	ptr,	arr		)
+{
+	PUSH						(	Vec3_t,
+									ptr->v,
+									arr->v
+								);
+
+	arr->count++;
+}
+
+
+HOWTO_CPY						(	Point2d_t,	to,		from	)
+{
+	CPY							(	Vec2_t,
+									to->v,
+									from->v
+								);
+}
+
+HOWTO_CPY						(	Point3d_t,	to,		from	)
+{
+	CPY							(	Vec3_t,
+									to->v,
+									from->v
+								);
 }
 
 
 
 
-HOWTO_ROTATE					(	Point2d_t,	to,	from,	vec2_t*	angle	)
+HOWTO_ROT						(	Point2d_t,
+									to,					from,
+									Vec2_t				*angle
+								)
 {
 }
 
-HOWTO_ROTATE					(	Point3d_t,	to,	from,	vec3_t*	angle	)
+HOWTO_ROT						(	Point3d_t,
+									to,					from,
+									Vec3_t				*angle
+								)
 {
-	ROTATE						(	vec3_t,	
-									&to->v,		&from->v,	angle	);
+	ROT							(	Vec3_t,	
+									to->v,
+									from->v,
+									angle
+								);
 }
 
 
 
 
 HOWTO_DRAW						(	Point2d_t,
-									point,
-									Point2d_t*			origin,
-									Color_t*			color,
-									Color_buffer_t*		colorbuf	)
+									self,
+									Point2d_t			*origin,
+									Color_t				*color,
+									Color_buffer_t		*colorbuf	)
 {
+	Rect_t							*rect		=	NULL;
+	Point2d_t						*o_point	=	NULL;
 
-	MEM							(	Rect_t,		rect,		1	);
-	MEM							(	Point2d_t,	o_point,	1	);
+	DEF							(	Point2d_t,
+									o_point
+								);
 
-	// By default all our points will be in the range (-1 * fov_scale) up to
-	// (+1 * fov_scale). This shifts the points to the center of the screen.
+	//	By default all our points will be in the range (-1 * fov_scale) up to
+	//	(+1 * fov_scale). This shifts the points to the center of the screen.
 
-	ADD							(	Point2d_t,	o_point,	point,	origin	);
+	ADD							(	Point2d_t,
+									o_point,
+									self,
+									origin
+								);
 
+	int								posX	=	*o_point->v->x,
+									posY	=	*o_point->v->y;
 
-	rect->posX					=	( int )	o_point->v.x;
-	rect->posY					=	( int )	o_point->v.y;
-	rect->width					=	4;
-	rect->height				=	4;
+	NEW							(	Rect_t,
+									rect,
+									posX,
+									posY,
+									4,
+									4
+								);
 
+	DRAW						(	Rect_t,
+									rect,
+									color,
+									colorbuf
+								);
 
-	DRAW						(	Rect_t,		rect,		color,	colorbuf	);
+	DEL							(	Rect_t,
+									rect
+								);
+
+	DEL							(	Point2d_t,
+									o_point
+								);
 }
 
 HOWTO_DRAW						(	Point3d_t,
-									point,
-									Point2d_t*			origin,
-									Color_t*			color,
-									Color_buffer_t*		colorbuf	)
+									self,
+									Point2d_t			*origin,
+									Color_t				*color,
+									Color_buffer_t		*colorbuf	)
 {
+	Point2d_t						*proj	=	NULL;
 
-	MEM							(	Point2d_t,		proj,	1	);
+	DEF							(	Point2d_t,
+									proj
+								);
 
-	PROJECT						(	Point2d_t,		Point3d_t,
-									proj,			point,		PERSPECTIVE	);
+	PROJ						(	Point2d_t,		Point3d_t,
+									proj,			self,
+									PERSPECTIVE
+								);
 
-	DRAW						(	Point2d_t,		proj,
-									origin,			color,		colorbuf	);
+	DRAW						(	Point2d_t,
+									proj,
+									origin,
+									color,
+									colorbuf
+								);
+
+	DEL							(	Point2d_t,
+									proj
+								);
 }
 
 
 
 
-HOWTO_PROJECT					(	Point2d_t,			Point3d_t,
+HOWTO_PROJ						(	Point2d_t,			Point3d_t,
 									to,					from,
 									Projection_type_t	type		)
 {
 
-	PROJECT						(	vec2_t,			vec3_t,
-									&to->v,			&from->v,	type	);
+	PROJ						(	Vec2_t,				Vec3_t,
+									to->v,				from->v,
+									type
+								);
 }
 
 
@@ -150,50 +306,106 @@ HOWTO_PROJECT					(	Point2d_t,			Point3d_t,
 
 HOWTO_ADD					(	Point2d_t,	dst,	op1,	op2	)
 {
-	ADD						(	vec2_t,	&dst->v,	&op1->v,	&op2->v	);
+	ADD						(	Vec2_t,
+								dst->v,
+								op1->v,
+								op2->v
+							);
 }
 
 HOWTO_ADD					(	Point3d_t,	dst,	op1,	op2	)
 {
-	ADD						(	vec3_t,	&dst->v,	&op1->v,	&op2->v	);
+	ADD						(	Vec3_t,
+								dst->v,
+								op1->v,
+								op2->v
+							);
 }
 
 
 HOWTO_SUB					(	Point2d_t,	dst,	op1,	op2	)
 {
-	SUB						(	vec2_t,	&dst->v,	&op1->v,	&op2->v	);
+	SUB						(	Vec2_t,
+								dst->v,
+								op1->v,	
+								op2->v
+							);
 }
 
 HOWTO_SUB					(	Point3d_t,	dst,	op1,	op2	)
 {
-	SUB						(	vec3_t,	&dst->v,	&op1->v,	&op2->v	);
+	SUB						(	Vec3_t,
+								dst->v,
+								op1->v,
+								op2->v
+							);
 }
 
 
 HOWTO_MUL					(	Point2d_t,	dst,	src,	factor	)
 {
-	MUL						(	vec2_t,	&dst->v,	&src->v,	factor	);
+	MUL						(	Vec2_t,
+								dst->v,
+								src->v,
+								factor
+							);
 
 }
 
 HOWTO_MUL					(	Point3d_t,	dst,	src,	factor	)
 {
-	MUL						(	vec3_t,	&dst->v,	&src->v,	factor	);
+	MUL						(	Vec3_t,
+								dst->v,
+								src->v,
+								factor
+							);
+}
+
+
+HOWTO_DIV					(	Point2d_t,	dst,	src,	factor	)
+{
+	DIV						(	Vec2_t,
+								dst->v,
+								src->v,
+								factor
+							);
+
+}
+
+HOWTO_DIV					(	Point3d_t,	dst,	src,	factor	)
+{
+	DIV						(	Vec3_t,
+								dst->v,
+								src->v,
+								factor
+							);
 }
 
 
 HOWTO_DOTP					(	Point2d_t,	dst,	src1,	src2	)
 {
-	DOTP					(	vec2_t,		dst,	&src1->v,	&src2->v	);
+	DOTP					(	Vec2_t,
+								dst,
+								src1->v,
+								src2->v
+							);
 }
 
 HOWTO_DOTP					(	Point3d_t,	dst,	src1,	src2	)
 {
-	DOTP					(	vec3_t,		dst,	&src1->v,	&src2->v	);
+	DOTP					(	Vec3_t,
+								dst,
+								src1->v,
+								src2->v
+							);
 }
 
 
 HOWTO_CROSSP				(	Point3d_t,	dst,	src1,	src2	)
 {
-	CROSSP					(	vec3_t,		&dst->v,	&src1->v,	&src2->v	);
+	CROSSP					(	Vec3_t,
+								dst->v,
+								src1->v,
+								src2->v
+							);
 }

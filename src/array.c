@@ -1,10 +1,16 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "array.h"
+#include "object.h"
+
+
+
 
 #define ARRAY_RAW_DATA(array) ((int*)(array) - 2)
 #define ARRAY_CAPACITY(array) (ARRAY_RAW_DATA(array)[0])
 #define ARRAY_OCCUPIED(array) (ARRAY_RAW_DATA(array)[1])
+
+
 
 void* array_hold(void* array, int count, int item_size) {
     if (array == NULL) {
@@ -38,3 +44,228 @@ void array_free(void* array) {
         free(ARRAY_RAW_DATA(array));
     }
 }
+
+HOWTO_DEF					(	ARRAY	(	char	),	self	)
+{
+	self->ptr				=	NULL;
+	self->count				=	0;
+}
+
+HOWTO_DEF					(	ARRAY	(	int		),	self	)
+{
+	self->ptr				=	NULL;
+    self->count				=	0;
+}
+
+HOWTO_DEF					(	ARRAY	(	long	),	self	)
+{
+	self->ptr				=	NULL;
+	self->count				=	0;
+}
+
+HOWTO_DEF					(	ARRAY	(	float	),	self	)
+{
+	self->ptr				=	NULL;
+	self->count				=	0;
+}
+
+HOWTO_DEF					(	ARRAY	(	double	),	self	)
+{
+	self->ptr				=	NULL;
+	self->count				=	0;
+}
+
+
+HOWTO_DESTRUCT				(	ARRAY	(	char	),	self	)
+{
+	array_free				(	self->ptr	);
+
+	self->ptr				=	NULL;
+	self->count				=	0;
+}
+
+HOWTO_DESTRUCT				(	ARRAY	(	int		),	self	)
+{
+	array_free				(	self->ptr	);
+
+	self->ptr				=	NULL;
+	self->count				=	0;
+}
+
+HOWTO_DESTRUCT				(	ARRAY	(	long	),	self	)
+{
+	array_free				(	self->ptr	);
+
+	self->ptr				=	NULL;
+	self->count				=	0;
+}
+
+HOWTO_DESTRUCT				(	ARRAY	(	float	),	self	)
+{
+	array_free				(	self->ptr	);
+
+	self->ptr				=	NULL;
+	self->count				=	0;
+}
+
+HOWTO_DESTRUCT				(	ARRAY	(	double	),	self	)
+{
+	array_free				(	self->ptr	);
+
+	self->ptr				=	NULL;
+	self->count				=	0;
+}
+
+
+HOWTO_LD					(	char,	item,	arr,	idx		)
+{
+
+	assert					(	idx <=	arr->count	);
+
+	CPY						(	char,
+								item,
+								arr->ptr + idx
+							);
+}
+
+HOWTO_LD					(	int,	item,	arr,	idx		)
+{
+
+	assert					(	idx	<=	arr->count	);
+
+	CPY						(	int,
+								item,
+								arr->ptr + idx
+							);
+}
+
+HOWTO_LD					(	long,	item,	arr,	idx		)
+{
+
+	assert					(	idx <=	arr->count	);
+
+	CPY						(	long,
+								item,
+								arr->ptr + idx
+							);
+}
+
+HOWTO_LD					(	float,	item,	arr,	idx		)
+{
+
+	assert					(	idx <=	arr->count	);
+
+	CPY						(	float,
+								item,
+								arr->ptr + idx
+							);
+}
+
+HOWTO_LD					(	double,	item,	arr,	idx		)
+{
+	assert					(	idx	<=	arr->count	);
+
+	CPY						(	double,
+								item,
+								arr->ptr + idx
+							);
+}
+
+
+HOWTO_STR					(	char,	item,	arr,	idx		)
+{
+	assert					(	idx		<=	arr->count	);
+
+	_CPY					(	char,
+								arr->ptr +	idx,
+								item
+							);
+}
+
+HOWTO_STR					(	int,	item,	arr,	idx		)
+{
+	assert					(	idx		<=	arr->count	);
+
+	_CPY					(	int,
+								arr->ptr +	idx,
+								item
+							);
+}
+
+HOWTO_STR					(	long,	item,	arr,	idx		)
+{
+	assert					(	idx		<=	arr->count	);
+
+	_CPY					(	long,
+								arr->ptr +	idx,
+								item
+							);
+}
+
+HOWTO_STR					(	float,	item,	arr,	idx		)
+{
+	assert					(	idx		<=	arr->count	);
+
+	_CPY					(	float,
+								arr->ptr +	idx,
+								item
+							);
+}
+
+HOWTO_STR					(	double,	item,	arr,	idx		)
+{
+	assert					(	idx		<=	arr->count	);
+
+	_CPY					(	double,
+								arr->ptr +	idx,
+								item
+							);
+}
+
+
+HOWTO_PUSH					(	char,	item,	arr		)
+{
+	array_push				(	arr->ptr,
+								*item
+							);
+
+	arr->count++;
+}
+
+HOWTO_PUSH					(	int,	item,	arr		)
+{
+	array_push				(	arr->ptr,
+								*item
+							);
+
+	arr->count++;
+}
+
+HOWTO_PUSH					(	long,	item,	arr		)
+{
+	array_push				(	arr->ptr,
+								*item
+							);
+
+	arr->count++;
+}
+
+HOWTO_PUSH					(	float,	item,	arr		)
+{
+	array_push				(	arr->ptr,
+								*item
+							);
+
+	arr->count++;
+}
+
+HOWTO_PUSH					(	double,	item,	arr		)
+{
+	array_push				(	arr->ptr,
+								*item
+							);
+
+	arr->count++;
+}
+
+

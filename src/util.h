@@ -72,7 +72,7 @@
 #define CALL(retval, who, why, ...)		retval = concat3(who, _, why)(__VA_ARGS__)
 
 
-#define RETURN(x)						return x
+#define RET(x)							return x
 
 #define PTR(class, name, val)			class* name = val
 
@@ -164,13 +164,25 @@
 
 
 
-#define BITS_PER_BYTE					(8)
+#define BITS_PER_BYTE					( 8 )
 #define BITS_TO_BYTES(n)				(( n ) /  ( BITS_PER_BYTE ))
 
 #define LOG(...)						fprintf	(stderr,  __VA_ARGS__)
 
+#define																		\
+assert( cond )							do									\
+										{								\
+											if			(	!(cond)	)		\
+											{								\
+												LOG		(	"%s: %d\n",		\
+														__FILE__, __LINE__	\
+														);					\
+												exit	(	1	);			\
+											}								\
+										}	while		(	0	)
+
 #define ASSERT(cond, ...)				do {								\
-												if (!cond) {				\
+												if	(!cond) {				\
 													LOG  (__VA_ARGS__);		\
 													exit (1);				\
 												}							\
