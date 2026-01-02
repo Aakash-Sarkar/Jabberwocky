@@ -203,7 +203,7 @@ HOWTO_DESTRUCT( class,self )					void dtor( class ) ( class* self )
 CONSTRUCT( class, self, ... )					ctor(class) (self, __VA_ARGS__)
 
 #define																				\
-DESTRUCT( class, self )							dtor(class) (self)
+DESTRUCT( class, self )							dtor			(	class	) (	self	)
 
 
 #define																				\
@@ -224,7 +224,7 @@ def_ctor( class )							concat3 ( def_create, _, class )
 HOWTO_DEF( class, ptr )						void def_ctor( class ) ( class *ptr )
 
 #define																				\
-DEF(class, ptr)								do										\
+DEF( class, ptr )							do										\
 											{										\
 												_DEF			(	class,			\
 																	ptr				\
@@ -302,7 +302,7 @@ _CPY( class, to , from )					do										\
 #define																				\
 CPY( class, to , from )						do										\
 											{										\
-												if				(	!(to)	)		\
+												if				(	!to		)		\
 													DEF			(	class,			\
 																	to				\
 																);					\
@@ -317,7 +317,8 @@ CPY( class, to , from )						do										\
 
 
 
-#define MOV( class, to, from )				do										\
+#define																				\
+MOV( class, to, from )						do										\
 											{										\
 												CPY				(	class,			\
 																	to,				\
@@ -468,19 +469,37 @@ CPY( class, to , from )						do										\
 //		by the member variables inside the object boundary.
 //		
 //
-// 
+/////////////////////////////////////////////////////////////////////////////////
+
+
+
+
+#define																				\
+method( class, name )				concat3	(	class, _, name	)
+
+#define																				\
+METHOD(class, name, self, ...)		void											\
+									method	( class, name ) (	class*	self,		\
+																__VA_ARGS__			\
+															)
+
+
+
+/////////////////////////////////////////////////////////////////////////////////
+//
+//
 //		A useful mental model for visualizing the state-behavior relationship
 //		is to think of an object as a piece of a hardware ( like an AND gate ).
 //
 //
 //									 -----------			
-//									|			+----- out1	
-//									|			|			
+//									:			+----- out1	
+//									:			|			
 //						in1	--------+			+----- out2	
-//									|	MUX		|			
+//									:	MUX		|			
 //						in2	--------+			+----- out3	
-//									|			|			
-//									|			+----- out4	
+//									:			|		
+//									:			+----- out4	
 //									 -----------			
 //
 //
@@ -494,7 +513,7 @@ CPY( class, to , from )						do										\
 //		on the in lines defines its behavior.
 //
 // 
-//						class MUX
+//						class	MUX
 // 						{
 //							public:
 // 								void reset( int in  )
@@ -515,21 +534,31 @@ CPY( class, to , from )						do										\
 //		outside world. The only way change the inputs is to use the set and
 //		reset methods. And the only way to read the outputs is to use the get
 //		method.
-//
 // 
 // 
 /////////////////////////////////////////////////////////////////////////////////
 
 
 #define																				\
-method(class, name)					concat3(class, _, name)
+_REQ( class, name, self, ... )			do											\
+										{											\
+											assert			(	self	);			\
+																					\
+											method			(	class,	name	)	\
+															(	self,	__VA_ARGS__	\
+															);						\
+										}	while			(	0	)
+
 
 #define																				\
-METHOD(class, name, this, ...)		class*											\
-									method	( class, name ) ( class* this,			\
-															__VA_ARGS__ )
-
-
+REQ( class, name, self, ... )			do											\
+										{											\
+											_REQ			(	class,				\
+																name,				\
+																self,				\
+															__VA_ARGS__				\
+															);						\
+										}	while			(	0	)
 
 
 HOWTO_DEF								(	char,	self	);

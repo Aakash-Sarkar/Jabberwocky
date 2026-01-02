@@ -124,6 +124,7 @@ HOWTO_DESTRUCT					(	Vec3_t,	self	)
 //		Dynamic Array Operations Implementation
 /////////////////////////////////////////////////////////////////////////////////
 
+
 HOWTO_DEF					(	ARRAY	(	Vec2_t	),	self	)
 {
 
@@ -537,7 +538,7 @@ project_perspective			(	Vec2_t	*to,	Vec3_t	*from	)
 								*from->z
 							);
 
-	ADD						(	float,
+	SUB						(	float,
 								z,
 								from->z,
 								cam->z
@@ -838,14 +839,14 @@ HOWTO_DOTP					(	Vec3_t,	dst,	src1,	src2	)
 }
 
 
-HOWTO_CROSSP				(	Vec3_t,	dst,	src1,	src2	)
+HOWTO_CROSP					(	Vec3_t,	dst,	src1,	src2	)
 {
-	*( dst->x )				=	*( src1->y )	*	*( src2->z )
-							+	*( src2->y )	*	*( src1->z );
+	*dst->x					=	*src1->y	*	*src2->z
+							-	*src2->y	*	*src1->z;
 
-	*( dst->y )				=	*( src1->x )	*	*( src2->z )
-							-	*( src1->z )	*	*( src2->x );
+	*dst->y					=	*src1->z	*	*src2->x
+							-	*src1->x	*	*src2->z;
 
-	*( dst->z )				=	*( src1->x )	*	*( src2->y )
-							-	*( src1->y )	*	*( src2->x );
+	*dst->z					=	*src1->x	*	*src2->y
+							-	*src1->y	*	*src2->x;
 }

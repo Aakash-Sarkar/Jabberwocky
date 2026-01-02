@@ -135,7 +135,7 @@ HOWTO_CPY						(	Triangle3d_t,	to,	from	);
 
 
 /////////////////////////////////////////////////////////////////////////////////
-//						Dynamic Array Operations
+//							Dynamic Array Operations
 /////////////////////////////////////////////////////////////////////////////////
 
 
@@ -165,17 +165,17 @@ HOWTO_PUSH						(	Triangle3d_t,	ptr,	arr		);
 
 
 /////////////////////////////////////////////////////////////////////////////////
-//				Geomertic Operations
+//							Geomertic Operations
 /////////////////////////////////////////////////////////////////////////////////
 
 
 HOWTO_ROT						(	Triangle2d_t,
-									to,					from,
+									to,					frm,
 									Vec2_t				*angle
 								);
 
 HOWTO_ROT						(	Triangle3d_t,
-									to,					from,
+									to,					frm,
 									Vec3_t				*angle
 								);
 
@@ -198,6 +198,20 @@ HOWTO_DRAW						(	Triangle3d_t,
 HOWTO_PROJ						(	Triangle2d_t,		Triangle3d_t,
 									to,					from,
 									Projection_type_t	type
+								);
+
+
+METHOD							(	Triangle3d_t,
+									get_surface_normal,
+									self,
+									Point3d_t			*out
+								);
+
+
+METHOD							(	Triangle3d_t,
+									is_back_facing,
+									self,
+									bool				*out
 								);
 
 

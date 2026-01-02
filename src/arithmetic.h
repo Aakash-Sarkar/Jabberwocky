@@ -111,6 +111,7 @@ _MUL( class, dest, src, factor )				do										\
 												{										\
 													assert		(	dest	);			\
 													assert		(	src		);			\
+													assert		(	factor	);			\
 																						\
 													scaler_mul	(	class	)			\
 																(	dest,				\
@@ -123,7 +124,7 @@ _MUL( class, dest, src, factor )				do										\
 #define																					\
 MUL( class, dest, src, factor )					do										\
 												{										\
-													if			(	!dest	);			\
+													if			(	!dest	)			\
 														DEF		(	class,				\
 																	dest				\
 																);						\
@@ -235,7 +236,7 @@ cross_prod( class )								concat3			(	crossp,				\
 																)
 
 #define																					\
-HOWTO_CROSSP( class, dest, src1, src2 )			void									\
+HOWTO_CROSP( class, dest, src1, src2 )			void									\
 												cross_prod		(	class	)			\
 																(	class	*dest,		\
 																	class	*src1,		\
@@ -258,7 +259,7 @@ _CROSP( class, dest, src1, src2 )				do										\
 
 
 #define																					\
-CROSSP( class, dest, src1, src2 )				do										\
+CROSP( class, dest, src1, src2 )				do										\
 												{										\
 													if			(	!dest	)			\
 														DEF		(	class,				\

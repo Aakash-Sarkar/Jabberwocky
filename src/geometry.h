@@ -12,22 +12,44 @@
 
 
 #define																					\
-rotator( class )							concat3			(	rotate, _, class	)
+rotate( class )								concat3			(	rotate, _, class	)
 
 #define																					\
 HOWTO_ROT( class, to, from, ... )			void										\
-											rotator			(	class	)				\
+											rotate			(	class	)				\
 															(	class*		to,			\
 																class*		from,		\
 																		__VA_ARGS__		\
 															)
 
 #define																					\
-ROT( class, to, from, angle )				rotator			(	class	)				\
+_ROT( class, to, from, angle )				do											\
+											{											\
+												assert		(	to		);				\
+												assert		(	from	);				\
+																						\
+												rotate		(	class	)				\
 															(	to,						\
 																from,					\
 																angle					\
-															)
+															);							\
+											}	while		(	0	)
+
+
+#define																					\
+ROT( class, to, from, angle )				do											\
+											{											\
+												if			(	!to		)				\
+													DEF		(	class,					\
+																to						\
+															);							\
+																						\
+												_ROT		(	class,					\
+																to,						\
+																from,					\
+																angle					\
+															);							\
+											}	while		(	0	)
 
 
 

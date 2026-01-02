@@ -185,6 +185,7 @@ update							(	Renderer_t*		renderer	)
 	Triangle2d_t					*prj	=	NULL;
 
 	Vec3_t							*rot	=	NULL;
+	Point3d_t						*cam	=	NULL;
 
 	DEF							(	Triangle3d_t,
 									tr
@@ -204,7 +205,12 @@ update							(	Renderer_t*		renderer	)
 
 	NEW							(	Vec3_t,
 									rot,
-									0.01f,	0.00f,	0.00f
+									0.00f,	0.01f,	0.00f
+								);
+
+	NEW							(	Point3d_t,
+									cam,
+									0.00f,	0.00f,	-5.00f
 								);
 
 	if							(	!renderer->triangles_to_draw	)
@@ -216,21 +222,40 @@ update							(	Renderer_t*		renderer	)
 
 	GET							(	mesh,	renderer->mesh	);
 
-	for_each_item_in_array		(	mesh->faces,	idx	)
+	for_each_item_in_array		(	mesh->faces,	idx		)
 	{
+		bool						cull	=	false;
+
 		LD						(	Face_t,
 									face,
 									mesh->faces,
 									idx
 								);
 
-		*tr						=	create_triangle_from_face	(	face,
-																	mesh	);
+		REQ						(	Mesh_t,
+									create_triangle_from_face,
+									mesh,
+									face,
+									tr
+								);
+		
 		ROT						(	Triangle3d_t,
 									rot_tr,
 									tr,
 									mesh->rotation
 								);
+
+		REQ						(	Triangle3d_t,
+									is_back_facing,
+									rot_tr,
+									&cull
+								);
+
+		//LOG						(	"cull: %s -- idx: %d\n", (cull == true)? "yes": "no", idx	);
+
+		if						(	cull	)
+			continue;
+
 
 		PROJ					(	Triangle2d_t,			Triangle3d_t,
 									prj,					rot_tr,

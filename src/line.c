@@ -140,7 +140,7 @@ HOWTO_DRAW					(	Line_t,
 	float						x	=	*p12->v->x,
 								y	=	*p12->v->y;
 
-	float						run	=	max	(	x,	y	);
+	float						run	=	max	(	abs(x),	abs(y)	);
 
 
 	//////////////////////////////////////////////////////////////////////////////
@@ -191,8 +191,8 @@ HOWTO_DRAW					(	Line_t,
 		paint_color			(	color,
 								colorbuf,
 								PIXELFORMAT_ARGB8888,
-								( int )		posX,
-								( int )		posY,
+								round( 	posX ),
+								round(	posY ),
 								0
 							);
 

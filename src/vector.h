@@ -211,5 +211,5 @@ HOWTO_DOTP							(	Vec2_t, dst,	src1,	src2	);
 HOWTO_DOTP							(	Vec3_t, dst,	src1,	src2	);
 
 
-HOWTO_CROSSP						(	Vec3_t,	dst,	src1,	src2	);
+HOWTO_CROSP							(	Vec3_t,	dst,	src1,	src2	);
 

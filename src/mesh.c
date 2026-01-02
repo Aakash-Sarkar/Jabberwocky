@@ -280,3 +280,73 @@ HOWTO_CPY					(	Face_t,	to,	from	)
 								from->idx3
 							);
 }
+
+
+METHOD						(	Mesh_t,
+								create_triangle_from_face,
+								self,
+								Face_t			*face,
+								Triangle3d_t	*out
+							)
+{
+	Point3d_t					*p1	=	NULL,
+								*p2	=	NULL,
+								*p3	=	NULL;
+
+	Triangle3d_t				*tr	=	NULL;
+
+	assert					(	face	);
+
+	DEF						(	Point3d_t,
+								p1
+							);
+
+	DEF						(	Point3d_t,
+								p2
+							);
+
+	DEF						(	Point3d_t,
+								p3
+							);
+
+	LD						(	Point3d_t,
+								p1,
+								self->points,
+								*( face->idx1 )	-	1
+							);
+
+	LD						(	Point3d_t,
+								p2,
+								self->points,
+								*( face->idx2 )	-	1
+							);
+
+	LD						(	Point3d_t,
+								p3,
+								self->points,
+								*( face->idx3 )	-	1
+							);
+
+	NEW						(	Triangle3d_t,
+								tr,
+								p1,		p2,		p3
+							);
+
+	CPY						(	Triangle3d_t,
+								out,
+								tr
+							);
+
+	DEL						(	Point3d_t,
+								p1
+							);
+
+	DEL						(	Point3d_t,
+								p2
+							);
+
+	DEL						(	Point3d_t,
+								p3
+							);
+}
+

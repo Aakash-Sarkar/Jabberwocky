@@ -94,8 +94,6 @@ Triangle3d_t
 create_triangle_from_face	(	Face_t* face,	Mesh_t* mesh	);
 
 
-
-
 HOWTO_DEF					(	ARRAY	( Face_t ),		self	);
 
 HOWTO_DESTRUCT				(	ARRAY	( Face_t ),		self	);
@@ -106,3 +104,11 @@ HOWTO_STR					(	Face_t,	ptr,	arr,	idx		);
 
 HOWTO_PUSH					(	Face_t,	ptr,	arr		);
 
+
+
+METHOD						(	Mesh_t,
+								create_triangle_from_face,
+								self,
+								Face_t			*face,
+								Triangle3d_t	*out
+							);

@@ -401,9 +401,9 @@ HOWTO_DOTP					(	Point3d_t,	dst,	src1,	src2	)
 }
 
 
-HOWTO_CROSSP				(	Point3d_t,	dst,	src1,	src2	)
+HOWTO_CROSP					(	Point3d_t,	dst,	src1,	src2	)
 {
-	CROSSP					(	Vec3_t,
+	CROSP					(	Vec3_t,
 								dst->v,
 								src1->v,
 								src2->v
