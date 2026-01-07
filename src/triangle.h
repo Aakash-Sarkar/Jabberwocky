@@ -170,12 +170,12 @@ HOWTO_PUSH						(	Triangle3d_t,	ptr,	arr		);
 
 
 HOWTO_ROT						(	Triangle2d_t,
-									to,					frm,
+									self,
 									Vec2_t				*angle
 								);
 
 HOWTO_ROT						(	Triangle3d_t,
-									to,					frm,
+									self,
 									Vec3_t				*angle
 								);
 

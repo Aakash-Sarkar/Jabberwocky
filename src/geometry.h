@@ -15,38 +15,36 @@
 rotate( class )								concat3			(	rotate, _, class	)
 
 #define																					\
-HOWTO_ROT( class, to, from, ... )			void										\
+HOWTO_ROT( class, self, ... )				void										\
 											rotate			(	class	)				\
-															(	class*		to,			\
-																class*		from,		\
+															(	class*		self,		\
 																		__VA_ARGS__		\
 															)
 
 #define																					\
-_ROT( class, to, from, angle )				do											\
+__ROT( class, self, angle )						rotate		(	class	)				\
+															(	self,					\
+																angle					\
+															)
+
+#define																					\
+_ROT( class, self, angle )				do												\
 											{											\
-												assert		(	to		);				\
-												assert		(	from	);				\
+												assert		(	self	);				\
+												assert		(	angle	);				\
 																						\
-												rotate		(	class	)				\
-															(	to,						\
-																from,					\
+												__ROT		(	class,					\
+																self,					\
 																angle					\
 															);							\
 											}	while		(	0	)
 
 
 #define																					\
-ROT( class, to, from, angle )				do											\
+ROT( class, self, angle )				do												\
 											{											\
-												if			(	!to		)				\
-													DEF		(	class,					\
-																to						\
-															);							\
-																						\
 												_ROT		(	class,					\
-																to,						\
-																from,					\
+																self,					\
 																angle					\
 															);							\
 											}	while		(	0	)

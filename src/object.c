@@ -7,6 +7,10 @@
 
 
 
+HOWTO_DEF						(	bool,	self	)
+{
+}
+
 HOWTO_DEF						(	char,	self	)
 {
 }
@@ -27,6 +31,14 @@ HOWTO_DEF						(	double,	self	)
 {
 }
 
+
+HOWTO_CONSTRUCT					(	bool,
+									self,
+									bool	b
+								)
+{
+	*self						=	b;
+}
 
 HOWTO_CONSTRUCT					(	char,
 									self,
@@ -68,6 +80,10 @@ HOWTO_CONSTRUCT					(	double,
 	*self						=	d;
 }
 
+HOWTO_DESTRUCT					(	bool,	self	)
+{
+}
+
 HOWTO_DESTRUCT					(	char,	self	)
 {
 }
@@ -88,6 +104,11 @@ HOWTO_DESTRUCT					(	double,	self	)
 {
 }
 
+
+HOWTO_CPY						(	bool,	to,	from	)
+{
+	*to							=	*from;
+}
 
 HOWTO_CPY						(	char,	to,	from	)
 {

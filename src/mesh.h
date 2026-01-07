@@ -71,6 +71,8 @@ typedef
 struct	Mesh				{
 								ARRAY	(	Point3d_t	)	*points;
 								ARRAY	(	Face_t		)	*faces;
+								ARRAY	(	Triangle3d_t)	*triangles;
+								ARRAY	(	bool	)		*cull;
 								Vec3_t						*rotation;
 							}												Mesh_t;
 
@@ -90,9 +92,6 @@ HOWTO_DESTRUCT				(	Mesh_t,		self	);
 HOWTO_CPY					(	Face_t,		to,	from	);
 
 
-Triangle3d_t
-create_triangle_from_face	(	Face_t* face,	Mesh_t* mesh	);
-
 
 HOWTO_DEF					(	ARRAY	( Face_t ),		self	);
 
@@ -105,6 +104,10 @@ HOWTO_STR					(	Face_t,	ptr,	arr,	idx		);
 HOWTO_PUSH					(	Face_t,	ptr,	arr		);
 
 
+HOWTO_ROT					(	Mesh_t,
+								self,
+								Vec3_t			*angle
+							);
 
 METHOD						(	Mesh_t,
 								create_triangle_from_face,
@@ -112,3 +115,22 @@ METHOD						(	Mesh_t,
 								Face_t			*face,
 								Triangle3d_t	*out
 							);
+
+
+
+
+#define																					\
+for_each_face_in_mesh(	face,	mesh,	idx)	for_each_item_in_array	(	Face_t,		\
+																			face,		\
+																			mesh->faces,\
+																			idx			\
+																		)
+
+
+#define																						\
+for_each_triangle_in_mesh(triangle, mesh, idx)	for_each_item_in_array	(	Triangle3d_t,	\
+																			triangle,		\
+																			mesh->triangles,\
+																			idx				\
+																		)
+

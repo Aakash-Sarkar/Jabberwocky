@@ -561,6 +561,8 @@ REQ( class, name, self, ... )			do											\
 										}	while			(	0	)
 
 
+HOWTO_DEF								(	bool,	self	);
+
 HOWTO_DEF								(	char,	self	);
 
 HOWTO_DEF								(	int,	self	);
@@ -571,6 +573,11 @@ HOWTO_DEF								(	float,	self	);
 
 HOWTO_DEF								(	double,	self	);
 
+
+HOWTO_CONSTRUCT							(	bool,
+											self,
+											char	b
+										);
 
 HOWTO_CONSTRUCT							(	char,
 											self,
@@ -597,6 +604,9 @@ HOWTO_CONSTRUCT							(	double,
 											double	d
 										);
 
+
+HOWTO_DESTRUCT							(	bool,	self	);
+
 HOWTO_DESTRUCT							(	char,	self	);
 
 HOWTO_DESTRUCT							(	int,	self	);
@@ -607,6 +617,8 @@ HOWTO_DESTRUCT							(	float,	self	);
 
 HOWTO_DESTRUCT							(	double,	self	);
 
+
+HOWTO_CPY								(	bool,	to,	from	);
 
 HOWTO_CPY								(	char,	to,	from	);
 

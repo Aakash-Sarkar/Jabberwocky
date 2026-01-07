@@ -184,20 +184,19 @@ HOWTO_CPY						(	Point3d_t,	to,		from	)
 
 
 HOWTO_ROT						(	Point2d_t,
-									to,					from,
+									self,
 									Vec2_t				*angle
 								)
 {
 }
 
 HOWTO_ROT						(	Point3d_t,
-									to,					from,
+									self,
 									Vec3_t				*angle
 								)
 {
 	ROT							(	Vec3_t,	
-									to->v,
-									from->v,
+									self->v,
 									angle
 								);
 }

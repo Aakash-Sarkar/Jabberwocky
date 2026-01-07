@@ -46,6 +46,14 @@ HOWTO_CONSTRUCT				(	Mesh_t,
 								self->points
 							);
 
+	DEF						(	ARRAY	(	Triangle3d_t	),
+								self->triangles
+							);
+
+	DEF						(	ARRAY	(	bool	),
+								self->cull
+							);
+
 	DEF						(	Vec3_t,
 								self->rotation
 							);
@@ -108,6 +116,48 @@ HOWTO_CONSTRUCT				(	Mesh_t,
 							);
 		}
 	}
+
+	int							idx	=	0;
+	Triangle3d_t				*tr	=	NULL;
+
+	for_each_face_in_mesh	(	face,	self,	idx		)
+	{
+		bool					*cull	=	NULL;
+
+		DEF					(	Triangle3d_t,
+								tr
+							);
+
+		NEW					(	bool,
+								cull,
+								false
+							);
+
+		REQ					(	Mesh_t,
+								create_triangle_from_face,
+								self,
+								face,
+								tr
+							);
+
+		PUSH				(	Triangle3d_t,
+								tr,
+								self->triangles
+							);
+
+		PUSH				(	bool,
+								cull,
+								self->cull
+							);
+
+		DEL					(	Triangle3d_t,
+								tr
+							);
+
+		DEL					(	bool,
+								cull
+							);
+	}
 }
 
 HOWTO_DESTRUCT				(	Face_t,	self	)
@@ -129,224 +179,226 @@ HOWTO_DESTRUCT				(	Mesh_t,	self	)
 {
 }
 
-HOWTO_DEF					(	ARRAY	(	Face_t	),	self	)
+HOWTO_DEF						(	ARRAY	(	Face_t	),	self	)
 {
-	DEF						(	ARRAY	(	int		),
-								self->idx1
-							);
+	DEF							(	ARRAY	(	int		),
+									self->idx1
+								);
 
-	DEF						(	ARRAY	(	int		),
-								self->idx2
-							);
+	DEF							(	ARRAY	(	int		),
+									self->idx2
+								);
 
-	DEF						(	ARRAY	(	int		),
-								self->idx3
-							);
+	DEF							(	ARRAY	(	int		),
+									self->idx3
+								);
 
 	self->count				=	0;
 }
 
 
-Triangle3d_t
-create_triangle_from_face	(	Face_t* face,	Mesh_t* mesh	)
+
+HOWTO_LD						(	Face_t,	ptr,	arr,	idx	)
 {
-	Triangle3d_t				*tr	=	NULL;
 
-	Point3d_t					*p1	=	NULL,
-								*p2	=	NULL,
-								*p3	=	NULL;
+	LD							(	int,
+									ptr->idx1,
+									arr->idx1,
+									idx
+								);
 
-	NEW						(	Point3d_t,
-								p1,
-								0,	0,	0
-							);
+	LD							(	int,
+									ptr->idx2,
+									arr->idx2,
+									idx
+								);
 
-	NEW						(	Point3d_t,
-								p2,
-								0,	0,	0
-							);
-
-	NEW						(	Point3d_t,
-								p3,
-								0,	0,	0
-							);
-
-	LD						(	Point3d_t,
-								p1,
-								mesh->points,
-								*( face->idx1 )	-	1
-							);
-
-	LD						(	Point3d_t,
-								p2,
-								mesh->points,
-								*( face->idx2 )	-	1
-							);
-
-	LD						(	Point3d_t,
-								p3,
-								mesh->points,
-								*( face->idx3 )	-	1
-							);
-
-	NEW						(	Triangle3d_t,
-								tr,
-								p1,		p2,		p3
-							);
-
-	RET						(	*tr		);
+	LD							(	int,
+									ptr->idx3,
+									arr->idx3,
+									idx
+								);
 }
 
 
-HOWTO_LD					(	Face_t,	ptr,	arr,	idx	)
+HOWTO_STR						(	Face_t,	ptr,	arr,	idx	)
 {
+	STR							(	int,
+									ptr->idx1,
+									arr->idx1,
+									idx
+								);
 
-	LD						(	int,
-								ptr->idx1,
-								arr->idx1,
-								idx
-							);
+	STR							(	int,
+									ptr->idx2,
+									arr->idx2,
+									idx
+								);
 
-	LD						(	int,
-								ptr->idx2,
-								arr->idx2,
-								idx
-							);
-
-	LD						(	int,
-								ptr->idx3,
-								arr->idx3,
-								idx
-							);
+	STR							(	int,
+									ptr->idx3,
+									arr->idx3,
+									idx
+								);
 }
 
 
-HOWTO_STR					(	Face_t,	ptr,	arr,	idx	)
+HOWTO_PUSH						(	Face_t,		ptr,	arr		)
 {
-	STR						(	int,
-								ptr->idx1,
-								arr->idx1,
-								idx
-							);
+	PUSH						(	int,
+									ptr->idx1,
+									arr->idx1
+								);
 
-	STR						(	int,
-								ptr->idx2,
-								arr->idx2,
-								idx
-							);
+	PUSH						(	int,
+									ptr->idx2,
+									arr->idx2
+								);
 
-	STR						(	int,
-								ptr->idx3,
-								arr->idx3,
-								idx
-							);
-}
-
-
-HOWTO_PUSH					(	Face_t,		ptr,	arr		)
-{
-	PUSH					(	int,
-								ptr->idx1,
-								arr->idx1
-							);
-
-	PUSH					(	int,
-								ptr->idx2,
-								arr->idx2
-							);
-
-	PUSH					(	int,
-								ptr->idx3,
-								arr->idx3
-							);
+	PUSH						(	int,
+									ptr->idx3,
+									arr->idx3
+								);
 	arr->count++;
 }
 
 
-HOWTO_CPY					(	Face_t,	to,	from	)
+HOWTO_CPY						(	Face_t,	to,	from	)
 {
-	CPY						(	int,
-								to->idx1,
-								from->idx1
-							);
+	CPY							(	int,
+									to->idx1,
+									from->idx1
+								);
 
-	CPY						(	int,
-								to->idx2,
-								from->idx2
-							);
+	CPY							(	int,
+									to->idx2,
+									from->idx2
+								);
 
-	CPY						(	int,
-								to->idx3,
-								from->idx3
-							);
+	CPY							(	int,
+									to->idx3,
+									from->idx3
+								);
 }
 
 
-METHOD						(	Mesh_t,
-								create_triangle_from_face,
-								self,
-								Face_t			*face,
-								Triangle3d_t	*out
-							)
+HOWTO_ROT						(	Mesh_t,
+									self,
+									Vec3_t			*angle
+								)
 {
-	Point3d_t					*p1	=	NULL,
-								*p2	=	NULL,
-								*p3	=	NULL;
+	Triangle3d_t					*tr	=	NULL;
+	int								idx	=	0;
 
-	Triangle3d_t				*tr	=	NULL;
+	DEF							(	Triangle3d_t,
+									tr
+								);
 
-	assert					(	face	);
+	for_each_triangle_in_mesh	(	tr,	self,	idx		)
+	{
+		bool						cull	=	false;
 
-	DEF						(	Point3d_t,
-								p1
-							);
+		ROT						(	Triangle3d_t,
+									tr,
+									angle
+								);
 
-	DEF						(	Point3d_t,
-								p2
-							);
+		STR						(	Triangle3d_t,
+									tr,
+									self->triangles,
+									idx
+								);
 
-	DEF						(	Point3d_t,
-								p3
-							);
+		REQ						(	Triangle3d_t,
+									is_back_facing,
+									tr,
+									&cull
+								);
 
-	LD						(	Point3d_t,
-								p1,
-								self->points,
-								*( face->idx1 )	-	1
-							);
+		STR						(	bool,
+									&cull,
+									self->cull,
+									idx
+								);
+	}
 
-	LD						(	Point3d_t,
-								p2,
-								self->points,
-								*( face->idx2 )	-	1
-							);
+	DEL							(	Triangle3d_t,
+									tr
+								);
 
-	LD						(	Point3d_t,
-								p3,
-								self->points,
-								*( face->idx3 )	-	1
-							);
+	ADD							(	Vec3_t,
+									self->rotation,
+									self->rotation,
+									angle
+								);
+}
 
-	NEW						(	Triangle3d_t,
-								tr,
-								p1,		p2,		p3
-							);
 
-	CPY						(	Triangle3d_t,
-								out,
-								tr
-							);
+METHOD							(	Mesh_t,
+									create_triangle_from_face,
+									self,
+									Face_t			*face,
+									Triangle3d_t	*out
+								)
+{
+	Point3d_t						*p1	=	NULL,
+									*p2	=	NULL,
+									*p3	=	NULL;
 
-	DEL						(	Point3d_t,
-								p1
-							);
+	Triangle3d_t					*tr	=	NULL;
 
-	DEL						(	Point3d_t,
-								p2
-							);
+	assert						(	face	);
 
-	DEL						(	Point3d_t,
-								p3
-							);
+	DEF							(	Point3d_t,
+									p1
+								);
+
+	DEF							(	Point3d_t,
+									p2
+								);
+
+	DEF							(	Point3d_t,
+									p3
+								);
+
+	LD							(	Point3d_t,
+									p1,
+									self->points,
+									*( face->idx1 )	-	1
+								);
+
+	LD							(	Point3d_t,
+									p2,
+									self->points,
+									*( face->idx2 )	-	1
+								);
+
+	LD							(	Point3d_t,
+									p3,
+									self->points,
+									*( face->idx3 )	-	1
+								);
+
+	NEW							(	Triangle3d_t,
+									tr,
+									p1,		p2,		p3
+								);
+
+	CPY							(	Triangle3d_t,
+									out,
+									tr
+								);
+
+	DEL							(	Point3d_t,
+									p1
+								);
+
+	DEL							(	Point3d_t,
+									p2
+								);
+
+	DEL							(	Point3d_t,
+									p3
+								);
 }
 

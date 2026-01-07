@@ -348,127 +348,165 @@ HOWTO_CPY					(	Vec3_t,		to,		from	)
 
 static
 void
-rotate_vector_x				(	Vec3_t		*to,
-								Vec3_t		*from,
+rotate_vector_x				(	Vec3_t		*self,
 								float		angle
 							)
 {
+	Vec3_t						*tmp	=	NULL;
+
+	DEF						(	Vec3_t,
+								tmp
+							);
 
 	//	X component remains same
 
 	CPY						(	float,
-								to->x,
-								from->x
+								tmp->x,
+								self->x
 							);
 
-	float						y	=	*from->y	*	cos(	angle	)
-									-	*from->z	*	sin(	angle	);
+	float						y	=	*self->y	*	cos(	angle	)
+									-	*self->z	*	sin(	angle	);
 
 	CPY						(	float,
-								to->y,
+								tmp->y,
 								&y
 							);
 
-	float						z	=	*from->z	*	cos(	angle	)
-									+	*from->y	*	sin(	angle	);
+	float						z	=	*self->z	*	cos(	angle	)
+									+	*self->y	*	sin(	angle	);
 
 	CPY						(	float,
-								to->z,
+								tmp->z,
 								&z
+							);
+
+	CPY						(	Vec3_t,
+								self,
+								tmp
+							);
+
+	DEL						(	Vec3_t,
+								tmp
 							);
 }
 
 static
 void
-rotate_vector_y				(	Vec3_t		*to,
-								Vec3_t		*from,
+rotate_vector_y				(	Vec3_t		*self,
 								float		angle
 							)
 {
-	float						x	=	*from->x	*	cos(	angle	)
-									-	*from->z	*	sin(	angle	);
+	Vec3_t						*tmp	=	NULL;
+
+	DEF						(	Vec3_t,
+								tmp
+							);
+
+	float						x	=	*self->x	*	cos(	angle	)
+									-	*self->z	*	sin(	angle	);
 
 	CPY						(	float,
-								to->x,
+								tmp->x,
 								&x
 							);
 
 	//	Y component remains same
 
 	CPY						(	float,
-								to->y,
-								from->y
+								tmp->y,
+								self->y
 							);
 
-	float						z	=	*from->z	*	cos(	angle	)
-									+	*from->x	*	sin(	angle	);
+	float						z	=	*self->z	*	cos(	angle	)
+									+	*self->x	*	sin(	angle	);
 
 	CPY						(	float,
-								to->z,
+								tmp->z,
 								&z
+							);
+
+	CPY						(	Vec3_t,
+								self,
+								tmp
+							);
+
+	DEL						(	Vec3_t,
+								tmp
 							);
 }
 
 
 static
 void
-rotate_vector_z				(	Vec3_t		*to,
-								Vec3_t		*from,
+rotate_vector_z				(	Vec3_t		*self,
 								float		angle
 							)
 {
-	float						x	=	*from->x	*	cos(	angle	)
-									-	*from->y	*	sin(	angle	);
+	Vec3_t						*tmp	=	NULL;
+
+	DEF						(	Vec3_t,
+								tmp
+							);
+
+	float						x	=	*self->x	*	cos(	angle	)
+									-	*self->y	*	sin(	angle	);
 
 	CPY						(	float,
-								to->x,
+								tmp->x,
 								&x
 							);
 
-	float						y	=	*from->y	*	cos(	angle	)
-									+	*from->x	*	sin(	angle	);
+	float						y	=	*self->y	*	cos(	angle	)
+									+	*self->x	*	sin(	angle	);
 
 	CPY						(	float,
-								to->y,
+								tmp->y,
 								&y
 							);
 
 	//	Z component remains same
 
 	CPY						(	float,
-								to->z,
-								from->z
+								tmp->z,
+								self->z
+							);
+
+	CPY						(	Vec3_t,
+								self,
+								tmp
+							);
+
+	DEL						(	Vec3_t,
+								tmp
 							);
 }
 
 
 HOWTO_ROT					(	Vec3_t,
-								to,			from,
+								self,
 								Vec3_t*		angle
 							)
 {
-	assert					(	to	&&	from	&&	angle	);
+	assert					(	self	&&	angle	);
 
-	if						(	*angle->x	!=	0	)
+	if						(	*angle->x	)
 	{
-		rotate_vector_x		(	to,
-								from,
+		rotate_vector_x		(	self,
 								*angle->x
 							);
 	}
 
-	if						(	*angle->y	!=	0	)
+	if						(	*angle->y	)
 	{
-		rotate_vector_y		(	to,
-								from,
+		rotate_vector_y		(	self,
 								*angle->y
 							);
 	}
 
 	if						(	*angle->z	!=	0	)
 	{
-		rotate_vector_z		(	to,
-								from,
+		rotate_vector_z		(	self,
 								*angle->z
 							);
 	}

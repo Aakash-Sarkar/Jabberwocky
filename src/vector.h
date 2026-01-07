@@ -174,7 +174,10 @@ HOWTO_PUSH							(	Vec3_t,	ptr,	arr		);
 /////////////////////////////////////////////////////////////////////////////////
 
 
-HOWTO_ROT							(	Vec3_t,	to,	from,	Vec3_t* angle	);
+HOWTO_ROT							(	Vec3_t,
+										self,
+										Vec3_t*				angle
+									);
 
 HOWTO_PROJ							(	Vec2_t,				Vec3_t,
 										to,					from,

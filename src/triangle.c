@@ -388,32 +388,29 @@ HOWTO_CPY						(	Triangle3d_t,	to,	from	)
 
 
 HOWTO_ROT						(	Triangle2d_t,
-									to,			frm,
-									Vec2_t*		angle
+									self,
+									Vec2_t*			angle
 								)
 {
 }
 
 HOWTO_ROT						(	Triangle3d_t,
-									to,			frm,
-									Vec3_t*		angle
+									self,
+									Vec3_t*			angle
 								)
 {
 	ROT							(	Point3d_t,
-									to->p1,
-									frm->p1,
+									self->p1,
 									angle
 								);
 
 	ROT							(	Point3d_t,
-									to->p2,
-									frm->p2,
+									self->p2,
 									angle
 								);
 
 	ROT							(	Point3d_t,
-									to->p3,
-									frm->p3,
+									self->p3,
 									angle
 								);
 }
@@ -732,19 +729,19 @@ METHOD							(	Triangle3d_t,
 //									:			|	"		"	|
 //					camera ray		:			|		"		|
 //		<0 < - - - - - - - - - - - -: - - -  - -|- x	|	x	|
-//									:			"		|		"
+//		eye							:O			"		|		"
 //									:				"	|	"
 //									:					"
 //									:
 //									
-//								screen
+//								Image plane
 // 
 // 
 //		First let us assume that at the centre of each of the six cube
 //		faces there's a vector attached. This vector is of unit length
-//		and is perpendicular to the face where it is attached. Let us
-//		call these vectors the normal vector to the cube faces (marked
-//		with little x in the diagram above).
+//		and is perpendicular to the face where it is attached to. Let's
+//		call this vector the normal vector to the cube face ( marked
+//		with x in the diagram above).
 // 
 // 
 //		Next let's define the camera ray. Our camera ray is a vector

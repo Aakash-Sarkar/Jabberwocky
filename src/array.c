@@ -45,6 +45,13 @@ void array_free(void* array) {
     }
 }
 
+
+HOWTO_DEF					(	ARRAY	(	bool	),	self	)
+{
+	self->ptr				=	NULL;
+	self->count				=	0;
+}
+
 HOWTO_DEF					(	ARRAY	(	char	),	self	)
 {
 	self->ptr				=	NULL;
@@ -75,6 +82,16 @@ HOWTO_DEF					(	ARRAY	(	double	),	self	)
 	self->count				=	0;
 }
 
+
+
+
+HOWTO_DESTRUCT				(	ARRAY	(	bool	),	self	)
+{
+	array_free				(	self->ptr	);
+
+	self->ptr				=	NULL;
+	self->count				=	0;
+}
 
 HOWTO_DESTRUCT				(	ARRAY	(	char	),	self	)
 {
@@ -116,6 +133,19 @@ HOWTO_DESTRUCT				(	ARRAY	(	double	),	self	)
 	self->count				=	0;
 }
 
+
+
+
+HOWTO_LD					(	bool,	item,	arr,	idx		)
+{
+
+	assert					(	idx <=	arr->count	);
+
+	CPY						(	bool,
+								item,
+								arr->ptr + idx
+							);
+}
 
 HOWTO_LD					(	char,	item,	arr,	idx		)
 {
@@ -172,6 +202,18 @@ HOWTO_LD					(	double,	item,	arr,	idx		)
 }
 
 
+
+
+HOWTO_STR					(	bool,	item,	arr,	idx		)
+{
+	assert					(	idx		<=	arr->count	);
+
+	_CPY					(	bool,
+								arr->ptr +	idx,
+								item
+							);
+}
+
 HOWTO_STR					(	char,	item,	arr,	idx		)
 {
 	assert					(	idx		<=	arr->count	);
@@ -222,6 +264,17 @@ HOWTO_STR					(	double,	item,	arr,	idx		)
 							);
 }
 
+
+
+
+HOWTO_PUSH					(	bool,	item,	arr		)
+{
+	array_push				(	arr->ptr,
+								*item
+							);
+
+	arr->count++;
+}
 
 HOWTO_PUSH					(	char,	item,	arr		)
 {

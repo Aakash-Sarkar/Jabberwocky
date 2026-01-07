@@ -74,14 +74,21 @@ HOWTO_LD( class, ptr, arr, idx )        void                                    
                                                          )
 
 #define                                                                             \
+__LD( class, ptr, arr, idx )            loader          (   class   )               \
+                                                        (   ptr,                    \
+                                                            arr,                    \
+                                                            idx                     \
+                                                        )
+
+
+#define                                                                             \
 _LD( class, ptr, arr, idx )             do                                          \
                                         {                                           \
                                             assert      (   ptr );                  \
-                                                                                    \
                                             assert      (   arr );                  \
                                                                                     \
-                                            loader      (   class   )               \
-                                                        (   ptr,                    \
+                                            __LD        (   class,                  \
+                                                            ptr,                    \
                                                             arr,                    \
                                                             idx                     \
                                                         );                          \
@@ -182,13 +189,31 @@ PUSH( class, ptr, arr )                 do                                      
 
 
 #define                                                                             \
-for_each_item_in_array( arr, idx )      for (   idx =   0;                          \
-                                                idx <   ( arr )->count;             \
-                                                idx++                               \
-                                            )
+for_each_item_in_array( class, item, arr, idx )                                     \
+                                            for (                                   \
+                                                    idx     =   0,                  \
+                                                    __LD    (   class,              \
+                                                                item,               \
+                                                                arr,                \
+                                                                idx                 \
+                                                            );                      \
+                                                                                    \
+                                                    idx     <   ( arr )->count;     \
+                                                                                    \
+                                                    idx++,                          \
+                                                    __LD    (   class,              \
+                                                                item,               \
+                                                                arr,                \
+                                                                idx                 \
+                                                            )                       \
+                                                )
 
 
 
+
+DECL_ARRAY                              (   bool,
+                                            bool                *ptr;
+                                        );
 
 DECL_ARRAY                              (   char,
                                             char                *ptr;
@@ -212,6 +237,8 @@ DECL_ARRAY                              (   double,
                                         );
 
 
+HOWTO_DEF                               (   ARRAY   ( bool ),   self    );
+
 HOWTO_DEF                               (   ARRAY   ( char ),   self    );
 
 HOWTO_DEF                               (   ARRAY   ( int ),    self    );
@@ -222,6 +249,8 @@ HOWTO_DEF                               (   ARRAY   ( float ),  self    );
 
 HOWTO_DEF                               (   ARRAY   ( double ), self    );
 
+
+HOWTO_DESTRUCT                          (   ARRAY   ( bool ),   self    );
 
 HOWTO_DESTRUCT                          (   ARRAY   ( char ),   self    );
 
@@ -234,6 +263,8 @@ HOWTO_DESTRUCT                          (   ARRAY   ( float ),  self    );
 HOWTO_DESTRUCT                          (   ARRAY   ( double ), self    );
 
 
+HOWTO_LD					            (	bool,	item,	arr,	idx	);
+
 HOWTO_LD					            (	char,	item,	arr,	idx	);
 
 HOWTO_LD					            (	int,	item,	arr,	idx	);
@@ -245,6 +276,8 @@ HOWTO_LD					            (	float,	item,	arr,	idx	);
 HOWTO_LD					            (	double,	item,	arr,	idx	);
 
 
+HOWTO_STR					            (	bool,	item,	arr,	idx	);
+
 HOWTO_STR					            (	char,	item,	arr,	idx	);
 
 HOWTO_STR					            (	int,	item,	arr,	idx	);
@@ -255,6 +288,8 @@ HOWTO_STR					            (	float,	item,	arr,	idx	);
 
 HOWTO_STR					            (	double,	item,	arr,	idx	);
 
+
+HOWTO_PUSH					            (	bool,	item,	arr     );
 
 HOWTO_PUSH					            (	char,	item,	arr     );
 
