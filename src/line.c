@@ -114,7 +114,7 @@ HOWTO_CPY					(	Line_t,		to,		from	)
 //		4.	Find the slope of the line: rise / run
 //
 //		5.	Next pixel to draw would be at ( run ( x, y ) + 1 ),
-//			( rise (x, y) + slope )
+//			( rise ( x, y ) + slope )
 //
 //
 //////////////////////////////////////////////////////////////////////////////////
@@ -123,39 +123,34 @@ HOWTO_CPY					(	Line_t,		to,		from	)
 
 HOWTO_DRAW					(	Line_t,
 								self,
-								Point2d_t*				origin,
-								Color_t*				color, 
-								Color_buffer_t*			colorbuf
+								Point2d_t			*origin,
+								Color_t				*color, 
+								Color_buffer_t		*colorbuf
 							)
 {
-	Point2d_t					*p12	=	NULL,
-								*slope	=	NULL;
 
-	SUB						(	Point2d_t,
-								p12,
-								self->p2,
-								self->p1
+	Point2d_t					*slope	=	NULL;
+
+	DEF						(	Point2d_t,
+								slope
 							);
 
-	float						x	=	*p12->v->x,
-								y	=	*p12->v->y;
+	REQ						(	Line_t,
+								get_slope,
+								self,
+								slope
+							);
 
-	float						run	=	max	(	abs(x),	abs(y)	);
+	float						*run	=	NULL;
 
+	DEF						(	float,
+								run
+							);
 
-	//////////////////////////////////////////////////////////////////////////////
-	//
-	//		Depending on which component becomes our run, our slope vector
-	//		will have one of the component as (run/run) = 1, and the other
-	//		as (rise/run) = slope
-	//
-	//////////////////////////////////////////////////////////////////////////////
-
-
-	DIV						(	Point2d_t,
-								slope,
-								p12,
-								&run
+	REQ						(	Line_t,
+								get_run,
+								self,
+								run
 							);
 
 	Point2d_t					*point		=	NULL,
@@ -174,8 +169,9 @@ HOWTO_DRAW					(	Line_t,
 								self->p1
 							);
 
-	for						(	int i = 0;	i <= run;	i++		)
+	for						(	int i = 0;	i <= *run;	i++		)
 	{
+
 		ADD					(	Point2d_t,
 								o_point,
 								point,
@@ -211,12 +207,84 @@ HOWTO_DRAW					(	Line_t,
 								o_point
 							);
 
-	DEL						(	Point2d_t,
-								p12
+	DEL						(	float,
+								run
 							);
 
 	DEL						(	Point2d_t,
 								slope
+							);
+}
+
+
+METHOD						(	Line_t,
+								get_run,
+								self,
+								float		*run
+							)
+{
+
+	assert					(	run		);
+
+	//	[ p12 ]	=	[	vector from p1 --> p2	]
+
+	Point2d_t					*p12	=	NULL;
+
+	SUB						(	Point2d_t,
+								p12,
+								self->p2,
+								self->p1
+							);
+
+	REQ						(	Point2d_t,
+								get_max_abs_x_y,
+								p12,
+								run
+							);
+}
+
+
+METHOD						(	Line_t,
+								get_slope,
+								self,
+								Point2d_t	*slope
+							)
+{
+
+	assert					(	slope	);
+
+	float						*run	=	NULL;
+
+	DEF						(	float,
+								run
+							);
+
+	Point2d_t					*p12	=	NULL;
+
+	SUB						(	Point2d_t,
+								p12,
+								self->p2,
+								self->p1
+							);
+
+	REQ						(	Line_t,
+								get_run,
+								self,
+								run
+							);
+
+	//////////////////////////////////////////////////////////////////////////////
+	//
+	//		Depending on which component becomes our run, our slope vector
+	//		will have one of the component as (run/run) = 1, and the other
+	//		as (rise/run) = slope
+	//
+	//////////////////////////////////////////////////////////////////////////////
+
+	DIV						(	Point2d_t,
+								slope,
+								p12,
+								run
 							);
 }
 

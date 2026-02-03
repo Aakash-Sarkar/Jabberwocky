@@ -17,7 +17,8 @@ typedef							struct Line {	Point2d_t	*p1;
 HOWTO_CONSTRUCT					(	Line_t,
 									self,
 									Point2d_t	*p1,
-									Point2d_t	*p2		);
+									Point2d_t	*p2
+								);
 
 HOWTO_DESTRUCT					(	Line_t,	self	);
 
@@ -26,8 +27,21 @@ HOWTO_CPY						(	Line_t,	to,	from	);
 
 HOWTO_DRAW						(	Line_t,
 									self,
-									Point2d_t*			origin,
-									Color_t*			color, 
-									Color_buffer_t*		colorbuf	);
+									Point2d_t			*origin,
+									Color_t				*color, 
+									Color_buffer_t		*colorbuf
+								);
+
+METHOD							(	Line_t,
+									get_slope,
+									self,
+									Point2d_t			*slope
+								);
+
+METHOD							(	Line_t,
+									get_run,
+									self,
+									float				*run
+								);
 
 

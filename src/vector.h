@@ -216,3 +216,9 @@ HOWTO_DOTP							(	Vec3_t, dst,	src1,	src2	);
 
 HOWTO_CROSP							(	Vec3_t,	dst,	src1,	src2	);
 
+
+METHOD								(	Vec2_t,
+										get_max_abs_x_y,
+										self,
+										float		*out
+									);

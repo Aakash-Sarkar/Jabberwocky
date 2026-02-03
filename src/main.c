@@ -28,42 +28,51 @@
 //////////////////////////////////////////////////////////////////////////////
 //
 //
-//		A Game loop is perhaps one of the most common concept you'll find
-//		in Interactive Computer Graphics. It is found in most rendering
-//		apis and game engines in one form or another. You can also call it
-//		as Render Loop etc but the core idea remain the same:
+//		A Game loop is perhaps one of the most common concept you'll
+//		find in Interactive Computer Graphics. It's found in many of
+//		the rendering apis and game engines in one form or another.
+//		You can also call it as Render Loop e.t.c. but the core idea
+//		remain the same:
 //
 //		At every screen refresh (vblank) do the following:
 //
 //		1.	Collect and process the inputs given by the user.
 //
-//		2.	Because of the inputs, the state of your world (in the video
-//			game) has somehow now changed. So update your data structures
-//			to reflect the new state.
+//		2.	Because of the inputs, the state of your world ( in the
+//			video game) has somehow now changed. So update your data
+//			structures to reflect the new state.
 //
-//		3.	Draw the next frame using the updated state into a image buffer.
+//		3.	Draw the next frame using the updated state into a image
+//			buffer.
 //
-//		4.	Show the new image to the user at next screen refresh and repeat
-//			the cycle.
+//		4.	Show the new image to the user at next screen refresh and
+//			repeat the cycle.
 //
 //
-//		Most video games aim for a 60 FPS rate. That means you should show
-//		at least 60 image frames to the user in a second. If your GPU is slow
-//		and is not able to draw the frame within the next refresh cycle, then
-//		your frames will start to drop (figuratively!). If the frame rate
-//		drops too low then the user will start to notice a visible lag.
+//		Most video games aim for a 60 FPS rate. That means you should
+//		show at least 60 image frames to the user in a second. If your
+//		GPU is slow and is not able to draw the frame within the next
+//		refresh cycle then your frames will start to drop. If the frame
+//		rate drops too low then the user will start to notice a visible
+//		lag.
 //
 //
 //		In a C style representation this will look something like this:
 //
-//		int main(void) {
+//		int main ( void ) {
+//
 //			setup();
 //
 //			while (true) {
+//
 //				Process_inputs();
+//
 //				...
+//
 //				Update();
+//
 //				...
+//
 //				Render();
 //			}
 //		}
@@ -107,11 +116,13 @@ setup							(	void	)
 {
 
 	Window_t						*window		=	NULL;
+
 	Renderer_t						*renderer	=	NULL;
 
 	int								numbufs		=	1;
 
-	// Initialze SDL
+	//	Initialze SDL
+
 	if							(	yo_sdl_init_everything ( )
 									!= SUCCESS
 								)
@@ -124,9 +135,9 @@ setup							(	void	)
 									NULL
 								);
 
-	/**
-	 * Create a renderer so that we can talk to the SDL layer.
-	 */
+
+	//	Create a renderer so that we can talk to the SDL layer.
+
 	NEW							(	Renderer_t,
 									renderer,
 									window
@@ -170,7 +181,7 @@ process_input					(	void	)
 
 static
 bool
-update							(	Renderer_t*		renderer	)
+update							(	Renderer_t	*renderer	)
 {
 
 	int								idx		=	0;
@@ -178,9 +189,14 @@ update							(	Renderer_t*		renderer	)
 	Mesh_t							*mesh	=	NULL;
 
 	Triangle3d_t					*tr		=	NULL;
+
 	Triangle2d_t					*prj	=	NULL;
 
+	Triangle2d_t					*top	=	NULL,
+									*bot	=	NULL;
+
 	Vec3_t							*rot	=	NULL;
+
 
 	DEF							(	Triangle3d_t,
 									tr
@@ -190,22 +206,30 @@ update							(	Renderer_t*		renderer	)
 									prj
 								);
 
+	DEF							(	Triangle2d_t,
+									top
+								);
+
+	DEF							(	Triangle2d_t,
+									bot
+								);
+
 	NEW							(	Vec3_t,
 									rot,
-									0.01f,
-									0.01f,
-									0.01f
+									0.01f,	0.01f,	0.01f
 								);
 
 
 	if							(	!renderer->triangles_to_draw	)
 	{
-		DEF						(	ARRAY	( Triangle2d_t ),
+		DEF						(	ARRAY	(	Triangle2d_t	),
 									renderer->triangles_to_draw
 								);
 	}
 
-	GET							(	mesh,	renderer->mesh	);
+	GET							(	mesh,
+									renderer->mesh
+								);
 
 	ROT							(	Mesh_t,
 									mesh,
@@ -227,17 +251,38 @@ update							(	Renderer_t*		renderer	)
 								);
 
 		if						(	*cull == true	)
+		{
 			continue;
+		}
 
 		PROJ					(	Triangle2d_t,			Triangle3d_t,
 									prj,					tr,
 									PERSPECTIVE
 								);
 
+		REQ						(	Triangle2d_t,
+									get_flat_top_bottom,
+									prj,
+									top,
+									bot
+								);
+
 		PUSH					(	Triangle2d_t,
 									prj,
 									renderer->triangles_to_draw
 								);
+
+		assert					(	top		&&		bot		);
+
+		//PUSH					(	Triangle2d_t,
+		//							top,
+		//							renderer->triangles_to_draw
+		//						);
+
+		//PUSH					(	Triangle2d_t,
+		//							bot,
+		//							renderer->triangles_to_draw
+		//						);
 
 		DEL						(	bool,
 									cull
@@ -247,6 +292,16 @@ update							(	Renderer_t*		renderer	)
 	DEL							(	Vec3_t,
 									rot
 								);
+
+	DEL							(	Triangle2d_t,
+									top
+								);
+
+	DEL							(	Triangle2d_t,
+									bot
+								);
+
+	PUT							(	mesh	);
 
 	// Use the force, Luke!
 	return SUCCESS;
@@ -265,14 +320,13 @@ render							(	Renderer_t*		renderer	)
 									idx		=	0;
 
 	Color_t							*green	=	NULL;
+
 	Triangle2d_t					*tr		=	NULL;
 
 	NEW							(	Color_t,
 									green,
-									0x00,
-									0xFF,
-									0x00,
-									0xFF
+									0x00,		0xFF,
+									0x00,		0xFF
 								);
 
 	DEF							(	Triangle2d_t,
@@ -297,7 +351,7 @@ render							(	Renderer_t*		renderer	)
 	}
 
 
-	DEL							(	ARRAY	( Triangle2d_t ),
+	DEL							(	ARRAY	(	Triangle2d_t	),
 									renderer->triangles_to_draw
 								);
 
@@ -343,5 +397,6 @@ main							(	int argc, char** argv	)
 		update					(	renderer	);
 		render					(	renderer	);
 	}
+
 	RET							(	0	);
 }

@@ -138,6 +138,7 @@ DECL_ARRAY					(	Point2d_t,
 								ARRAY	(	Vec2_t	)	*v;
 							);
 
+
 DECL_ARRAY					(	Point3d_t,
 								ARRAY	(	Vec3_t	)	*v;
 							);
@@ -212,32 +213,37 @@ HOWTO_PUSH					(	Point3d_t,	ptr,	arr		);
 
 HOWTO_ROT					(	Point2d_t,
 								self,
-								Vec2_t				*angle	);
+								Vec2_t				*angle
+							);
 
 HOWTO_ROT					(	Point3d_t,
 								self,
-								Vec3_t				*angle	);
+								Vec3_t				*angle
+							);
 
 
 HOWTO_DRAW					(	Point2d_t,
 								self,
 								Point2d_t			*origin,
 								Color_t				*color,
-								Color_buffer_t		*colorbuf	);
+								Color_buffer_t		*colorbuf
+							);
 
 
 HOWTO_DRAW					(	Point3d_t,
 								self,
 								Point2d_t			*origin,
 								Color_t				*color,
-								Color_buffer_t		*colorbuf	);
+								Color_buffer_t		*colorbuf
+							);
 
 
 
 
 HOWTO_PROJ					(	Point2d_t,			Point3d_t,
 								to,					from,
-								Projection_type_t	type		);
+								Projection_type_t	type
+							);
 
 
 //////////////////////////////////////////////////////////////////////////////////
@@ -271,5 +277,12 @@ HOWTO_DOTP					(	Point3d_t,	dst,	src1,	src2	);
 
 
 HOWTO_CROSP					(	Point3d_t,	dst,	src1,	src2	);
+
+
+METHOD						(	Point2d_t,
+								get_max_abs_x_y,
+								self,
+								float		*out
+							);
 
 

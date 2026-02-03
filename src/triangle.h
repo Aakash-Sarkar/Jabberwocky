@@ -215,6 +215,14 @@ METHOD							(	Triangle3d_t,
 								);
 
 
+METHOD							(	Triangle2d_t,
+									get_flat_top_bottom,
+									self,
+									Triangle2d_t		*out_top,
+									Triangle2d_t		*out_bottom
+								);
+
+
 
 
 

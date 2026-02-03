@@ -119,11 +119,11 @@ METHOD						(	Mesh_t,
 
 
 
-#define																					\
-for_each_face_in_mesh(	face,	mesh,	idx)	for_each_item_in_array	(	Face_t,		\
-																			face,		\
-																			mesh->faces,\
-																			idx			\
+#define																						\
+for_each_face_in_mesh(	face,	mesh,	idx)	for_each_item_in_array	(	Face_t,			\
+																			face,			\
+																			mesh->faces,	\
+																			idx				\
 																		)
 
 

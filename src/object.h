@@ -576,7 +576,7 @@ HOWTO_DEF								(	double,	self	);
 
 HOWTO_CONSTRUCT							(	bool,
 											self,
-											char	b
+											bool	b
 										);
 
 HOWTO_CONSTRUCT							(	char,

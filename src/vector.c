@@ -279,8 +279,6 @@ HOWTO_PUSH					(	Vec2_t,		ptr,	arr	)
 								ptr->y,
 								arr->y
 							);
-
-	arr->count++;
 }
 
 HOWTO_PUSH					(	Vec3_t,		ptr,	arr	)
@@ -300,8 +298,6 @@ HOWTO_PUSH					(	Vec3_t,		ptr,	arr	)
 								ptr->z,
 								arr->z
 							);
-
-	arr->count++;
 }
 
 
@@ -888,3 +884,24 @@ HOWTO_CROSP					(	Vec3_t,	dst,	src1,	src2	)
 	*dst->z					=	*src1->x	*	*src2->y
 							-	*src1->y	*	*src2->x;
 }
+
+
+METHOD						(	Vec2_t,
+								get_max_abs_x_y,
+								self,
+								float		*out
+							)
+{
+	assert					(	out	);
+
+	float						x	=	*self->x,
+								y	=	*self->y;
+
+	float						max_x_y	=	max( abs( x ), abs( y ) );
+
+	CPY						(	float,
+								out,
+								&max_x_y
+							);
+}
+

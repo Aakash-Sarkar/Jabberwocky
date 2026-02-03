@@ -7,10 +7,10 @@
 
 
 
-#define array_push(array, value)                                                            \
-    do {                                                                                    \
-        (array) = array_hold((array), 1, sizeof(*(array)));                                 \
-        (array)[array_length(array) - 1] = (value);                                         \
+#define array_push(array, value)                                                     \
+    do {                                                                             \
+        (array) = array_hold((array), 1, sizeof(*(array)));                          \
+        (array)[array_length(array) - 1] = (value);                                  \
     } while (0);
 
 
@@ -25,7 +25,7 @@ array( class )                          concat3( class, _, array )
 
 #define                                                                             \
 DECL_ARRAY( class, ... )                typedef                                     \
-                                        struct array( class )                       \
+                                        struct array ( class )                      \
                                         {    int count;                             \
                                              __VA_ARGS__                            \
                                         }   array( class )
@@ -173,6 +173,8 @@ _PUSH( class, ptr, arr )                do                                      
                                                             arr                     \
                                                         );                          \
                                                                                     \
+                                            arr->count++;                           \
+                                                                                    \
                                         }   while       (   0   )
 
 
@@ -190,50 +192,50 @@ PUSH( class, ptr, arr )                 do                                      
 
 #define                                                                             \
 for_each_item_in_array( class, item, arr, idx )                                     \
-                                            for (                                   \
-                                                    idx     =   0,                  \
-                                                    __LD    (   class,              \
-                                                                item,               \
-                                                                arr,                \
-                                                                idx                 \
-                                                            );                      \
+                                        for (                                       \
+                                                idx     =   0,                      \
+                                                __LD    (   class,                  \
+                                                            item,                   \
+                                                            arr,                    \
+                                                            idx                     \
+                                                        );                          \
                                                                                     \
-                                                    idx     <   ( arr )->count;     \
+                                                idx     <   ( arr )->count;         \
                                                                                     \
-                                                    idx++,                          \
-                                                    __LD    (   class,              \
-                                                                item,               \
-                                                                arr,                \
-                                                                idx                 \
-                                                            )                       \
-                                                )
+                                                idx++,                              \
+                                                __LD    (   class,                  \
+                                                            item,                   \
+                                                            arr,                    \
+                                                            idx                     \
+                                                        )                           \
+                                            )
 
 
 
 
 DECL_ARRAY                              (   bool,
-                                            bool                *ptr;
+                                            bool            *ptr;
                                         );
 
 DECL_ARRAY                              (   char,
-                                            char                *ptr;
+                                            char            *ptr;
                                         );
 
 DECL_ARRAY                              (   int,
-                                            int                 *ptr;
+                                            int             *ptr;
                                         );
 
 DECL_ARRAY                              (   long,
-                                            long                *ptr;
+                                            long            *ptr;
                                         );
 
 DECL_ARRAY                              (   float,
-                                            float               *ptr;
+                                            float           *ptr;
                                         );
 
 
 DECL_ARRAY                              (   double,
-                                            double              *ptr;
+                                            double          *ptr;
                                         );
 
 

@@ -7,8 +7,10 @@
 
 
 
+
 HOWTO_DEF						(	Point2d_t,	self	)
 {
+
 	DEF							(	Vec2_t,
 									self->v
 								);
@@ -20,14 +22,16 @@ HOWTO_CONSTRUCT					(	Point2d_t,
 									float		y
 								)
 {
+
 	NEW							(	Vec2_t,
 									self->v,
-									x,	y
+									x,			y
 								);
 }
 
 HOWTO_DESTRUCT					(	Point2d_t,	self	)
 {
+
 	DEL							(	Vec2_t,
 									self->v
 								);
@@ -35,6 +39,7 @@ HOWTO_DESTRUCT					(	Point2d_t,	self	)
 
 HOWTO_DEF						(	Point3d_t,	self	)
 {
+
 	DEF							(	Vec3_t,
 									self->v
 								);
@@ -47,6 +52,7 @@ HOWTO_CONSTRUCT					(	Point3d_t,
 									float		z
 								)
 {
+
 	NEW							(	Vec3_t,
 									self->v,
 									x,	y,	z
@@ -55,6 +61,7 @@ HOWTO_CONSTRUCT					(	Point3d_t,
 
 HOWTO_DESTRUCT					(	Point3d_t,	self	)
 {
+
 	DEL							(	Vec3_t,
 									self->v
 								);
@@ -62,6 +69,7 @@ HOWTO_DESTRUCT					(	Point3d_t,	self	)
 
 HOWTO_DEF						(	ARRAY	(	Point2d_t	),	self	)
 {
+
 	DEF							(	ARRAY	(	Vec2_t	),
 									self->v
 								);
@@ -71,6 +79,7 @@ HOWTO_DEF						(	ARRAY	(	Point2d_t	),	self	)
 
 HOWTO_DEF						(	ARRAY	(	Point3d_t	),	self	)
 {
+
 	DEF							(	ARRAY	(	Vec3_t	),
 									self->v
 								);
@@ -81,6 +90,7 @@ HOWTO_DEF						(	ARRAY	(	Point3d_t	),	self	)
 
 HOWTO_DESTRUCT					(	ARRAY	(	Point2d_t	),	self	)
 {
+
 	DEL							(	ARRAY	(	Vec2_t	),
 									self->v
 								);
@@ -90,6 +100,7 @@ HOWTO_DESTRUCT					(	ARRAY	(	Point2d_t	),	self	)
 
 HOWTO_DESTRUCT					(	ARRAY	(	Point3d_t	),	self	)
 {
+
 	DEL							(	ARRAY	(	Vec3_t	),
 									self->v
 								);
@@ -104,6 +115,7 @@ HOWTO_LD						(	Point2d_t,
 									idx
 								)
 {
+
 	LD							(	Vec2_t,
 									ptr->v,
 									arr->v,
@@ -117,6 +129,7 @@ HOWTO_LD						(	Point3d_t,
 									idx
 								)
 {
+
 	LD							(	Vec3_t,
 									ptr->v,
 									arr->v,
@@ -126,6 +139,7 @@ HOWTO_LD						(	Point3d_t,
 
 HOWTO_STR						(	Point2d_t,	ptr,	arr,	idx	)
 {
+
 	STR							(	Vec2_t,
 									ptr->v,
 									arr->v,
@@ -135,6 +149,7 @@ HOWTO_STR						(	Point2d_t,	ptr,	arr,	idx	)
 
 HOWTO_STR						(	Point3d_t,	ptr,	arr,	idx	)
 {
+
 	STR							(	Vec3_t,
 									ptr->v,
 									arr->v,
@@ -145,27 +160,26 @@ HOWTO_STR						(	Point3d_t,	ptr,	arr,	idx	)
 
 HOWTO_PUSH						(	Point2d_t,	ptr,	arr		)
 {
+
 	PUSH						(	Vec2_t,
 									ptr->v,
 									arr->v
 								);
-
-	arr->count++;
 }
 
 HOWTO_PUSH						(	Point3d_t,	ptr,	arr		)
 {
+
 	PUSH						(	Vec3_t,
 									ptr->v,
 									arr->v
 								);
-
-	arr->count++;
 }
 
 
 HOWTO_CPY						(	Point2d_t,	to,		from	)
 {
+
 	CPY							(	Vec2_t,
 									to->v,
 									from->v
@@ -174,6 +188,7 @@ HOWTO_CPY						(	Point2d_t,	to,		from	)
 
 HOWTO_CPY						(	Point3d_t,	to,		from	)
 {
+
 	CPY							(	Vec3_t,
 									to->v,
 									from->v
@@ -195,6 +210,7 @@ HOWTO_ROT						(	Point3d_t,
 									Vec3_t				*angle
 								)
 {
+
 	ROT							(	Vec3_t,	
 									self->v,
 									angle
@@ -210,7 +226,9 @@ HOWTO_DRAW						(	Point2d_t,
 									Color_t				*color,
 									Color_buffer_t		*colorbuf	)
 {
+
 	Rect_t							*rect		=	NULL;
+
 	Point2d_t						*o_point	=	NULL;
 
 	DEF							(	Point2d_t,
@@ -258,6 +276,7 @@ HOWTO_DRAW						(	Point3d_t,
 									Color_t				*color,
 									Color_buffer_t		*colorbuf	)
 {
+
 	Point2d_t						*proj	=	NULL;
 
 	DEF							(	Point2d_t,
@@ -305,6 +324,7 @@ HOWTO_PROJ						(	Point2d_t,			Point3d_t,
 
 HOWTO_ADD					(	Point2d_t,	dst,	op1,	op2	)
 {
+
 	ADD						(	Vec2_t,
 								dst->v,
 								op1->v,
@@ -314,6 +334,7 @@ HOWTO_ADD					(	Point2d_t,	dst,	op1,	op2	)
 
 HOWTO_ADD					(	Point3d_t,	dst,	op1,	op2	)
 {
+
 	ADD						(	Vec3_t,
 								dst->v,
 								op1->v,
@@ -324,6 +345,7 @@ HOWTO_ADD					(	Point3d_t,	dst,	op1,	op2	)
 
 HOWTO_SUB					(	Point2d_t,	dst,	op1,	op2	)
 {
+
 	SUB						(	Vec2_t,
 								dst->v,
 								op1->v,	
@@ -333,6 +355,7 @@ HOWTO_SUB					(	Point2d_t,	dst,	op1,	op2	)
 
 HOWTO_SUB					(	Point3d_t,	dst,	op1,	op2	)
 {
+
 	SUB						(	Vec3_t,
 								dst->v,
 								op1->v,
@@ -343,6 +366,7 @@ HOWTO_SUB					(	Point3d_t,	dst,	op1,	op2	)
 
 HOWTO_MUL					(	Point2d_t,	dst,	src,	factor	)
 {
+
 	MUL						(	Vec2_t,
 								dst->v,
 								src->v,
@@ -353,6 +377,7 @@ HOWTO_MUL					(	Point2d_t,	dst,	src,	factor	)
 
 HOWTO_MUL					(	Point3d_t,	dst,	src,	factor	)
 {
+
 	MUL						(	Vec3_t,
 								dst->v,
 								src->v,
@@ -363,6 +388,7 @@ HOWTO_MUL					(	Point3d_t,	dst,	src,	factor	)
 
 HOWTO_DIV					(	Point2d_t,	dst,	src,	factor	)
 {
+
 	DIV						(	Vec2_t,
 								dst->v,
 								src->v,
@@ -373,6 +399,7 @@ HOWTO_DIV					(	Point2d_t,	dst,	src,	factor	)
 
 HOWTO_DIV					(	Point3d_t,	dst,	src,	factor	)
 {
+
 	DIV						(	Vec3_t,
 								dst->v,
 								src->v,
@@ -383,6 +410,7 @@ HOWTO_DIV					(	Point3d_t,	dst,	src,	factor	)
 
 HOWTO_DOTP					(	Point2d_t,	dst,	src1,	src2	)
 {
+
 	DOTP					(	Vec2_t,
 								dst,
 								src1->v,
@@ -390,8 +418,10 @@ HOWTO_DOTP					(	Point2d_t,	dst,	src1,	src2	)
 							);
 }
 
+
 HOWTO_DOTP					(	Point3d_t,	dst,	src1,	src2	)
 {
+
 	DOTP					(	Vec3_t,
 								dst,
 								src1->v,
@@ -402,9 +432,26 @@ HOWTO_DOTP					(	Point3d_t,	dst,	src1,	src2	)
 
 HOWTO_CROSP					(	Point3d_t,	dst,	src1,	src2	)
 {
+
 	CROSP					(	Vec3_t,
 								dst->v,
 								src1->v,
 								src2->v
+							);
+}
+
+
+METHOD						(	Point2d_t,
+								get_max_abs_x_y,
+								self,
+								float		*out
+							)
+{
+	assert					(	out	);
+
+	REQ						(	Vec2_t,
+								get_max_abs_x_y,
+								self->v,
+								out
 							);
 }

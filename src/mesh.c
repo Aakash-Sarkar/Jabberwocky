@@ -1,5 +1,5 @@
-/* Copyright © 2025 Intel Corporation
- * SPDX-License-Identifier: MIT
+/*	Copyright © 2025 Intel Corporation
+ *	SPDX-License-Identifier: MIT
  */
 
 #include "mesh.h"
@@ -259,7 +259,6 @@ HOWTO_PUSH						(	Face_t,		ptr,	arr		)
 									ptr->idx3,
 									arr->idx3
 								);
-	arr->count++;
 }
 
 
@@ -326,8 +325,7 @@ HOWTO_ROT						(	Mesh_t,
 									tr
 								);
 
-	ADD							(	Vec3_t,
-									self->rotation,
+	INC							(	Vec3_t,
 									self->rotation,
 									angle
 								);
@@ -341,11 +339,11 @@ METHOD							(	Mesh_t,
 									Triangle3d_t	*out
 								)
 {
-	Point3d_t						*p1	=	NULL,
-									*p2	=	NULL,
-									*p3	=	NULL;
+	Point3d_t						*p1		=	NULL,
+									*p2		=	NULL,
+									*p3		=	NULL;
 
-	Triangle3d_t					*tr	=	NULL;
+	Triangle3d_t					*tr		=	NULL;
 
 	assert						(	face	);
 

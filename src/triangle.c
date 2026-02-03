@@ -324,7 +324,6 @@ HOWTO_PUSH						(	Triangle2d_t,	ptr,	arr		)
 									ptr->p3,
 									arr->p3
 								);
-	arr->count++;
 }
 
 HOWTO_PUSH						(	Triangle3d_t,	ptr,	arr		)
@@ -344,7 +343,6 @@ HOWTO_PUSH						(	Triangle3d_t,	ptr,	arr		)
 									arr->p3
 								);
 
-	arr->count++;
 }
 
 
@@ -389,14 +387,14 @@ HOWTO_CPY						(	Triangle3d_t,	to,	from	)
 
 HOWTO_ROT						(	Triangle2d_t,
 									self,
-									Vec2_t*			angle
+									Vec2_t			*angle
 								)
 {
 }
 
 HOWTO_ROT						(	Triangle3d_t,
 									self,
-									Vec3_t*			angle
+									Vec3_t			*angle
 								)
 {
 	ROT							(	Point3d_t,
@@ -520,8 +518,8 @@ HOWTO_DRAW						(	Triangle3d_t,
 									proj
 								);
 
-	PROJ						(	Triangle2d_t,	Triangle3d_t,
-									proj,			self,
+	PROJ						(	Triangle2d_t,		Triangle3d_t,
+									proj,				self,
 									PERSPECTIVE
 								);
 
@@ -572,10 +570,10 @@ HOWTO_PROJ						(	Triangle2d_t,		Triangle3d_t,
 // 
 //
 //															p3
-//									 	^					+
-//									 	|			"	+
-//									  N	|	"		+
-//									"	|		+
+//								     ^ 						+
+//									  \				"	+
+//									N  \	"		+
+//									"   \		+
 //							"				+
 //				+	+	+	+	+	+	+
 //				p1						p2	
@@ -753,7 +751,7 @@ METHOD							(	Triangle3d_t,
 //		be { 0.0f, 0.0f, -5.0f }.
 //
 //
-//		[ ray ]		=	[ eye ]	-	[ a vertex in the triangle ]
+//		[ ray ]		=	[ eye ]	-	[ a vertex of the triangle ]
 //
 // 
 //		Notice when a cube face is facing directly towards the user eye;
@@ -829,7 +827,8 @@ METHOD							(	Triangle3d_t,
 
 	assert						(	dotp	);
 
-	*out						=	(	*dotp	<	0	)?	true	:	false;
+	*out						=	(	*dotp	<	0	)
+								?	true	:	false;
 
 	DEL							(	float,
 									dotp
@@ -837,5 +836,167 @@ METHOD							(	Triangle3d_t,
 
 	DEL							(	Point3d_t,
 									normal
+								);
+}
+
+
+METHOD							(	Triangle2d_t,
+									get_flat_top_bottom,
+									self,
+									Triangle2d_t	*out_top,
+									Triangle2d_t	*out_bot
+								)
+{
+	assert						(	out_top		);
+	assert						(	out_bot		);
+
+	Point2d_t						*midp	=	NULL;
+
+	//	Sort triangles based on increasing y co-ordinate
+
+	if							(	*self->p1->v->y > *self->p2->v->y	)
+	{
+		SWP						(	Point2d_t,
+									self->p1,
+									self->p2
+								);
+	}
+
+	if							(	*self->p2->v->y > *self->p3->v->y	)
+	{
+		SWP						(	Point2d_t,
+									self->p2,
+									self->p3
+								);
+	}
+
+	if							(	*self->p1->v->y > *self->p2->v->y	)
+	{
+		SWP						(	Point2d_t,
+									self->p1,
+									self->p2
+								);
+	}
+
+	assert						(	*self->p1->v->y <= *self->p2->v->y	);
+	assert						(	*self->p2->v->y <= *self->p3->v->y	);
+
+
+
+	//////////////////////////////////////////////////////////////////////////////
+	//							Calculating the midpoint:
+	//////////////////////////////////////////////////////////////////////////////
+	//
+	//
+	//		Lat's assume we have a triangle with three vetices p1 = ( x1, y1 ),
+	//		p2 = ( x2, y2 ), p3 = ( x3, y3 ). 
+	// 
+	//
+	//					Y
+	//					^
+	//					|
+	//				 y1 + - - - - - - - @  p1 = ( x0, y0 )
+	//					|			   /:|
+	//					|			  / : |
+	//					|			 /	:  |
+	//					|			/   :   |
+	//			My = y2 + - - - - @ - - + - -@  Mp = ( Mx, My )
+	//					|	   p2 : \_	: q  :|
+	//					|		  :	   \_	 : |
+	//					|		  :		: \_ :	|
+	//					|		  :	    :	 \_	 |
+	//				 y3 + - - - - + - - + - -+ -\_@  p3 = ( x3, y3 )
+	//					|		  :	  r :	 :	  :
+	//					|		  :		:	 :	  :
+	//					+---------+-----+----+----+------ >	X
+	//							  x2	x1	Mx	 x3
+	//
+	// 
+	//		First thing to note here is: since p1, p2 and p3 are sorted based
+	//		on increasing order of y; My will be equal to y2. So, we have our
+	//		first equation as follows:
+	// 
+	//				My	=	y2							-- ( 1 )
+	//
+	//		Next we need to find Mx. We'll use triangle similarity along with
+	//		the above equation ( 1 ) to find Mx.
+	//
+	//
+	//		Since, triangle {p1, q, Mp} is similar to triangle {p1, r, p3} we
+	//		have the following equation:
+	// 
+	//				( Mx - x1 )			( y2 - y1 )	
+	//				-----------		=	-----------
+	//				( x3 - x1 )			( y3 - y1 )	
+	//
+	// 
+	//		Rearranging this gives us the equation for Mx:
+	// 
+	//				Mx	=	x1	+	( y2 - y1 ) * ( x3 - x1 ) / ( y3 - y1 )
+	// 
+	// 
+	//////////////////////////////////////////////////////////////////////////////
+
+
+	float							midx	=	0.0f,
+									midy	=	0.0f;
+
+	float							x1	=	*self->p1->v->x,
+									y1	=	*self->p1->v->y;
+
+
+	float							x2	=	*self->p2->v->x,
+									y2	=	*self->p2->v->y;
+
+	float							x3	=	*self->p3->v->x,
+									y3	=	*self->p3->v->y;
+
+	midy						=	y1;
+
+	midx						=	x1	+	(
+										(	y2	-	y1	)
+									*	(	x3	-	x1	)
+									/	(	y3	-	y1	)
+								);
+
+	NEW							(	Point2d_t,
+									midp,
+									midx,
+									midy
+								);
+
+	Triangle2d_t					*top	=	NULL,
+									*bot	=	NULL;
+
+	NEW							(	Triangle2d_t,
+									top,
+									self->p1,
+									self->p2,
+									midp
+								);
+
+	NEW							(	Triangle2d_t,
+									bot,
+									self->p2,
+									midp,
+									self->p3
+								);
+
+	CPY							(	Triangle2d_t,
+									out_top,
+									top
+								);
+
+	CPY							(	Triangle2d_t,
+									out_bot,
+									bot
+								);
+
+	DEL							(	Triangle2d_t,
+									top
+								);
+
+	DEL							(	Triangle2d_t,
+									bot
 								);
 }

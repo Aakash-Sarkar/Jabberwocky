@@ -11,10 +11,10 @@
 
 
 #define																					\
-adder( class )									concat3		(	add,	_,	class	)
+add( class )									concat3		(	add,	_,	class	)
 
 #define																					\
-HOWTO_ADD( class, dest, op1, op2 )				void adder		(	class	)			\
+HOWTO_ADD( class, dest, op1, op2 )				void add		(	class	)			\
 																(	class	*dest,		\
 																	class	*op1,		\
 																	class	*op2		\
@@ -27,7 +27,7 @@ _ADD( class, dest, op1, op2 )					do										\
 													assert		(	op1		);			\
 													assert		(	op2		);			\
 																						\
-													adder		(	class	)			\
+													add			(	class	)			\
 																(	dest,				\
 																	op1,				\
 																	op2					\
@@ -88,6 +88,28 @@ SUB( class, dest, op1, op2 )					do										\
 																	dest,				\
 																	op1,				\
 																	op2					\
+																);						\
+												}	while		(	0	)
+
+
+#define																					\
+INC( class, self, inc )							do										\
+												{										\
+													ADD			(	class,				\
+																	self,				\
+																	self,				\
+																	inc					\
+																);						\
+												}	while		(	0	)
+
+
+#define																					\
+DEC( class, self, dec )							do										\
+												{										\
+													SUB			(	class,				\
+																	self,				\
+																	self,				\
+																	dec					\
 																);						\
 												}	while		(	0	)
 
@@ -270,6 +292,35 @@ CROSP( class, dest, src1, src2 )				do										\
 																	dest,				\
 																	src1,				\
 																	src2				\
+																);						\
+												}	while		(	0	)
+
+
+#define																					\
+SWP( class, item1, item2 )						do										\
+												{										\
+													assert		(	item1	);			\
+													assert		(	item2	);			\
+																						\
+													class			*tmp	=	NULL;	\
+																						\
+													CPY			(	class,				\
+																	tmp,				\
+																	item1				\
+																);						\
+																						\
+													CPY			(	class,				\
+																	item1,				\
+																	item2				\
+																);						\
+																						\
+													CPY			(	class,				\
+																	item2,				\
+																	tmp					\
+																);						\
+																						\
+													DEL			(	class,				\
+																	tmp					\
 																);						\
 												}	while		(	0	)
 
