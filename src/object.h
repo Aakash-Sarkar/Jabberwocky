@@ -4,8 +4,7 @@
 
 #pragma once
 
-#include "util.h"
-
+#include "generics.h"
 
 
  ////////////////////////////////////////////////////////////////////////////////
@@ -182,82 +181,36 @@ struct Object;
 //
 ///////////////////////////////////////////////////////////////////////////////
 
-#define																				\
-ctor(class)										concat3( create, _, class )
-
-#define																				\
-dtor(class)										concat3( destroy, _, class )
-
-
 
 
 #define																				\
-HOWTO_CONSTRUCT( class, self, ... )				void ctor( class ) ( class* self,	\
-																		__VA_ARGS__	)
+HOWTO_INIT( class, self, ... )					void								\
+												init ( class )	( class *self,		\
+																	__VA_ARGS__		\
+																)
 
 #define																				\
-HOWTO_DESTRUCT( class,self )					void dtor( class ) ( class* self )
-
-
-#define																				\
-CONSTRUCT( class, self, ... )					ctor(class) (self, __VA_ARGS__)
+_INIT( class, self, ... )						init ( class )( self,__VA_ARGS__ )
 
 #define																				\
-DESTRUCT( class, self )							dtor			(	class	) (	self	)
-
-
-#define																				\
-_DEF( class, ptr )							do										\
-											{										\
-												assert			(	!(ptr)	);		\
+INIT( class, self, ... )						do									\
+												{									\
+													assert		(	self	);		\
 																					\
-												ALLOC_ZEROED	(	class,			\
-																	ptr,			\
-																	1				\
-																);					\
-											}	while			(	0	)
+													_INIT		(	class,			\
+																	self,			\
+																__VA_ARGS__ );		\
+																					\
+												} while			(	0	)
 
 #define																				\
-def_ctor( class )							concat3 ( def_create, _, class )
+HOWTO_FINI( class, self )						void								\
+												fini ( class )	( class* self )
+
 
 #define																				\
-HOWTO_DEF( class, ptr )						void def_ctor( class ) ( class *ptr )
+FINI( class, self )								fini ( class )	( self )
 
-#define																				\
-DEF( class, ptr )							do										\
-											{										\
-												_DEF			(	class,			\
-																	ptr				\
-																);					\
-																					\
-												def_ctor		(	class	)		\
-																(	ptr		);		\
-																					\
-											} while				(	0	)
-#define																				\
-NEW( class, ptr, ... )						do										\
-											{										\
-												_DEF			(	class,			\
-																	ptr				\
-																);					\
-																					\
-												assert			(	ptr	);			\
-																					\
-												CONSTRUCT		(	class,			\
-																	ptr,			\
-																__VA_ARGS__			\
-																);					\
-											}	while			(	0	)
-
-#define																				\
-DEL( class, ptr )							do										\
-											{										\
-												assert			(	ptr	);			\
-												DESTRUCT		(	class,			\
-																	ptr				\
-																);					\
-												DEALLOC			(	ptr	);			\
-											} while ( 0 )
 
 
 
@@ -273,63 +226,6 @@ PUT( ptr )									do										\
 												ptr				=	NULL;			\
 											}	while			(	0	)
 
-#define																				\
-copy_ctor( class )								concat3( copy, _, class )
-
-#define																				\
-copy( class, to, from )							memcpy( to, from, sizeof(class) )
-
-#define																				\
-HOWTO_CPY( class, to, from )				void									\
-											copy_ctor			(	class	)		\
-																(	class* to,		\
-																	class* from		\
-																)
-
-#define																				\
-_CPY( class, to , from )					do										\
-											{										\
-												assert			(	to		);		\
-												assert			(	from	);		\
-																					\
-												copy_ctor		(	class	)		\
-																(	to,				\
-																	from			\
-																);					\
-																					\
-											}	while			(	0	)
-
-#define																				\
-CPY( class, to , from )						do										\
-											{										\
-												if				(	!to		)		\
-													DEF			(	class,			\
-																	to				\
-																);					\
-																					\
-																					\
-												_CPY			(	class,			\
-																	to,				\
-																	from			\
-																);					\
-																					\
-											}	while			(	0	)
-
-
-
-#define																				\
-MOV( class, to, from )						do										\
-											{										\
-												CPY				(	class,			\
-																	to,				\
-																	from			\
-																);					\
-																					\
-												DEL				(	class,			\
-																	from			\
-																);					\
-											}	while			(	0	)
-
 
 
 /////////////////////////////////////////////////////////////////////////////////
@@ -340,12 +236,14 @@ MOV( class, to, from )						do										\
 //
 /////////////////////////////////////////////////////////////////////////////////
 
-#define baseclass(module, class)			concat3(module, _, class)
+#define																			\
+baseclass( module, class )				concat3 ( module, _, class )
 
-#define INHERIT(module, class, ...)			struct class	{					\
-												baseclass(module, class) *sdl;	\
-												__VA_ARGS__						\
-											}
+#define																			\
+INHERIT( module, class, name, ... )		struct class	{						\
+											baseclass(module, class) *name;		\
+											__VA_ARGS__							\
+										}
 
 
 /////////////////////////////////////////////////////////////////////////////////
@@ -475,10 +373,10 @@ MOV( class, to, from )						do										\
 
 
 #define																				\
-method( class, name )				concat3	(	class, _, name	)
+method( class, name )				concat3 (	class, _, name	)
 
 #define																				\
-METHOD(class, name, self, ...)		void											\
+METHOD(class, name, self, ...)		class*											\
 									method	( class, name ) (	class*	self,		\
 																__VA_ARGS__			\
 															)
@@ -540,93 +438,82 @@ METHOD(class, name, self, ...)		void											\
 
 
 #define																				\
-_REQ( class, name, self, ... )			do											\
-										{											\
-											assert			(	self	);			\
-																					\
-											method			(	class,	name	)	\
+_REQ( class, name, self, ... )			(	self			=	method				\
+															(	class,	name	)	\
 															(	self,	__VA_ARGS__	\
-															);						\
-										}	while			(	0	)
+															)						\
+										)	
 
 
 #define																				\
 REQ( class, name, self, ... )			do											\
 										{											\
+											assert			(	self	);			\
+																					\
 											_REQ			(	class,				\
 																name,				\
 																self,				\
 															__VA_ARGS__				\
 															);						\
+																					\
 										}	while			(	0	)
 
 
-HOWTO_DEF								(	bool,	self	);
-
-HOWTO_DEF								(	char,	self	);
-
-HOWTO_DEF								(	int,	self	);
-
-HOWTO_DEF								(	long,	self	);
-
-HOWTO_DEF								(	float,	self	);
-
-HOWTO_DEF								(	double,	self	);
 
 
-HOWTO_CONSTRUCT							(	bool,
+HOWTO_INIT								(	bool,
 											self,
 											bool	b
 										);
 
-HOWTO_CONSTRUCT							(	char,
+HOWTO_INIT								(	char,
 											self,
 											char	c
 										);
 
-HOWTO_CONSTRUCT							(	int,
+HOWTO_INIT								(	int,
 											self,
 											int		i
 										);
 
-HOWTO_CONSTRUCT							(	long,
+HOWTO_INIT								(	long,
 											self,
 											long	l
 										);
 
-HOWTO_CONSTRUCT							(	float,
+HOWTO_INIT								(	float,
 											self,
 											float	f
 										);
 
-HOWTO_CONSTRUCT							(	double,
+HOWTO_INIT								(	double,
 											self,
 											double	d
 										);
 
 
-HOWTO_DESTRUCT							(	bool,	self	);
+HOWTO_FINI								(	bool,
+											self
+										);
 
-HOWTO_DESTRUCT							(	char,	self	);
+HOWTO_FINI								(	char,
+											self
+										);
 
-HOWTO_DESTRUCT							(	int,	self	);
+HOWTO_FINI								(	int,
+											self
+										);
 
-HOWTO_DESTRUCT							(	long,	self	);
+HOWTO_FINI								(	long,
+											self
+										);
 
-HOWTO_DESTRUCT							(	float,	self	);
+HOWTO_FINI								(	float,
+											self
+										);
 
-HOWTO_DESTRUCT							(	double,	self	);
+HOWTO_FINI								(	double,
+											self
+										);
 
-
-HOWTO_CPY								(	bool,	to,	from	);
-
-HOWTO_CPY								(	char,	to,	from	);
-
-HOWTO_CPY								(	int,	to,	from	);
-
-HOWTO_CPY								(	long,	to,	from	);
-
-HOWTO_CPY								(	float,	to,	from	);
-
-HOWTO_CPY								(	double,	to,	from	);
 

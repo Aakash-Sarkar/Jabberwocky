@@ -3,7 +3,7 @@
  */
 
 #include "color.h"
-#include "util.h"
+#include "memory.h"
 
 
 
@@ -74,7 +74,7 @@ lookup_format                       (   Format_type_t format_type   )
 
 
 
-HOWTO_CONSTRUCT                     (   Color_t,
+HOWTO_INIT                          (   Color_t,
                                         self,
                                         uint8_t         red,
                                         uint8_t         green,
@@ -82,18 +82,18 @@ HOWTO_CONSTRUCT                     (   Color_t,
                                         uint8_t         alpha
                                     )
 {
-    self->rgba.r                    =   red;
-    self->rgba.g                    =   green;
-    self->rgba.b                    =   blue;
-    self->rgba.a                    =   alpha;
+    ( self )->rgba.r                =   red;
+    ( self )->rgba.g                =   green;
+    ( self )->rgba.b                =   blue;
+    ( self )->rgba.a                =   alpha;
 }
 
 
 
 static
 bool
-get_color_val                       (   Color_t*        color,
-                                        uint32_t*       val,
+get_color_val                       (   Color_t         *color,
+                                        uint32_t        *val,
                                         Format_type_t   format_type    )
 {
     PTR                             (    Format_t,   format,    NULL   );
@@ -124,7 +124,7 @@ get_color_val                       (   Color_t*        color,
 
 
 
-HOWTO_CONSTRUCT                     (   Color_buffer_t,
+HOWTO_INIT                          (   Color_buffer_t,
                                         self,
                                         int             width,
                                         int             height,
@@ -140,37 +140,36 @@ HOWTO_CONSTRUCT                     (   Color_buffer_t,
 
     assert                          (   format   );
 
-    self->width                     =   width;
-    self->height                    =   height;
+    ( self )->width                 =   width;
+    ( self )->height                =   height;
 
-    self->pitch                     =   width
+    ( self )->pitch                 =   width
                                     *   BITS_TO_BYTES   (   format->bpp     );
 
-    self->num_buffers               =   format->planes;
+    ( self )->num_buffers           =   ( format )->planes;
 
     buf                             =   ALLOC_NONZEROED (   width * height,   uint32_t   );
 
     assert                          (   buf   );
 
-    self->buffer[0]                 =   buf;
+    ( self )->buffer[0]             =   buf;
     buf                             =   NULL;
 
     for                             (   int i = 1;
                                         i < format->planes;
-                                        i++   )
+                                        i++
+                                    )
     {
 
         buf                         =   ALLOC_NONZEROED (   width * height,   uint32_t   );
 
         assert                      (   buf   );
-        self->buffer[i]             =   buf;
+        ( self )->buffer[i]         =   buf;
         buf                         =   NULL;
     }
 }
 
-HOWTO_DESTRUCT                      (   Color_buffer_t,
-                                        self
-                                    )
+HOWTO_FINI                     (   Color_buffer_t,   self   )
 {
     if                              (   !self   )
         return;

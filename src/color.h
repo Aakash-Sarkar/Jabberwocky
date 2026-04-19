@@ -86,11 +86,10 @@
 
 
 
-typedef                     enum Format_type  {
-                                                PIXELFORMAT_ARGB8888 = 0,
-                                                PIXELFORMAT_RGBA8888,
-                                                PIXELFORMAT_XRGB4444,
-                                                PIXELFORMAT_MAX       } Format_type_t;
+typedef     enum Format_type    {   PIXELFORMAT_ARGB8888 = 0,
+                                    PIXELFORMAT_RGBA8888,
+                                    PIXELFORMAT_XRGB4444,
+                                    PIXELFORMAT_MAX       } Format_type_t;
 
 
 
@@ -112,10 +111,10 @@ typedef                     enum Format_type  {
 //       +------+----------+-----------+-----------+-----+
 //              |          |           |           |
 //              |          |           |           |
-//              |          |           |           +--------> B  channel
-//              |          |           +--------------------> G  channel
-//              |          +--------------------------------> R  channel
-//              +-------------------------------------------> A  channel
+//              |          |           |           +-------- > B    channel
+//              |          |           +-------------------- > G    channel
+//              |          +-------------------------------- > R    channel
+//              +------------------------------------------- > A    channel
 //
 //
 //      On older 8-bit and 16-bit systems this was not the case. We had a very
@@ -148,17 +147,22 @@ typedef                     enum Format_type  {
 ////////////////////////////////////////////////////////////////////////////////////
 
 
-typedef                     struct Color    {
-                                    union {
-                                        struct   {
-                                            uint8_t    r;
-                                            uint8_t    g;
-                                            uint8_t    b;
-                                            uint8_t    a;
-                                        }   rgba;
+typedef                             struct Color
+                                 {
+                                    union
+                                    {
+                                        struct
+                                        {
+                                            uint8_t         r;
+                                            uint8_t         g;
+                                            uint8_t         b;
+                                            uint8_t         a;
+                                        }                   rgba;
+
                                         // TODO: Support YUV formats
-                                        uint32_t       yuv;
-                                    };                         }    Color_t;
+                                        uint32_t            yuv;
+                                     };
+                                 }    Color_t;
 
 
 
@@ -179,38 +183,37 @@ typedef                     struct Format   {
 
 
 
-typedef                     struct color_buffer   {
-                                    int        width;
-                                    int        height;
-                                    int        pitch;
-                                    int        num_buffers;
-                                    uint32_t*  buffer[4];      }    Color_buffer_t;
+typedef                             struct color_buffer
+                                {
+                                    int         width;
+                                    int         height;
+                                    int         pitch;
+                                    int         num_buffers;
+                                    uint32_t    *buffer[ 4 ];
+                                }   Color_buffer_t;
 
 
 
 
 
-HOWTO_CONSTRUCT                 (   Color_t,
+HOWTO_INIT                      (   Color_t,
                                     self,
-                                    uint8_t             red,
-                                    uint8_t             green,
-                                    uint8_t             blue,
-                                    uint8_t             alpha
+                                    uint8_t      red,
+                                    uint8_t      green,
+                                    uint8_t      blue,
+                                    uint8_t      alpha
                                 );
 
 
-
-HOWTO_CONSTRUCT                 (   Color_buffer_t,
+HOWTO_INIT                      (   Color_buffer_t,
                                     self,
-                                    int                 width,
-                                    int                 height,
-                                    Format_type_t       format_type
+                                    int             width,
+                                    int             height,
+                                    Format_type_t   format_type    
                                 );
 
 
-HOWTO_DESTRUCT                  (   Color_buffer_t,     self    );
-
-
+HOWTO_FINI                      (   Color_buffer_t,    self    );
 
 bool
 paint_color                     (   Color_t             *color,
@@ -218,7 +221,8 @@ paint_color                     (   Color_t             *color,
                                     Format_type_t       format_type,
                                     int                 posX,
                                     int                 posY,
-                                    int                 plane       );
+                                    int                 plane
+                                );
 
 Format_t*
 lookup_format                   (   Format_type_t       format_type );

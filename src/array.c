@@ -1,324 +1,189 @@
-#include <stdio.h>
-#include <stdlib.h>
+/* Copyright © 2025 Intel Corporation
+ * SPDX-License-Identifier: MIT
+ */
+
 #include "array.h"
-#include "object.h"
+#include "memory.h"
 
 
 
-
-#define ARRAY_RAW_DATA(array) ((int*)(array) - 2)
-#define ARRAY_CAPACITY(array) (ARRAY_RAW_DATA(array)[0])
-#define ARRAY_OCCUPIED(array) (ARRAY_RAW_DATA(array)[1])
-
-
-
-void* array_hold(void* array, int count, int item_size) {
-    if (array == NULL) {
-        int raw_size = (sizeof(int) * 2) + (item_size * count);
-        int* base = (int*)malloc(raw_size);
-        base[0] = count;  // capacity
-        base[1] = count;  // occupied
-        return base + 2;
-    } else if (ARRAY_OCCUPIED(array) + count <= ARRAY_CAPACITY(array)) {
-        ARRAY_OCCUPIED(array) += count;
-        return array;
-    } else {
-        int needed_size = ARRAY_OCCUPIED(array) + count;
-        int double_curr = ARRAY_CAPACITY(array) * 2;
-        int capacity = needed_size > double_curr ? needed_size : double_curr;
-        int occupied = needed_size;
-        int raw_size = sizeof(int) * 2 + item_size * capacity;
-        int* base = (int*)realloc(ARRAY_RAW_DATA(array), raw_size);
-        base[0] = capacity;
-        base[1] = occupied;
-        return base + 2;
-    }
-}
-
-int array_length(void* array) {
-    return (array != NULL) ? ARRAY_OCCUPIED(array) : 0;
-}
-
-void array_free(void* array) {
-    if (array != NULL) {
-        free(ARRAY_RAW_DATA(array));
-    }
-}
-
-
-HOWTO_DEF					(	ARRAY	(	bool	),	self	)
+HOWTO_INIT					(	arr ( bool ),
+								self,
+								const bool		*init_list,
+								unsigned int	count
+							)
 {
-	self->ptr				=	NULL;
-	self->count				=	0;
+	INITARR					(	bool,
+								self,
+								init_list,
+								count
+							);
+
 }
 
-HOWTO_DEF					(	ARRAY	(	char	),	self	)
+HOWTO_INIT					(	arr ( char ),
+								self,
+								const char		*init_list,
+								unsigned int	count
+							)
 {
-	self->ptr				=	NULL;
-	self->count				=	0;
-}
-
-HOWTO_DEF					(	ARRAY	(	int		),	self	)
-{
-	self->ptr				=	NULL;
-    self->count				=	0;
-}
-
-HOWTO_DEF					(	ARRAY	(	long	),	self	)
-{
-	self->ptr				=	NULL;
-	self->count				=	0;
-}
-
-HOWTO_DEF					(	ARRAY	(	float	),	self	)
-{
-	self->ptr				=	NULL;
-	self->count				=	0;
-}
-
-HOWTO_DEF					(	ARRAY	(	double	),	self	)
-{
-	self->ptr				=	NULL;
-	self->count				=	0;
-}
-
-
-
-
-HOWTO_DESTRUCT				(	ARRAY	(	bool	),	self	)
-{
-	array_free				(	self->ptr	);
-
-	self->ptr				=	NULL;
-	self->count				=	0;
-}
-
-HOWTO_DESTRUCT				(	ARRAY	(	char	),	self	)
-{
-	array_free				(	self->ptr	);
-
-	self->ptr				=	NULL;
-	self->count				=	0;
-}
-
-HOWTO_DESTRUCT				(	ARRAY	(	int		),	self	)
-{
-	array_free				(	self->ptr	);
-
-	self->ptr				=	NULL;
-	self->count				=	0;
-}
-
-HOWTO_DESTRUCT				(	ARRAY	(	long	),	self	)
-{
-	array_free				(	self->ptr	);
-
-	self->ptr				=	NULL;
-	self->count				=	0;
-}
-
-HOWTO_DESTRUCT				(	ARRAY	(	float	),	self	)
-{
-	array_free				(	self->ptr	);
-
-	self->ptr				=	NULL;
-	self->count				=	0;
-}
-
-HOWTO_DESTRUCT				(	ARRAY	(	double	),	self	)
-{
-	array_free				(	self->ptr	);
-
-	self->ptr				=	NULL;
-	self->count				=	0;
-}
-
-
-
-
-HOWTO_LD					(	bool,	item,	arr,	idx		)
-{
-
-	assert					(	idx <=	arr->count	);
-
-	CPY						(	bool,
-								item,
-								arr->ptr + idx
+	INITARR					(	char,
+								self,
+								init_list,
+								count
 							);
 }
 
-HOWTO_LD					(	char,	item,	arr,	idx		)
+HOWTO_INIT					(	arr ( int ),
+								self,
+								const int		*init_list,
+								unsigned int	count
+							)
 {
-
-	assert					(	idx <=	arr->count	);
-
-	CPY						(	char,
-								item,
-								arr->ptr + idx
+	INITARR					(	int,
+								self,
+								init_list,
+								count
 							);
 }
 
-HOWTO_LD					(	int,	item,	arr,	idx		)
+HOWTO_INIT					(	arr ( long ),
+								self,
+								const long		*init_list,
+								unsigned int	count
+							)
 {
+	INITARR					(	long,
+								self,
+								init_list,
+								count
+							);
 
-	assert					(	idx	<=	arr->count	);
+}
 
-	CPY						(	int,
-								item,
-								arr->ptr + idx
+HOWTO_INIT					(	arr ( float ),
+								self,
+								const float		*init_list,
+								unsigned int	count
+							)
+{
+	INITARR					(	float,
+								self,
+								init_list,
+								count
 							);
 }
 
-HOWTO_LD					(	long,	item,	arr,	idx		)
+HOWTO_INIT					(	arr ( double ),
+								self,
+								const double	*init_list,
+								unsigned int	count
+							)
 {
-
-	assert					(	idx <=	arr->count	);
-
-	CPY						(	long,
-								item,
-								arr->ptr + idx
-							);
-}
-
-HOWTO_LD					(	float,	item,	arr,	idx		)
-{
-
-	assert					(	idx <=	arr->count	);
-
-	CPY						(	float,
-								item,
-								arr->ptr + idx
-							);
-}
-
-HOWTO_LD					(	double,	item,	arr,	idx		)
-{
-	assert					(	idx	<=	arr->count	);
-
-	CPY						(	double,
-								item,
-								arr->ptr + idx
+	INITARR					(	double,
+								self,
+								init_list,
+								count
 							);
 }
 
 
-
-
-HOWTO_STR					(	bool,	item,	arr,	idx		)
+HOWTO_DEF					(	arr ( bool ),	self	)
 {
-	assert					(	idx		<=	arr->count	);
-
-	_CPY					(	bool,
-								arr->ptr +	idx,
-								item
-							);
-}
-
-HOWTO_STR					(	char,	item,	arr,	idx		)
-{
-	assert					(	idx		<=	arr->count	);
-
-	_CPY					(	char,
-								arr->ptr +	idx,
-								item
-							);
-}
-
-HOWTO_STR					(	int,	item,	arr,	idx		)
-{
-	assert					(	idx		<=	arr->count	);
-
-	_CPY					(	int,
-								arr->ptr +	idx,
-								item
-							);
-}
-
-HOWTO_STR					(	long,	item,	arr,	idx		)
-{
-	assert					(	idx		<=	arr->count	);
-
-	_CPY					(	long,
-								arr->ptr +	idx,
-								item
-							);
-}
-
-HOWTO_STR					(	float,	item,	arr,	idx		)
-{
-	assert					(	idx		<=	arr->count	);
-
-	_CPY					(	float,
-								arr->ptr +	idx,
-								item
-							);
-}
-
-HOWTO_STR					(	double,	item,	arr,	idx		)
-{
-	assert					(	idx		<=	arr->count	);
-
-	_CPY					(	double,
-								arr->ptr +	idx,
-								item
-							);
-}
-
-
-
-
-HOWTO_PUSH					(	bool,	item,	arr		)
-{
-	array_push				(	arr->ptr,
-								*item
+	NEW						(	arr ( bool ),
+								self,
+								NULL,
+								0
 							);
 
-	arr->count++;
+	RET						(	self	);
 }
 
-HOWTO_PUSH					(	char,	item,	arr		)
+HOWTO_DEF					(	arr ( char ),	self	)
 {
-	array_push				(	arr->ptr,
-								*item
+	NEW						(	arr ( char ),
+								self,
+								NULL,
+								0
 							);
 
-	arr->count++;
+	RET						(	self	);
 }
 
-HOWTO_PUSH					(	int,	item,	arr		)
+HOWTO_DEF					(	arr ( int ),	self	)
 {
-	array_push				(	arr->ptr,
-								*item
+	NEW						(	arr ( int ),
+								self,
+								NULL,
+								0
 							);
 
-	arr->count++;
+	RET						(	self	);
 }
 
-HOWTO_PUSH					(	long,	item,	arr		)
+HOWTO_DEF					(	arr ( long ),	self	)
 {
-	array_push				(	arr->ptr,
-								*item
+	NEW						(	arr ( long ),
+								self,
+								NULL,
+								0
 							);
 
-	arr->count++;
+	RET						(	self	);
 }
 
-HOWTO_PUSH					(	float,	item,	arr		)
+HOWTO_DEF					(	arr ( float ),	self	)
 {
-	array_push				(	arr->ptr,
-								*item
+	NEW						(	arr ( float ),
+								self,
+								NULL,
+								0
 							);
 
-	arr->count++;
+	RET						(	self	);
 }
 
-HOWTO_PUSH					(	double,	item,	arr		)
+HOWTO_DEF					(	arr ( double ),	self	)
 {
-	array_push				(	arr->ptr,
-								*item
+	NEW						(	arr ( double ),
+								self,
+								NULL,
+								0
 							);
 
-	arr->count++;
+	RET						(	self	);
 }
+
+
+HOWTO_FINI					(	arr ( bool ),	self	)
+{
+	FINIARR					(	bool,	self	);
+}
+
+HOWTO_FINI					(	arr ( char ),	self	)
+{
+	FINIARR					(	char,	self	);
+}
+
+HOWTO_FINI					(	arr ( int ),	self	)
+{
+	FINIARR					(	int,	self	);
+}
+
+HOWTO_FINI					(	arr ( long ),	self	)
+{
+	FINIARR					(	long,	self	);
+}
+
+HOWTO_FINI					(	arr ( float ),	self	)
+{
+	FINIARR					(	float,	self	);
+}
+
+HOWTO_FINI					(	arr ( double ),	self	)
+{
+	FINIARR					(	double,	self	);
+}
+
 
 

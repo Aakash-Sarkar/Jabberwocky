@@ -4,10 +4,7 @@
 
 #pragma once
 
-#include "object.h"
-#include "point.h"
 #include "triangle.h"
-#include "geometry.h"
 
 
 
@@ -54,54 +51,113 @@
 
 
 typedef
-struct	Face				{	int							*idx1;
-								int							*idx2;
-								int							*idx3;
-							}												Face_t;
+struct	Face				{	int						idx1;
+								int						idx2;
+								int						idx3;
+							}							Face_t;
 
 
-DECL_ARRAY					(	Face_t,
-								ARRAY	(	int		)		*idx1;
-								ARRAY	(	int		)		*idx2;
-								ARRAY	(	int		)		*idx3;
-							);
+DECL_ITER					(	Face_t	);
+
+DECL_ARRAY					(	Face_t	);
+
 
 
 typedef
-struct	Mesh				{
-								ARRAY	(	Point3d_t	)	*points;
-								ARRAY	(	Face_t		)	*faces;
-								ARRAY	(	Triangle3d_t)	*triangles;
-								ARRAY	(	bool	)		*cull;
-								Vec3_t						*rotation;
+struct	Mesh				{	arr ( Point3d_t )		*points;
+								arr ( Face_t )			*faces;
+								arr ( Triangle3d_t )	*triangles;
+								arr ( bool )			*cull;
+								Vec3_t					*rotation;
 							}												Mesh_t;
+
+
+DECL_ITER					(	Mesh_t	);
+
+DECL_ARRAY					(	Mesh_t	);
 
 
 
 HOWTO_DEF					(	Face_t,		self	);
 
-HOWTO_CONSTRUCT				(	Mesh_t,
+HOWTO_INIT					(	Face_t,
 								self,
-								char*		filename	);
+								int			idx1,
+								int			idx2,
+								int			idx3
+							);
 
-HOWTO_DESTRUCT				(	Face_t,		self	);
 
-HOWTO_DESTRUCT				(	Mesh_t,		self	);
+HOWTO_DEF					(	Mesh_t,		self	);
+
+HOWTO_INIT					(	Mesh_t,
+								self,
+								char		*filename
+							);
+
+HOWTO_FINI					(	Face_t,		self	);
+
+HOWTO_FINI					(	Mesh_t,		self	);
 
 
 HOWTO_CPY					(	Face_t,		to,	from	);
 
+HOWTO_CPY					(	Mesh_t,		to,	from	);
 
 
-HOWTO_DEF					(	ARRAY	( Face_t ),		self	);
 
-HOWTO_DESTRUCT				(	ARRAY	( Face_t ),		self	);
 
-HOWTO_LD					(	Face_t,	ptr,	arr,	idx		);
+HOWTO_INIT					(	itr ( Face_t ),
+								self,
+								Face_t				*ptr,
+								unsigned int		pos,
+								IterType_t			typ
+							);
 
-HOWTO_STR					(	Face_t,	ptr,	arr,	idx		);
+HOWTO_INIT					(	itr ( Mesh_t ),
+								self,
+								Mesh_t				*ptr,
+								unsigned int		pos,
+								IterType_t			typ
+							);
 
-HOWTO_PUSH					(	Face_t,	ptr,	arr		);
+
+HOWTO_DEF					(	itr ( Face_t ),		self	);
+
+HOWTO_DEF					(	itr ( Mesh_t ),		self	);
+
+
+HOWTO_CMP					(	itr ( Face_t ),		it1,	it2	);
+
+HOWTO_CMP					(	itr ( Mesh_t ),		it1,	it2	);
+
+
+HOWTO_INC					(	itr ( Face_t ),		self	);
+
+HOWTO_INC					(	itr ( Mesh_t ),		self	);
+
+
+HOWTO_DEC					(	itr ( Face_t ),		self	);
+
+HOWTO_DEC					(	itr ( Mesh_t ),		self	);
+
+
+HOWTO_INIT					(	arr ( Face_t ),
+								self,
+								const Face_t		*init_list,
+								unsigned int		count
+							);
+
+HOWTO_INIT					(	arr ( Mesh_t ),
+								self,
+								const Mesh_t		*init_list,
+								unsigned int		count
+							);
+
+
+HOWTO_DEF					(	arr	( Face_t ),		self	);
+
+HOWTO_DEF					(	arr	( Mesh_t ),		self	);
 
 
 HOWTO_ROT					(	Mesh_t,
@@ -119,18 +175,16 @@ METHOD						(	Mesh_t,
 
 
 
-#define																						\
-for_each_face_in_mesh(	face,	mesh,	idx)	for_each_item_in_array	(	Face_t,			\
-																			face,			\
-																			mesh->faces,	\
-																			idx				\
+#define																							\
+for_each_face_in_mesh( face,	mesh )			for_each_item_in_array	(	Face_t,				\
+																			( face ),			\
+																			( mesh )->faces		\
 																		)
 
 
-#define																						\
-for_each_triangle_in_mesh(triangle, mesh, idx)	for_each_item_in_array	(	Triangle3d_t,	\
-																			triangle,		\
-																			mesh->triangles,\
-																			idx				\
+#define																							\
+for_each_triangle_in_mesh( tr, mesh )			for_each_item_in_array	(	Triangle3d_t,		\
+																			( tr ),				\
+																			( mesh )->triangles	\
 																		)
 

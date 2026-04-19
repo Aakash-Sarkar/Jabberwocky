@@ -14,10 +14,8 @@
 
 
 
-typedef					struct	Choreographer	{
-									uint32_t		previous_ticks_ms;
-									uint32_t		current_ticks;
-												}					Choreographer_t;
+typedef	struct	Choreographer	{	uint32_t	previous_ticks_ms;
+									uint32_t	current_ticks;	}	Choreographer_t;
 
 
 
@@ -26,37 +24,33 @@ typedef					struct	Choreographer	{
 //								WINDOW:											//
 //////////////////////////////////////////////////////////////////////////////////
 
-typedef					INHERIT	(	SDL,
-									Window,
-									int				posX;
-									int				posY;
-									int				width;
-									int				height;
-									long			flags;	)			Window_t;
+
+typedef	INHERIT	(	SDL,	Window,		sdl,	int			posX;
+												int			posY;
+												int			width;
+												int			height;
+												long		flags;	)	Window_t;
 
 
 //////////////////////////////////////////////////////////////////////////////////
 //								TEXTURE:										//
 //////////////////////////////////////////////////////////////////////////////////
 
-typedef					INHERIT (	SDL,
-									Texture,
-									int				width;
-									int				height;
-									int				pitch;
-									Format_type_t	format_type;	)	Texture_t;
+
+typedef	INHERIT (	SDL,	Texture,	sdl,	int				width;
+												int				height;
+												int				pitch;
+												Format_type_t	format_type;	)	Texture_t;
 
 
 
-typedef					INHERIT (	SDL,
-									Renderer,
-									Color_buffer_t			*buffer;
-									Texture_t				*texture;
-									Window_t				*window;
-									Choreographer_t			*c_grapher;
-									ARRAY ( Triangle2d_t )	*triangles_to_draw;
-									Mesh_t					*mesh;
-									Point2d_t				*origin;	)	Renderer_t;
+typedef	INHERIT (	SDL,	Renderer,	sdl,	Color_buffer_t			*buffer;
+												Texture_t				*texture;
+												Window_t				*window;
+												Choreographer_t			*c_grapher;
+												arr ( Triangle2d_t )	*triangles_to_draw;
+												Mesh_t					*mesh;
+												Point2d_t				*origin;	)	Renderer_t;
 
 
 
@@ -64,40 +58,42 @@ typedef					INHERIT (	SDL,
 /* Beginning of function declarations */
 
 
-HOWTO_CONSTRUCT				(	Window_t,
-								self,
-								void				*null
-							);
+HOWTO_INIT									(	Window_t,
+												self,
+												void			*null
+											);
 
 
-HOWTO_DESTRUCT				(	Window_t,			self	);
+HOWTO_FINI									(	Window_t,		self	);
 
 
-HOWTO_CONSTRUCT				(	Renderer_t,
-								self,
-								Window_t			*window
-							);
+HOWTO_INIT									(	Renderer_t,
+												self,
+												Window_t		*window
+											);
 
 
-HOWTO_DESTRUCT				(	Renderer_t,			self	);
+HOWTO_FINI									(	Renderer_t,		self	);
 
 
 
-HOWTO_CONSTRUCT				(	Texture_t,
-								self,
-								Renderer_t*			r,
-								int					w,
-								int					h,
-								Format_type_t		f_t
-							);
+HOWTO_INIT									(	Texture_t,
+												self,
+												Renderer_t		*r,
+												int				w,
+												int				h,
+												Format_type_t	f_t
+											);
 
-HOWTO_DESTRUCT				(	Texture_t,			self	);
+HOWTO_FINI									(	Texture_t,	self	);
 
-HOWTO_CONSTRUCT				(	Choreographer_t,
-								self,
-								void				*null
-							);
+HOWTO_INIT									(	Choreographer_t,
+												self,
+												void			*null
+											);
+
+HOWTO_FINI									(	Choreographer_t,	self	);
 
 bool
-render_color_buffer			(	Renderer_t*			renderer	);
+render_color_buffer							(	Renderer_t*		renderer	);
 

@@ -2,32 +2,61 @@
  *	SPDX-License-Identifier: MIT
  */
 
-#include "array.h"
-#include "line.h"
-#include "mesh.h"
 #include "triangle.h"
-#include "util.h"
+#include "line.h"
 
 
+
+ /////////////////////////////////////////////////////////////////////////////////
+ //						Memory Ops Implementation
+ //////////////////////////////////////////////////////////////////////////////////
 
 
 HOWTO_DEF						(	Triangle2d_t,	self	)
 {
 
+	Point2d_t						*p1		=	NULL,
+									*p2		=	NULL,
+									*p3		=	NULL;
+
+
 	DEF							(	Point2d_t,
-									self->p1
+									p1
 								);
 
 	DEF							(	Point2d_t,
-									self->p2
+									p2
 								);
 
 	DEF							(	Point2d_t,
-									self->p3
+									p3
 								);
+
+	NEW							(	Triangle2d_t,
+									self,
+									p1,
+									p2,
+									p3
+								);
+
+
+	DEL							(	Point2d_t,
+									p1
+								);
+
+	DEL							(	Point2d_t,
+									p2
+								);
+
+	DEL							(	Point2d_t,
+									p3
+								);
+
+	RET							(	self	);
 }
 
-HOWTO_CONSTRUCT					(	Triangle2d_t,
+
+HOWTO_INIT						(	Triangle2d_t,
 									self,
 									Point2d_t		*p1,
 									Point2d_t		*p2,
@@ -35,55 +64,82 @@ HOWTO_CONSTRUCT					(	Triangle2d_t,
 								)
 {
 
-	CPY							(	Point2d_t,
-									self->p1,
-									p1
+	MCPY						(	Point2d_t,
+									( self )->p1,
+									( p1 )
 								);
 
-	CPY							(	Point2d_t,
-									self->p2,
-									p2
+	MCPY						(	Point2d_t,
+									( self )->p2,
+									( p2 )
 								);
 
-	CPY							(	Point2d_t,
-									self->p3,
-									p3
+	MCPY						(	Point2d_t,
+									( self )->p3,
+									( p3 )
 								);
 }
 
-HOWTO_DESTRUCT					(	Triangle2d_t,	self	)
+
+HOWTO_FINI						(	Triangle2d_t,	self	)
 {
 
 	DEL							(	Point2d_t,
-									self->p1
+									( self )->p1
 								);
 
 	DEL							(	Point2d_t,
-									self->p2
+									( self )->p2
 								);
 
 	DEL							(	Point2d_t,
-									self->p3
+									( self )->p3
 								);
 }
+
 
 HOWTO_DEF						(	Triangle3d_t,	self	)
 {
+	Point3d_t						*p1		=	NULL,
+									*p2		=	NULL,
+									*p3		=	NULL;
+
 
 	DEF							(	Point3d_t,
-									self->p1
+									p1
 								);
 
 	DEF							(	Point3d_t,
-									self->p2
+									p2
 								);
 
 	DEF							(	Point3d_t,
-									self->p3
+									p3
 								);
+
+	NEW							(	Triangle3d_t,
+									self,
+									p1,		p2,		p3
+								);
+
+
+	DEL							(	Point3d_t,
+									p1
+								);
+
+	DEL							(	Point3d_t,
+									p2
+								);
+
+	DEL							(	Point3d_t,
+									p3
+								);
+
+	RET							(	self	);
 }
 
-HOWTO_CONSTRUCT					(	Triangle3d_t,
+
+HOWTO_INIT						(	Triangle3d_t,
 									self,
 									Point3d_t		*p1,
 									Point3d_t		*p2,
@@ -91,298 +147,275 @@ HOWTO_CONSTRUCT					(	Triangle3d_t,
 								)
 {
 
-	CPY							(	Point3d_t,
-									self->p1,
-									p1
+	MCPY						(	Point3d_t,
+									( self )->p1,
+									( p1 )
 								);
 
-	CPY							(	Point3d_t,
-									self->p2,
-									p2
+	MCPY						(	Point3d_t,
+									( self )->p2,
+									( p2 )
 								);
 
-	CPY							(	Point3d_t,
-									self->p3,
-									p3
+	MCPY						(	Point3d_t,
+									( self )->p3,
+									( p3 )
 								);
-
 }
 
-HOWTO_DESTRUCT					(	Triangle3d_t,	self	)
+HOWTO_FINI						(	Triangle3d_t,	self	)
 {
 
 	DEL							(	Point3d_t,
-									self->p1
+									( self )->p1
 								);
 
 	DEL							(	Point3d_t,
-									self->p2
+									( self )->p2
 								);
 
 	DEL							(	Point3d_t,
-									self->p3
+									( self )->p3
 								);
-}
-
-HOWTO_DEF						(	ARRAY	(	Triangle2d_t	),	self	)
-{
-
-	DEF							(	ARRAY	(	Point2d_t	),
-									self->p1
-								);
-
-	DEF							(	ARRAY	(	Point2d_t	),
-									self->p2
-								);
-
-	DEF							(	ARRAY	(	Point2d_t	),
-									self->p3
-								);
-
-	self->count					=	0;
-}
-
-
-HOWTO_DEF						(	ARRAY	(	Triangle3d_t	),	self	)
-{
-
-	DEF							(	ARRAY	(	Point3d_t	),
-									self->p1
-								);
-
-	DEF							(	ARRAY	(	Point3d_t	),
-									self->p2
-								);
-
-	DEF							(	ARRAY	(	Point3d_t	),
-									self->p3
-								);
-
-	self->count					=	0;
-}
-
-
-
-
-HOWTO_DESTRUCT					(	ARRAY	( Face_t	),		self	)
-{
-
-	DEL							(	ARRAY	(	int		),
-									self->idx1
-								);
-
-	DEL							(	ARRAY	(	int		),
-									self->idx2
-								);
-
-	DEL							(	ARRAY	(	int		),
-									self->idx3
-								);
-
-	self->count					=	0;
-}
-
-HOWTO_DESTRUCT					(	ARRAY	(	Triangle2d_t	),	self	)
-{
-
-	DEL							(	ARRAY	(	Point2d_t	),
-									self->p1
-								);
-
-	DEL							(	ARRAY	(	Point2d_t	),
-									self->p2
-								);
-
-	DEL							(	ARRAY	(	Point2d_t	),
-									self->p3
-								);
-
-	self->count				=	0;
-}
-
-HOWTO_DESTRUCT					(	ARRAY	(	Triangle3d_t	),	self	)
-{
-	DEL							(	ARRAY	(	Point3d_t	),
-									self->p1
-								);
-
-	DEL							(	ARRAY	(	Point3d_t	),
-									self->p2
-								);
-
-	DEL							(	ARRAY	(	Point3d_t	),
-									self->p3
-								);
-
-	self->count					=	0;
-}
-
-
-
-
-HOWTO_LD						(	Triangle2d_t,	ptr,	arr,	idx	)
-{
-
-	LD							(	Point2d_t,
-									ptr->p1,
-									arr->p1,
-									idx
-								);
-
-	LD							(	Point2d_t,
-									ptr->p2,
-									arr->p2,
-									idx
-								);
-
-	LD							(	Point2d_t,
-									ptr->p3,
-									arr->p3,
-									idx
-								);
-}
-
-HOWTO_LD						(	Triangle3d_t,	ptr,	arr,	idx	)
-{
-
-	LD							(	Point3d_t,
-									ptr->p1,
-									arr->p1,
-									idx
-								);
-
-	LD							(	Point3d_t,
-									ptr->p2,
-									arr->p2,
-									idx
-								);
-
-	LD							(	Point3d_t,
-									ptr->p3,
-									arr->p3,
-									idx
-								);
-}
-
-
-HOWTO_STR						(	Triangle2d_t,	ptr,	arr,	idx	)
-{
-	STR							(	Point2d_t,
-									ptr->p1,
-									arr->p1,
-									idx
-								);
-
-	STR							(	Point2d_t,
-									ptr->p2,
-									arr->p2,
-									idx
-								);
-
-	STR							(	Point2d_t,
-									ptr->p3,
-									arr->p3,
-									idx
-								);
-}
-
-HOWTO_STR						(	Triangle3d_t,	ptr,	arr,	idx	)
-{
-	STR							(	Point3d_t,
-									ptr->p1,
-									arr->p1,
-									idx
-								);
-
-	STR							(	Point3d_t,
-									ptr->p2,
-									arr->p2,
-									idx
-								);
-
-	STR							(	Point3d_t,
-									ptr->p3,
-									arr->p3,
-									idx
-								);
-}
-
-
-HOWTO_PUSH						(	Triangle2d_t,	ptr,	arr		)
-{
-	PUSH						(	Point2d_t,
-									ptr->p1,
-									arr->p1
-								);
-
-	PUSH						(	Point2d_t,
-									ptr->p2,
-									arr->p2
-								);
-
-	PUSH						(	Point2d_t,
-									ptr->p3,
-									arr->p3
-								);
-}
-
-HOWTO_PUSH						(	Triangle3d_t,	ptr,	arr		)
-{
-	PUSH						(	Point3d_t,
-									ptr->p1,
-									arr->p1
-								);
-
-	PUSH						(	Point3d_t,
-									ptr->p2,
-									arr->p2
-								);
-
-	PUSH						(	Point3d_t,
-									ptr->p3,
-									arr->p3
-								);
-
 }
 
 
 HOWTO_CPY						(	Triangle2d_t,	to,	from	)
 {
-	CPY							(	Point2d_t,
-									to->p1,
-									from->p1
+
+	MCPY						(	Point2d_t,
+									( to )->p1,
+									( from )->p1
 								);
 
-	CPY							(	Point2d_t,
-									to->p2,
-									from->p2
+	MCPY						(	Point2d_t,
+									( to )->p2,
+									( from )->p2
 								);
 
-	CPY							(	Point2d_t,
-									to->p3,
-									from->p3
+	MCPY						(	Point2d_t,
+									( to )->p3,
+									( from )->p3
 								);
 }
 
 HOWTO_CPY						(	Triangle3d_t,	to,	from	)
 {
-	CPY							(	Point3d_t,
-									to->p1,
-									from->p1
+
+	MCPY						(	Point3d_t,
+									( to )->p1,
+									( from )->p1
 								);
 
-	CPY							(	Point3d_t,
-									to->p2,
-									from->p2
+	MCPY						(	Point3d_t,
+									( to )->p2,
+									( from )->p2
 								);
 
-	CPY							(	Point3d_t,
-									to->p3,
-									from->p3
+	MCPY						(	Point3d_t,
+									( to )->p3,
+									( from )->p3
 								);
 }
 
 
+/////////////////////////////////////////////////////////////////////////////////
+//						Iterator Ops Implementation
+//////////////////////////////////////////////////////////////////////////////////
+
+
+HOWTO_INIT						(	itr ( Triangle2d_t ),
+									self,
+									const Triangle2d_t		*ptr,
+									unsigned int			pos,
+									IterType_t				typ
+								)
+{
+	INITITR						(	Triangle2d_t,
+									self,
+									ptr,
+									pos,
+									typ	
+								);
+}
+
+HOWTO_INIT						(	itr ( Triangle3d_t ),
+									self,
+									const Triangle3d_t		*ptr,
+									unsigned int			pos,
+									IterType_t				typ
+								)
+{
+	INITITR						(	Triangle3d_t,
+									self,
+									ptr,
+									pos,
+									typ
+								);
+}
+
+
+HOWTO_FINI						(	itr ( Triangle2d_t ),	self	)
+{
+	FINIITR						(	Triangle2d_t,
+									( self )
+								);
+}
+
+HOWTO_FINI						(	itr ( Triangle3d_t ),	self	)
+{
+	FINIITR						(	Triangle3d_t,
+									( self )
+								);
+}
+
+
+HOWTO_DEF						(	itr ( Triangle2d_t ),	self	)
+{
+	NEW							(	itr ( Triangle2d_t ),
+									( self ),
+									( NULL ),
+									( 0 ),
+									( MAX_ITER )
+								);
+
+	RET							(	self	);
+}
+
+HOWTO_DEF						(	itr ( Triangle3d_t ),	self	)
+{
+	NEW							(	itr ( Triangle3d_t ),
+									self,
+									NULL,
+									0,
+									MAX_ITER
+								);
+
+	RET							(	self	);
+}
+
+
+HOWTO_CMP						(	itr ( Triangle2d_t ),	it1,	it2		)
+{
+	CMPITR						(	Triangle2d_t,
+									( it1 ),
+									( it2 )
+								);
+}
+
+HOWTO_CMP						(	itr ( Triangle3d_t ),	it1,	it2		)
+{
+	CMPITR						(	Triangle3d_t,
+									( it1 ),
+									( it2 )
+								);
+}
+
+
+HOWTO_INC						(	itr ( Triangle2d_t ),	self		)
+{
+	INCITR						(	Triangle2d_t,
+									( self )
+								);
+}
+
+HOWTO_INC						(	itr ( Triangle3d_t ),	self		)
+{
+	INCITR						(	Triangle3d_t,
+									( self )
+								);
+}
+
+
+HOWTO_DEC						(	itr ( Triangle2d_t ),	self		)
+{
+	DECITR						(	Triangle2d_t,
+									( self )
+								);
+}
+
+HOWTO_DEC						(	itr ( Triangle3d_t ),	self		)
+{
+	DECITR						(	Triangle3d_t,
+									( self )
+								);
+}
+
+
+/////////////////////////////////////////////////////////////////////////////////
+//						Dynamic array Ops Implementation
+/////////////////////////////////////////////////////////////////////////////////
+
+
+HOWTO_INIT						(	arr ( Triangle2d_t ),
+									self,
+									const Triangle2d_t		*init_list,
+									unsigned int			count
+								)
+{
+	INITARR						(	Triangle2d_t,
+									self,
+									init_list,
+									count
+								);
+}
+
+HOWTO_INIT						(	arr ( Triangle3d_t ),
+									self,
+									const Triangle3d_t		*init_list,
+									unsigned int			count
+								)
+{
+	INITARR						(	Triangle3d_t,
+									self,
+									init_list,
+									count
+								);
+}
+
+
+HOWTO_DEF						(	arr	( Triangle2d_t ),	self	)
+{
+	NEW							(	arr ( Triangle2d_t ),
+									( self ),
+									( NULL ),
+									( 0 )
+								);
+
+	RET							(	self	);
+}
+
+
+HOWTO_DEF						(	arr ( Triangle3d_t ),	self	)
+{
+	NEW							(	arr ( Triangle3d_t ),
+									( self ),
+									( NULL ),
+									( 0 )
+								);
+
+	RET							(	self	);
+}
+
+
+HOWTO_FINI						(	arr ( Triangle2d_t ),	self	)
+{
+	FINIARR						(	Triangle2d_t,
+									( self )
+								);
+}
+
+HOWTO_FINI						(	arr	( Triangle3d_t ),	self	)
+{
+	FINIARR						(	Triangle3d_t,
+									( self )
+								);
+}
+
+
+/////////////////////////////////////////////////////////////////////////////////
+//						Dynamic array Ops Implementation
+/////////////////////////////////////////////////////////////////////////////////
 
 
 HOWTO_ROT						(	Triangle2d_t,
@@ -397,19 +430,20 @@ HOWTO_ROT						(	Triangle3d_t,
 									Vec3_t			*angle
 								)
 {
+
 	ROT							(	Point3d_t,
-									self->p1,
-									angle
+									( self )->p1,
+									( angle )
 								);
 
 	ROT							(	Point3d_t,
-									self->p2,
-									angle
+									( self )->p2,
+									( angle )
 								);
 
 	ROT							(	Point3d_t,
-									self->p3,
-									angle
+									( self )->p3,
+									( angle )
 								);
 }
 
@@ -423,26 +457,28 @@ HOWTO_DRAW						(	Triangle2d_t,
 									Color_buffer_t		*colorbuf
 								)
 {
-	Line_t							*line1	=	NULL,
-									*line2	=	NULL,
-									*line3	=	NULL;
+
+	Line_t							*line1		=	NULL,
+									*line2		=	NULL,
+									*line3		=	NULL;
+
 
 	NEW							(	Line_t,
-									line1,
-									self->p2,
-									self->p1
+									( line1 ),
+									( self )->p2,
+									( self )->p1
 								);
 
 	NEW							(	Line_t,
-									line2,
-									self->p3,
-									self->p2
+									( line2 ),
+									( self )->p3,
+									( self )->p2
 								);
 
 	NEW							(	Line_t,
-									line3,
-									self->p1,
-									self->p3
+									( line3 ),
+									( self )->p1,
+									( self )->p3
 								);
 
 	//	Draw the edges
@@ -471,25 +507,32 @@ HOWTO_DRAW						(	Triangle2d_t,
 	//	Draw the vertices
 
 	DRAW						(	Point2d_t,
-									self->p1,
+									( self )->p1,
 									origin,
 									color,
 									colorbuf
 								);
 
 	DRAW						(	Point2d_t,
-									self->p2,
+									( self )->p2,
 									origin,
 									color,
 									colorbuf
 								);
 
 	DRAW						(	Point2d_t,
-									self->p3,
+									( self )->p3,
 									origin,
 									color,
 									colorbuf
 								);
+
+	//FILL						(	Triangle2d_t,
+	//								self,
+	//								origin,
+	//								color,
+	//								colorbuf
+	//							);
 
 	DEL							(	Line_t,
 									line1
@@ -502,7 +545,6 @@ HOWTO_DRAW						(	Triangle2d_t,
 	DEL							(	Line_t,
 									line3
 								);
-
 }
 
 HOWTO_DRAW						(	Triangle3d_t,
@@ -512,6 +554,7 @@ HOWTO_DRAW						(	Triangle3d_t,
 									Color_buffer_t		*colorbuf
 								)
 {
+
 	Triangle2d_t					*proj	=	NULL;
 
 	DEF							(	Triangle2d_t,
@@ -543,23 +586,133 @@ HOWTO_PROJ						(	Triangle2d_t,		Triangle3d_t,
 									Projection_type_t	type
 								)
 {
+
 	PROJ						(	Point2d_t,			Point3d_t,
-									to->p1,				from->p1,
+									( to )->p1,			( from )->p1,
 									type
 								);
 
 	PROJ						(	Point2d_t,			Point3d_t,
-									to->p2,				from->p2,
+									( to )->p2,			( from )->p2,
 									type
 								);
 
 	PROJ						(	Point2d_t,			Point3d_t,
-									to->p3,				from->p3,
+									( to )->p3,			( from )->p3,
 									type
 								);
 }
 
 
+HOWTO_FILL						(	Triangle2d_t,
+									self,
+									Point2d_t			*origin,
+									Color_t				*color,
+									Color_buffer_t		*colorbuf
+								)
+{
+
+	Triangle2d_t					*top		=		NULL,
+									*bot		=		NULL;
+
+	Point2d_t						*slope1		=		NULL,
+									*slope2		=		NULL;
+
+	Line_t							*edge1		=		NULL,
+									*edge2		=		NULL;
+
+	float							x_start		=		0,
+									x_end		=		0;
+
+	float							y_start		=		0,
+									y_end		=		0;
+
+	float							x_inc1		=		0,
+									x_inc2		=		0;
+
+	float							y_inc1		=		0,
+									y_inc2		=		0;
+
+	float							origin_x	=		0,
+									origin_y	=		0;
+
+
+	DEF							(	Triangle2d_t,
+									top
+								);
+
+	DEF							(	Triangle2d_t,
+									bot
+								);
+
+	DEF							(	Point2d_t,
+									slope1
+								);
+
+	DEF							(	Point2d_t,
+									slope2
+								);
+
+	REQ							(	Triangle2d_t,
+									get_flat_top_bottom,
+									self,
+									top,
+									bot
+								);
+
+	NEW							(	Line_t,
+									edge1,
+									( top )->p1,
+									( top )->p2
+								);
+
+	NEW							(	Line_t,
+									edge2,
+									( top )->p1,
+									( top )->p3
+								);
+
+	REQ							(	Line_t,
+									get_slope,
+									edge1,
+									slope1
+								);
+
+	REQ							(	Line_t,
+									get_slope,
+									edge2,
+									slope2
+								);
+
+	y_start						=	( top )->p1->v->y;
+	y_end						=	( top )->p2->v->y;
+
+	x_start						=	( top )->p1->v->x;
+	x_end						=	( top )->p1->v->x;
+
+	x_inc1						=	( slope1 )->v->x;
+	x_inc2						=	( slope2 )->v->x;
+
+	origin_x					=	( origin )->v->x;
+	origin_y					=	( origin )->v->y;
+
+
+	_FILL						(	x_start,		x_end,
+									y_start,		y_end,
+									x_inc1,			x_inc2,
+									y_inc1,			y_inc2,
+									origin_x,		origin_y,
+									color,			colorbuf
+								);
+}
+
+
+
+
+
+
+//////////////////////////////////////////////////////////////////////////////
+//							SURFACE NORMAL:
 //////////////////////////////////////////////////////////////////////////////
 //
 //
@@ -570,10 +723,10 @@ HOWTO_PROJ						(	Triangle2d_t,		Triangle3d_t,
 // 
 //
 //															p3
-//								     ^ 						+
-//									  \				"	+
-//									N  \	"		+
-//									"   \		+
+//								      	^					+
+//									  	:			"	+
+//									  N :	"		+
+//									"   :		+
 //							"				+
 //				+	+	+	+	+	+	+
 //				p1						p2	
@@ -624,20 +777,29 @@ METHOD							(	Triangle3d_t,
 	Point3d_t						*p12	=	NULL,
 									*p13	=	NULL;
 
+
+	DEF							(	Point3d_t,
+									p12
+								);
+
+	DEF							(	Point3d_t,
+									p13
+								);
+
 	//	p12 is the point vector from p1 to p2
 
 	SUB							(	Point3d_t,
-									p12,
-									self->p2,
-									self->p1
+									( p12 ),
+									( self )->p2,
+									( self )->p1
 								);
 
 	//	p13 is the point vector from p1 to p3
 
 	SUB							(	Point3d_t,
-									p13,
-									self->p3,
-									self->p1
+									( p13 ),
+									( self )->p3,
+									( self )->p1
 								);
 
 	//////////////////////////////////////////////////////////////////////////////
@@ -674,6 +836,8 @@ METHOD							(	Triangle3d_t,
 	//NORM							(	Point3d_t,
 	//									normal
 	//								);
+
+	RET							(	self	);
 }
 
 
@@ -779,7 +943,7 @@ METHOD							(	Triangle3d_t,
 METHOD							(	Triangle3d_t,
 									is_back_facing,
 									self,
-									bool				*out
+									bool		*out
 								)
 {
 	assert						(	out	);
@@ -792,6 +956,10 @@ METHOD							(	Triangle3d_t,
 
 	DEF							(	Point3d_t,
 									normal
+								);
+
+	DEF							(	Point3d_t,
+									ray
 								);
 
 	DEF							(	float,
@@ -814,7 +982,7 @@ METHOD							(	Triangle3d_t,
 	SUB							(	Point3d_t,
 									ray,
 									cam,
-									self->p1
+									( self )->p1
 								);
 
 	assert						(	ray		);
@@ -835,8 +1003,14 @@ METHOD							(	Triangle3d_t,
 								);
 
 	DEL							(	Point3d_t,
+									ray
+								);
+
+	DEL							(	Point3d_t,
 									normal
 								);
+
+	RET							(	self	);
 }
 
 
@@ -847,6 +1021,7 @@ METHOD							(	Triangle2d_t,
 									Triangle2d_t	*out_bot
 								)
 {
+
 	assert						(	out_top		);
 	assert						(	out_bot		);
 
@@ -854,32 +1029,35 @@ METHOD							(	Triangle2d_t,
 
 	//	Sort triangles based on increasing y co-ordinate
 
-	if							(	*self->p1->v->y > *self->p2->v->y	)
+	if							(	( self )->p1->v->y > ( self )->p2->v->y	)
 	{
+
 		SWP						(	Point2d_t,
-									self->p1,
-									self->p2
+									( self )->p1,
+									( self )->p2
 								);
 	}
 
-	if							(	*self->p2->v->y > *self->p3->v->y	)
+	if							(	( self )->p2->v->y > ( self )->p3->v->y	)
 	{
+
 		SWP						(	Point2d_t,
-									self->p2,
-									self->p3
+									( self )->p2,
+									( self )->p3
 								);
 	}
 
-	if							(	*self->p1->v->y > *self->p2->v->y	)
+	if							(	( self )->p1->v->y > ( self )->p2->v->y	)
 	{
+
 		SWP						(	Point2d_t,
-									self->p1,
-									self->p2
+									( self )->p1,
+									( self )->p2
 								);
 	}
 
-	assert						(	*self->p1->v->y <= *self->p2->v->y	);
-	assert						(	*self->p2->v->y <= *self->p3->v->y	);
+	assert						(	( self )->p1->v->y <= ( self )->p2->v->y	);
+	assert						(	( self )->p2->v->y <= ( self )->p3->v->y	);
 
 
 
@@ -941,15 +1119,15 @@ METHOD							(	Triangle2d_t,
 	float							midx	=	0.0f,
 									midy	=	0.0f;
 
-	float							x1	=	*self->p1->v->x,
-									y1	=	*self->p1->v->y;
+	float							x1	=	( self )->p1->v->x,
+									y1	=	( self )->p1->v->y;
 
 
-	float							x2	=	*self->p2->v->x,
-									y2	=	*self->p2->v->y;
+	float							x2	=	( self )->p2->v->x,
+									y2	=	( self )->p2->v->y;
 
-	float							x3	=	*self->p3->v->x,
-									y3	=	*self->p3->v->y;
+	float							x3	=	( self )->p3->v->x,
+									y3	=	( self )->p3->v->y;
 
 	midy						=	y1;
 
@@ -970,16 +1148,16 @@ METHOD							(	Triangle2d_t,
 
 	NEW							(	Triangle2d_t,
 									top,
-									self->p1,
-									self->p2,
-									midp
+									( self )->p1,
+									( self )->p2,
+									( midp )
 								);
 
 	NEW							(	Triangle2d_t,
 									bot,
-									self->p2,
-									midp,
-									self->p3
+									( self )->p2,
+									( midp ),
+									( self )->p3
 								);
 
 	CPY							(	Triangle2d_t,
@@ -999,4 +1177,6 @@ METHOD							(	Triangle2d_t,
 	DEL							(	Triangle2d_t,
 									bot
 								);
+
+	RET							(	self	);
 }

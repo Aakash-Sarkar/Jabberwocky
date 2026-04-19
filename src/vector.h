@@ -18,43 +18,36 @@
 
 
 typedef
-struct							Vec2	{	float		*x;
-											float		*y;
+struct							Vec2	{	float		x;
+											float		y;
 										}						Vec2_t;
 
 typedef	
-struct							Vec3	{	float		*x;
-											float		*y;
-											float		*z;
+struct							Vec3	{	float		x;
+											float		y;
+											float		z;
 										}						Vec3_t;
 
 typedef
-struct							Vec4	{	float		*x;
-											float		*y;
-											float		*z;
-											float		*w;
+struct							Vec4	{	float		x;
+											float		y;
+											float		z;
+											float		w;
 										}						Vec4_t;
 
 
 
+DECL_ITER					(	Vec2_t	);
 
-DECL_ARRAY					(	Vec2_t,
-								ARRAY	(	float	)	*x;
-								ARRAY	(	float	)	*y;
-							);
+DECL_ARRAY					(	Vec2_t	);
 
-DECL_ARRAY					(	Vec3_t,
-								ARRAY	(	float	)	*x;
-								ARRAY	(	float	)	*y;
-								ARRAY	(	float	)	*z;
-							);
+DECL_ITER					(	Vec3_t	);
 
-DECL_ARRAY					(	Vec4_t,
-								ARRAY	(	float	)	*x;
-								ARRAY	(	float	)	*y;
-								ARRAY	(	float	)	*z;
-								ARRAY	(	float	)	*w;
-							);
+DECL_ARRAY					(	Vec3_t	);
+
+DECL_ITER					(	Vec4_t	);
+
+DECL_ARRAY					(	Vec4_t	);
 
 
 
@@ -116,22 +109,24 @@ typedef					enum	Projection_type	{	ORTHOGRAPHIC = 0,
 
 HOWTO_DEF							(	Vec2_t,		self	);
 
-HOWTO_CONSTRUCT						(	Vec2_t,
+HOWTO_INIT							(	Vec2_t,
 										self,
 										float		x,
-										float		y		);
+										float		y
+									);
 
-HOWTO_DESTRUCT						(	Vec2_t,		self	);
+HOWTO_FINI							(	Vec2_t,		self	);
 
 HOWTO_DEF							(	Vec3_t,		self	);
 
-HOWTO_CONSTRUCT						(	Vec3_t,
+HOWTO_INIT							(	Vec3_t,
 										self,
 										float		x,
 										float		y,
-										float		z		);
+										float		z
+									);
 
-HOWTO_DESTRUCT						(	Vec3_t,		self	);
+HOWTO_FINI							(	Vec3_t,		self	);
 
 
 HOWTO_CPY							(	Vec2_t,		to,	from	);
@@ -144,29 +139,73 @@ HOWTO_CPY							(	Vec3_t,		to,	from	);
 /////////////////////////////////////////////////////////////////////////////////
 
 
-HOWTO_DEF							(	ARRAY	( Vec2_t ),		self	);
-
-HOWTO_DEF							(	ARRAY	( Vec3_t ),		self	);
-
-
-HOWTO_DESTRUCT						(	ARRAY	( Vec2_t ),		self	);
-
-HOWTO_DESTRUCT						(	ARRAY	( Vec3_t ),		self	);
+HOWTO_INIT							(	itr ( Vec2_t ),
+										self,
+										const Vec2_t		*ptr,
+	                                    unsigned int		pos,
+                                        IterType_t			typ
+									);
 
 
-HOWTO_LD							(	Vec2_t,	ptr,	arr,	idx	);
+HOWTO_INIT							(	itr ( Vec3_t ),
+										self,
+										const Vec3_t		*ptr,
+                                        unsigned int		pos,
+                                        IterType_t			typ
+									);
 
-HOWTO_LD							(	Vec3_t,	ptr,	arr,	idx	);
+HOWTO_DEF							(	itr ( Vec2_t ),		self	);
+
+HOWTO_DEF							(	itr ( Vec3_t ),		self	);
 
 
-HOWTO_STR							(	Vec2_t,	ptr,	arr,	idx	);
+HOWTO_FINI							(	itr ( Vec2_t ),		self	);
 
-HOWTO_STR							(	Vec3_t,	ptr,	arr,	idx	);
+HOWTO_FINI							(	itr ( Vec3_t ),		self	);
 
 
-HOWTO_PUSH							(	Vec2_t,	ptr,	arr		);
+HOWTO_CMP							(	itr ( Vec2_t ),		itr1,	itr2	);
 
-HOWTO_PUSH							(	Vec3_t,	ptr,	arr		);
+HOWTO_CMP							(	itr ( Vec3_t ),		itr1,	itr2	);
+
+
+HOWTO_INC							(	itr ( Vec2_t ),		self	);
+
+HOWTO_INC							(	itr ( Vec3_t ),		self	);
+
+
+HOWTO_DEC							(	itr ( Vec2_t ),		self	);
+
+HOWTO_DEC							(	itr ( Vec3_t ),		self	);
+
+
+/////////////////////////////////////////////////////////////////////////////////
+//						Dynamic Array Operations
+/////////////////////////////////////////////////////////////////////////////////
+
+
+HOWTO_INIT							(	arr ( Vec2_t ),
+										self,
+										const Vec2_t		*init_list,
+										unsigned int		count
+									);
+
+HOWTO_INIT							(	arr ( Vec3_t ),
+										self,
+										const Vec3_t		*init_list,
+										unsigned int		count
+									);
+
+
+HOWTO_DEF							(	arr ( Vec2_t ),		self	);
+
+HOWTO_DEF							(	arr ( Vec3_t ),		self	);
+
+
+HOWTO_FINI							(	arr ( Vec2_t ),		self	);
+
+HOWTO_FINI							(	arr ( Vec3_t ),		self	);
+
 
 
 /////////////////////////////////////////////////////////////////////////////////
@@ -176,12 +215,12 @@ HOWTO_PUSH							(	Vec3_t,	ptr,	arr		);
 
 HOWTO_ROT							(	Vec3_t,
 										self,
-										Vec3_t*				angle
+										Vec3_t				*angle
 									);
 
 HOWTO_PROJ							(	Vec2_t,				Vec3_t,
-										to,					from,
-										Projection_type_t	type
+										to,					frm,
+										Projection_type_t	typ
 									);
 
 
@@ -199,14 +238,14 @@ HOWTO_SUB							(	Vec2_t,	dst,	op1,	op2		);
 HOWTO_SUB							(	Vec3_t,	dst,	op1,	op2		);
 
 
-HOWTO_MUL							(	Vec2_t,	dst,	src,	factor	);
+HOWTO_MUL							(	Vec2_t,	dst,	src,	fac	);
 
-HOWTO_MUL							(	Vec3_t,	dst,	src,	factor	);
+HOWTO_MUL							(	Vec3_t,	dst,	src,	fac	);
 
 
-HOWTO_DIV							(	Vec2_t,	dst,	src,	factor	);
+HOWTO_DIV							(	Vec2_t,	dst,	src,	fac	);
 
-HOWTO_DIV							(	Vec3_t,	dst,	src,	factor	);
+HOWTO_DIV							(	Vec3_t,	dst,	src,	fac	);
 
 
 HOWTO_DOTP							(	Vec2_t, dst,	src1,	src2	);
@@ -220,5 +259,5 @@ HOWTO_CROSP							(	Vec3_t,	dst,	src1,	src2	);
 METHOD								(	Vec2_t,
 										get_max_abs_x_y,
 										self,
-										float		*out
+										float			*out
 									);

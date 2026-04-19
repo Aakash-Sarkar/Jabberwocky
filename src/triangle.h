@@ -75,31 +75,26 @@
 
 
 typedef
-struct	Triangle3d			{	Point3d_t	*p1;
-								Point3d_t	*p2;
-								Point3d_t	*p3;
-							}							Triangle3d_t;
+struct	Triangle3d				{	Point3d_t				*p1;
+									Point3d_t				*p2;
+									Point3d_t				*p3;
+								}							Triangle3d_t;
 
 
 typedef
-struct	Triangle2d			{	Point2d_t	*p1;
-								Point2d_t	*p2;
-								Point2d_t	*p3;
-							}							Triangle2d_t;
+struct	Triangle2d				{	Point2d_t				*p1;
+									Point2d_t				*p2;
+									Point2d_t				*p3;
+								}							Triangle2d_t;
 
 
+DECL_ITER						(	Triangle2d_t	);
 
-DECL_ARRAY					(	Triangle2d_t,
-								ARRAY	(	Point2d_t	)		*p1;
-								ARRAY	(	Point2d_t	)		*p2;
-								ARRAY	(	Point2d_t	)		*p3;
-							);
+DECL_ARRAY						(	Triangle2d_t	);
 
-DECL_ARRAY					(	Triangle3d_t,
-								ARRAY	(	Point3d_t	)		*p1;
-								ARRAY	(	Point3d_t	)		*p2;
-								ARRAY	(	Point3d_t	)		*p3;
-							);
+DECL_ITER						(	Triangle3d_t	);
+
+DECL_ARRAY						(	Triangle3d_t	);
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -107,31 +102,78 @@ DECL_ARRAY					(	Triangle3d_t,
 ////////////////////////////////////////////////////////////////////////////////
 
 
-HOWTO_DEF						(	Triangle2d_t,	self	);
+HOWTO_DEF						(	Triangle2d_t,			self	);
 
-HOWTO_CONSTRUCT					(	Triangle2d_t,
+HOWTO_INIT						(	Triangle2d_t,
 									self,
-									Point2d_t		*p1,
-									Point2d_t		*p2,
-									Point2d_t		*p3		);
+									Point2d_t				*p1,
+									Point2d_t				*p2,
+									Point2d_t				*p3
+								);
 
-HOWTO_DESTRUCT					(	Triangle2d_t,	self	);
+HOWTO_FINI						(	Triangle2d_t,			self	);
 
 
-HOWTO_DEF						(	Triangle3d_t,	self	);
+HOWTO_DEF						(	Triangle3d_t,			self	);
 
-HOWTO_CONSTRUCT					(	Triangle3d_t,
+HOWTO_INIT						(	Triangle3d_t,
 									self,
-									Point3d_t		*p1,
-									Point3d_t		*p2,
-									Point3d_t		*p3		);
+									Point3d_t				*p1,
+									Point3d_t				*p2,
+									Point3d_t				*p3
+								);
 
-HOWTO_DESTRUCT					(	Triangle3d_t,	self	);
+HOWTO_FINI						(	Triangle3d_t,			self	);
 
 
-HOWTO_CPY						(	Triangle2d_t,	to,	from	);
+HOWTO_CPY						(	Triangle2d_t,			to,	from	);
 
-HOWTO_CPY						(	Triangle3d_t,	to,	from	);
+HOWTO_CPY						(	Triangle3d_t,			to,	from	);
+
+
+/////////////////////////////////////////////////////////////////////////////////
+//							Iterator Operations
+/////////////////////////////////////////////////////////////////////////////////
+
+
+HOWTO_INIT						(	itr ( Triangle2d_t ),
+									self,
+									const Triangle2d_t		*ptr,
+									unsigned int			pos,
+									IterType_t				typ
+								);
+
+HOWTO_INIT						(	itr ( Triangle3d_t ),
+									self,
+									const Triangle3d_t		*ptr,
+									unsigned int			pos,
+									IterType_t				typ
+								);
+
+
+HOWTO_FINI						(	itr ( Triangle2d_t ),	self	);
+
+HOWTO_FINI						(	itr ( Triangle3d_t ),	self	);
+
+
+HOWTO_DEF						(	itr ( Triangle2d_t ),	self	);
+
+HOWTO_DEF						(	itr ( Triangle3d_t ),	self	);
+
+
+HOWTO_CMP						(	itr ( Triangle2d_t ),	it1,	it2	);
+
+HOWTO_CMP						(	itr ( Triangle3d_t ),	it1,	it2	);
+
+
+HOWTO_INC						(	itr ( Triangle2d_t ),	self	);
+
+HOWTO_INC						(	itr ( Triangle3d_t ),	self	);
+
+
+HOWTO_DEC						(	itr ( Triangle2d_t ),	self	);
+
+HOWTO_DEC						(	itr ( Triangle3d_t ),	self	);
 
 
 /////////////////////////////////////////////////////////////////////////////////
@@ -139,29 +181,28 @@ HOWTO_CPY						(	Triangle3d_t,	to,	from	);
 /////////////////////////////////////////////////////////////////////////////////
 
 
-HOWTO_DEF						(	ARRAY	( Triangle2d_t ),	self	);
+HOWTO_INIT						(	arr ( Triangle2d_t ),
+									self,
+									const Triangle2d_t		*init_list,
+									unsigned int			count
+								);
 
-HOWTO_DEF						(	ARRAY	( Triangle3d_t ),	self	);
-
-
-HOWTO_DESTRUCT					(	ARRAY	( Triangle2d_t ),	self	);
-
-HOWTO_DESTRUCT					(	ARRAY	( Triangle3d_t ),	self	);
-
-
-HOWTO_LD						(	Triangle2d_t,	ptr,	arr,	idx		);
-
-HOWTO_LD						(	Triangle3d_t,	ptr,	arr,	idx		);
+HOWTO_INIT						(	arr ( Triangle3d_t ),
+									self,
+									const Triangle3d_t		*init_list,
+									unsigned int			count
+								);
 
 
-HOWTO_STR						(	Triangle2d_t,	ptr,	arr,	idx		);
+HOWTO_DEF						(	arr ( Triangle2d_t ),	self	);
 
-HOWTO_STR						(	Triangle3d_t,	ptr,	arr,	idx		);
+HOWTO_DEF						(	arr ( Triangle3d_t ),	self	);
 
 
-HOWTO_PUSH						(	Triangle2d_t,	ptr,	arr		);
+HOWTO_FINI						(	arr ( Triangle2d_t ),	self	);
 
-HOWTO_PUSH						(	Triangle3d_t,	ptr,	arr		);
+HOWTO_FINI						(	arr ( Triangle3d_t ),	self	);
+
 
 
 /////////////////////////////////////////////////////////////////////////////////
@@ -171,55 +212,62 @@ HOWTO_PUSH						(	Triangle3d_t,	ptr,	arr		);
 
 HOWTO_ROT						(	Triangle2d_t,
 									self,
-									Vec2_t				*angle
+									Vec2_t					*angle
 								);
 
 HOWTO_ROT						(	Triangle3d_t,
 									self,
-									Vec3_t				*angle
+									Vec3_t					*angle
 								);
 
 
 HOWTO_DRAW						(	Triangle2d_t,
 									self,
-									Point2d_t			*origin,
-									Color_t				*color,
-									Color_buffer_t		*colorbuf
+									Point2d_t				*origin,
+									Color_t					*color,
+									Color_buffer_t			*colorbuf
 								);
 
 HOWTO_DRAW						(	Triangle3d_t,
 									self,
-									Point2d_t			*origin,
-									Color_t				*color,
-									Color_buffer_t		*colorbuf
+									Point2d_t				*origin,
+									Color_t					*color,
+									Color_buffer_t			*colorbuf
 								);
 
 
-HOWTO_PROJ						(	Triangle2d_t,		Triangle3d_t,
-									to,					from,
-									Projection_type_t	type
+HOWTO_PROJ						(	Triangle2d_t,			Triangle3d_t,
+									to,						from,
+									Projection_type_t		type
+								);
+
+HOWTO_FILL						(	Triangle2d_t,
+									self,
+									Point2d_t				*origin,
+									Color_t					*color,
+									Color_buffer_t			*colorbuf
 								);
 
 
 METHOD							(	Triangle3d_t,
 									get_surface_normal,
 									self,
-									Point3d_t			*out
+									Point3d_t				*out
 								);
 
 
 METHOD							(	Triangle3d_t,
 									is_back_facing,
 									self,
-									bool				*out
+									bool					*out
 								);
 
 
 METHOD							(	Triangle2d_t,
 									get_flat_top_bottom,
 									self,
-									Triangle2d_t		*out_top,
-									Triangle2d_t		*out_bottom
+									Triangle2d_t			*out_top,
+									Triangle2d_t			*out_bottom
 								);
 
 

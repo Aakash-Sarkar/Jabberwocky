@@ -1,5 +1,5 @@
-/* Copyright © 2025 Intel Corporation
- * SPDX-License-Identifier: MIT
+/*	Copyright © 2025 Intel Corporation
+ *	SPDX-License-Identifier: MIT
  */
 
 #pragma once
@@ -133,15 +133,13 @@ struct						{	Vec3_t		*v;		}		Point3d_t;
 
 
 
+DECL_ITER					(	Point2d_t	);
 
-DECL_ARRAY					(	Point2d_t,
-								ARRAY	(	Vec2_t	)	*v;
-							);
+DECL_ARRAY					(	Point2d_t	);
 
+DECL_ITER					(	Point3d_t	);
 
-DECL_ARRAY					(	Point3d_t,
-								ARRAY	(	Vec3_t	)	*v;
-							);
+DECL_ARRAY					(	Point3d_t	);
 
 
 //////////////////////////////////////////////////////////////////////////////////
@@ -149,30 +147,75 @@ DECL_ARRAY					(	Point3d_t,
 //////////////////////////////////////////////////////////////////////////////////
 
 
-HOWTO_CPY					(	Point2d_t,	to,		from	);
+HOWTO_CPY					(	Point2d_t,	to,		frm	);
 
-HOWTO_CPY					(	Point3d_t,	to,		from	);
+HOWTO_CPY					(	Point3d_t,	to,		frm	);
 
 HOWTO_DEF					(	Point2d_t,	self	);
 
-HOWTO_CONSTRUCT				(	Point2d_t,
+HOWTO_INIT					(	Point2d_t,
 								self,
 								float		x,
 								float		y
 							);
 
-HOWTO_DESTRUCT				(	Point2d_t,	self	);
+HOWTO_FINI					(	Point2d_t,	self	);
 
 HOWTO_DEF					(	Point3d_t,	self	);
 
-HOWTO_CONSTRUCT				(	Point3d_t,
+HOWTO_INIT					(	Point3d_t,
 								self,
 								float		x,
 								float		y,
 								float		z
 							);
 
-HOWTO_DESTRUCT				(	Point3d_t,	self	);
+HOWTO_FINI					(	Point3d_t,	self	);
+
+
+//////////////////////////////////////////////////////////////////////////////////
+//							Iterator Operations
+//////////////////////////////////////////////////////////////////////////////////
+
+
+HOWTO_INIT					(	itr ( Point2d_t ),
+								self,
+								const Point2d_t			*ptr,
+                                unsigned int			pos,
+                                IterType_t				typ
+							);
+
+HOWTO_INIT					(	itr ( Point3d_t ),
+								self,
+								const Point3d_t			*ptr,
+                                unsigned int			pos,
+                                IterType_t				typ
+							);
+
+
+HOWTO_DEF					(	itr ( Point2d_t ),		self	);
+
+HOWTO_DEF					(	itr ( Point3d_t ),		self	);
+
+
+HOWTO_FINI					(	itr ( Point2d_t ),		self	);
+
+HOWTO_FINI					(	itr ( Point3d_t ),		self	);
+
+
+HOWTO_CMP					(	itr ( Point2d_t ),		it1,	it2	);
+
+HOWTO_CMP					(	itr ( Point3d_t ),		it1,	it2	);
+
+
+HOWTO_INC					(	itr ( Point2d_t ),		self	);
+
+HOWTO_INC					(	itr ( Point3d_t ),		self	);
+
+
+HOWTO_DEC					(	itr ( Point2d_t ),		self	);
+
+HOWTO_DEC					(	itr ( Point3d_t ),		self	);
 
 
 //////////////////////////////////////////////////////////////////////////////////
@@ -180,30 +223,27 @@ HOWTO_DESTRUCT				(	Point3d_t,	self	);
 //////////////////////////////////////////////////////////////////////////////////
 
 
-HOWTO_DEF					(	ARRAY	( Point2d_t ),	self	);
+HOWTO_INIT					(	arr ( Point2d_t ),
+								self,
+								const Point2d_t			*init_list,
+								unsigned int			count
+							);
 
-HOWTO_DEF					(	ARRAY	( Point3d_t ),	self	);
-
-
-HOWTO_DESTRUCT				(	ARRAY	( Point2d_t ),	self	);
-
-HOWTO_DESTRUCT				(	ARRAY	( Point3d_t ),	self	);
-
-
-
-HOWTO_LD					(	Point2d_t,	ptr,	arr,	idx		);
-
-HOWTO_LD					(	Point3d_t,	ptr,	arr,	idx		);
+HOWTO_INIT					(	arr ( Point3d_t ),
+								self,
+								const Point3d_t			*init_list,
+								unsigned int			count
+							);
 
 
-HOWTO_STR					(	Point2d_t,	ptr,	arr,	idx		);
+HOWTO_DEF					(	arr ( Point2d_t ),		self	);
 
-HOWTO_STR					(	Point3d_t,	ptr,	arr,	idx		);
+HOWTO_DEF					(	arr ( Point3d_t ),		self	);
 
 
-HOWTO_PUSH					(	Point2d_t,	ptr,	arr		);
+HOWTO_FINI					(	arr ( Point2d_t ),		self	);
 
-HOWTO_PUSH					(	Point3d_t,	ptr,	arr		);
+HOWTO_FINI					(	arr ( Point3d_t ),		self	);
 
 
 //////////////////////////////////////////////////////////////////////////////////
@@ -241,8 +281,8 @@ HOWTO_DRAW					(	Point3d_t,
 
 
 HOWTO_PROJ					(	Point2d_t,			Point3d_t,
-								to,					from,
-								Projection_type_t	type
+								to,					frm,
+								Projection_type_t	typ
 							);
 
 
@@ -261,14 +301,14 @@ HOWTO_SUB					(	Point2d_t,	dst,	op1,	op2		);
 HOWTO_SUB					(	Point3d_t,	dst,	op1,	op2		);
 
 
-HOWTO_MUL					(	Point2d_t,	dst,	src,	factor	);
+HOWTO_MUL					(	Point2d_t,	dst,	src,	fac	);
 
-HOWTO_MUL					(	Point3d_t,	dst,	src,	factor	);
+HOWTO_MUL					(	Point3d_t,	dst,	src,	fac	);
 
 
-HOWTO_DIV					(	Point2d_t,	dst,	src,	factor	);
+HOWTO_DIV					(	Point2d_t,	dst,	src,	fac	);
 
-HOWTO_DIV					(	Point3d_t,	dst,	src,	factor	);
+HOWTO_DIV					(	Point3d_t,	dst,	src,	fac	);
 
 
 HOWTO_DOTP					(	Point2d_t,	dst,	src1,	src2	);

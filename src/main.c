@@ -11,7 +11,6 @@
 #include "geometry.h"
 #include "mesh.h"
 #include "point.h"
-#include "rect.h"
 #include "triangle.h"
 #include "util.h"
 
@@ -116,7 +115,6 @@ setup							(	void	)
 {
 
 	Window_t						*window		=	NULL;
-
 	Renderer_t						*renderer	=	NULL;
 
 	int								numbufs		=	1;
@@ -150,7 +148,9 @@ static
 void
 process_input					(	void	)
 {
+
 	SDL_Event						event	=	{ 0 };
+
 	int								ret		=	-1;
 
 	/*
@@ -183,13 +183,9 @@ static
 bool
 update							(	Renderer_t	*renderer	)
 {
-
-	int								idx		=	0;
-
 	Mesh_t							*mesh	=	NULL;
 
-	Triangle3d_t					*tr		=	NULL;
-
+	itr ( Triangle3d_t )			it		=	{ 0 };
 	Triangle2d_t					*prj	=	NULL;
 
 	Triangle2d_t					*top	=	NULL,
@@ -198,78 +194,69 @@ update							(	Renderer_t	*renderer	)
 	Vec3_t							*rot	=	NULL;
 
 
-	DEF							(	Triangle3d_t,
-									tr
+	DEF							(	Triangle2d_t,
+									( prj )
 								);
 
 	DEF							(	Triangle2d_t,
-									prj
+									( top )
 								);
 
 	DEF							(	Triangle2d_t,
-									top
+									( bot )
 								);
 
-	DEF							(	Triangle2d_t,
-									bot
+	DEF							(	arr ( Triangle2d_t ),
+									renderer->triangles_to_draw
 								);
 
 	NEW							(	Vec3_t,
-									rot,
-									0.01f,	0.01f,	0.01f
+									( rot ),
+									( 0.01f ),
+									( 0.01f ),
+									( 0.01f )
 								);
 
 
-	if							(	!renderer->triangles_to_draw	)
-	{
-		DEF						(	ARRAY	(	Triangle2d_t	),
-									renderer->triangles_to_draw
-								);
-	}
-
-	GET							(	mesh,
-									renderer->mesh
+	GET							(	( mesh ),
+									( renderer )->mesh
 								);
 
 	ROT							(	Mesh_t,
-									mesh,
-									rot
+									( mesh ),
+									( rot )
 								);
 
-	for_each_triangle_in_mesh	(	tr,	mesh,	idx	)
+	for_each_triangle_in_mesh	(	&it,		mesh	)
 	{
-		bool						*cull	=	NULL;
-
-		DEF						(	bool,
-									cull
-								);
+		bool						cull	=	false;
 
 		LD						(	bool,
-									cull,
-									mesh->cull,
-									idx
+									( &cull ),
+									( mesh )->cull,
+									( it ).pos
 								);
 
-		if						(	*cull == true	)
+		if						(	cull == true	)
 		{
 			continue;
 		}
 
 		PROJ					(	Triangle2d_t,			Triangle3d_t,
-									prj,					tr,
+									( prj ),				( it ).ptr,
 									PERSPECTIVE
 								);
 
 		REQ						(	Triangle2d_t,
 									get_flat_top_bottom,
-									prj,
-									top,
-									bot
+									( prj ),
+									( top ),
+									( bot )
 								);
 
 		PUSH					(	Triangle2d_t,
-									prj,
-									renderer->triangles_to_draw
+									( prj ),
+									( renderer )->triangles_to_draw
 								);
 
 		assert					(	top		&&		bot		);
@@ -283,10 +270,6 @@ update							(	Renderer_t	*renderer	)
 		//							bot,
 		//							renderer->triangles_to_draw
 		//						);
-
-		DEL						(	bool,
-									cull
-								);
 	}
 
 	DEL							(	Vec3_t,
@@ -321,37 +304,30 @@ render							(	Renderer_t*		renderer	)
 
 	Color_t							*green	=	NULL;
 
-	Triangle2d_t					*tr		=	NULL;
+	itr ( Triangle2d_t )			tr		=	{ 0 };
 
 	NEW							(	Color_t,
-									green,
-									0x00,		0xFF,
-									0x00,		0xFF
+									( green ),
+									( 0x00 ),
+									( 0xFF ),
+									( 0x00 ),
+									( 0xFF )
 								);
 
-	DEF							(	Triangle2d_t,
-									tr
-								);
-
-	for_each_item_in_array		(	Triangle2d_t,
-									tr,
-									renderer->triangles_to_draw,
-									idx
-								)
+	for_each_item_in_array		(	Triangle2d_t,	&tr,	( renderer )->triangles_to_draw	)
 	{
-
 		DRAW					(	Triangle2d_t,
-									tr,
-									renderer->origin,
-									green,
-									renderer->buffer
+									( tr ).ptr,
+									( renderer )->origin,
+									( green ),
+									( renderer )->buffer
 								);
 
 		//LOG						(	"idx: %d\n", idx	);
 	}
 
 
-	DEL							(	ARRAY	(	Triangle2d_t	),
+	DEL							(	arr	( Triangle2d_t ),
 									renderer->triangles_to_draw
 								);
 
@@ -363,7 +339,7 @@ render							(	Renderer_t*		renderer	)
 		RET						(	FAIL	);
 	}
 
-	ret							=	clear_color_buffer	(	renderer->buffer	);
+	ret							=	clear_color_buffer	(	( renderer )->buffer	);
 
 	if							(	( !!ret ) != SUCCESS	)
 	{
@@ -371,7 +347,7 @@ render							(	Renderer_t*		renderer	)
 		RET						(	FAIL	);
 	}
 
-	SDL_RenderPresent			(	renderer->sdl	);
+	SDL_RenderPresent			(	( renderer )->sdl	);
 
 	// Use the force, Luke!
 	return SUCCESS;

@@ -7,109 +7,129 @@
 
 
 
-HOWTO_ADD										(	char,	dest,	op1,	op2	)
+HOWTO_ADD		(	char,	dst,	op1,	op2	)
 {
-	*dest										=	*op1	+	*op2;
+	*( dst )	=	*( op1 )
+				+	*( op2 );
 }
 
-HOWTO_ADD										(	int,	dest,	op1,	op2	)
+HOWTO_ADD		(	int,	dst,	op1,	op2	)
 {
-	*dest										=	*op1	+	*op2;
+	*( dst )	=	*( op1 )
+				+	*( op2 );
 }
 
-HOWTO_ADD										(	long,	dest,	op1,	op2	)
+HOWTO_ADD		(	long,	dst,	op1,	op2	)
 {
-	*dest										=	*op1	+	*op2;
+	*( dst )	=	*( op1 )
+				+	*( op2 );
 }
 
-HOWTO_ADD										(	float,	dest,	op1,	op2	)
+HOWTO_ADD		(	float,	dst,	op1,	op2	)
 {
-	*dest										=	*op1	+	*op2;
+	*( dst )	=	*( op1 )
+				+	*( op2 );
 }
 
-HOWTO_ADD										(	double,	dest,	op1,	op2	)
+HOWTO_ADD		(	double,	dst,	op1,	op2	)
 {
-	*dest										=	*op1	+	*op2;
-}
-
-
-HOWTO_SUB										(	char,	dest,	op1,	op2	)
-{
-	*dest										=	*op1	-	*op2;
-}
-
-HOWTO_SUB										(	int,	dest,	op1,	op2	)
-{
-	*dest										=	*op1	-	*op2;
-}
-
-HOWTO_SUB										(	long,	dest,	op1,	op2	)
-{
-	*dest										=	*op1	-	*op2;
-}
-
-HOWTO_SUB										(	float,	dest,	op1,	op2	)
-{
-	*dest										=	*op1	-	*op2;
-}
-
-HOWTO_SUB										(	double,	dest,	op1,	op2	)
-{
-	*dest										=	*op1	-	*op2;
+	*( dst )	=	*( op1 )
+				+	*( op2 );
 }
 
 
-HOWTO_MUL										(	char,	dest,	src,	factor	)
+HOWTO_SUB		(	char,	dst,	op1,	op2	)
 {
-	*dest										=	*src	*	*factor;
+	*( dst )	=	*( op1 )
+				-	*( op2 );
 }
 
-HOWTO_MUL										(	int,	dest,	src,	factor	)
+HOWTO_SUB		(	int,	dst,	op1,	op2	)
 {
-	*dest										=	*src	*	*factor;
+	*( dst )	=	*( op1 )
+				-	*( op2 );
 }
 
-HOWTO_MUL										(	long,	dest,	src,	factor	)
+HOWTO_SUB		(	long,	dst,	op1,	op2	)
 {
-	*dest										=	*src	*	*factor;
+	*( dst )	=	*( op1 )
+				-	*( op2 );
 }
 
-HOWTO_MUL										(	float,	dest,	src,	factor	)
+HOWTO_SUB		(	float,	dst,	op1,	op2	)
 {
-	*dest										=	*src	*	*factor;
+	*( dst )	=	*( op1 )
+				-	*( op2 );
 }
 
-HOWTO_MUL										(	double,	dest,	src,	factor	)
+HOWTO_SUB		(	double,	dst,	op1,	op2	)
 {
-	*dest										=	*src	*	*factor;
+	*( dst )	=	*( op1 )
+				-	*( op2 );
+}
+
+
+HOWTO_MUL		(	char,	dst,	src,	fac	)
+{
+	*( dst )	=	*( src )
+				*	 ( fac );
+}
+
+HOWTO_MUL		(	int,	dst,	src,	fac	)
+{
+	*( dst )	=	*( src )
+				*	 ( fac );
+}
+
+HOWTO_MUL		(	long,	dst,	src,	fac	)
+{
+	*( dst )	=	*( src )
+				*	 ( fac );
+}
+
+HOWTO_MUL		(	float,	dst,	src,	fac	)
+{
+	*( dst )	=	*( src )
+				*	 ( fac );
+}
+
+HOWTO_MUL		(	double,	dst,	src,	fac	)
+{
+	*( dst )	=	*( src )
+				*	 ( fac );
 }
 
 
 
 
-HOWTO_DIV										(	char,	dest,	src,	factor	)
+HOWTO_DIV		(	char,	dst,	src,	fac	)
 {
-	*dest										=	( char )	*src	/	*factor;
+	*( dst )	=	( char )	*( src )
+				/	( fac );
 }
 
-HOWTO_DIV										(	int,	dest,	src,	factor	)
+HOWTO_DIV		(	int,	dst,	src,	fac	)
 {
-	*dest										=	( int )		*src	/	*factor;
+	*( dst )	=	( int )	*( src )
+				/	( fac );
 }
 
-HOWTO_DIV										(	long,	dest,	src,	factor	)
+HOWTO_DIV		(	long,	dst,	src,	fac	)
 {
-	*dest										=	( long )	*src	/	*factor;
+	*( dst )	=	( long )	*( src )
+				/	( fac );
 }
 
-HOWTO_DIV										(	float,	dest,	src,	factor	)
+HOWTO_DIV		(	float,	dst,	src,	fac	)
 {
-	*dest										=	( float )	*src	/	*factor;
+	*( dst )	=	( float )	*( src )
+				/	( fac );
 }
 
-HOWTO_DIV										(	double,	dest,	src,	factor	)
+HOWTO_DIV		(	double,	dst,	src,	fac	)
 {
-	*dest										=	( double )	*src	/	*factor;
+	*( dst )	=	( double )	*( src )
+				/	( fac );
 }
 
 

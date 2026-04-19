@@ -4,8 +4,6 @@
 
 #include <math.h>
 
-#include "geometry.h"
-#include "util.h"
 #include "vector.h"
 
 
@@ -23,322 +21,283 @@ Vec3_t						*Camera	=	NULL;
 
 
 ////////////////////////////////////////////////////////////////////////////////
-//		Vector Operations Implementation
+//						Memory Ops Implementation
 ////////////////////////////////////////////////////////////////////////////////
 
 
-HOWTO_DEF						(	Vec2_t,		self	)
+HOWTO_INIT					(	Vec2_t,
+								self,
+								float			x,
+								float			y
+							)
 {
-	DEF							(	float,
-									self->x
-								);
-
-	DEF							(	float,
-									self->y
-								);
+	( self )->x				=	x;
+	( self )->y				=	y;
 }
 
-HOWTO_CONSTRUCT					(	Vec2_t,
-									self,
-									float		x,
-									float		y	)
-{
-	NEW							(	float,
-									self->x,
-									x
-								);
 
-	NEW							(	float,
-									self->y,
-									y
-								);
+HOWTO_DEF					(	Vec2_t,			self	)
+{
+	NEW						(	Vec2_t,
+								self,
+								0.0f,
+								0.0f
+							);
+
+	RET						(	self	);
 }
 
-HOWTO_DESTRUCT					(	Vec2_t,	self	)
-{
-	DEL							(	float,
-									self->x
-								);
 
-	DEL							(	float,
-									self->y
-								);
+HOWTO_FINI					(	Vec2_t,			self	)
+{
 }
 
-HOWTO_DEF						(	Vec3_t,		self	)
+
+HOWTO_INIT					(	Vec3_t,
+								self,
+								float			x,
+								float			y,
+								float			z
+							)
 {
-	DEF							(	float,
-									self->x
-								);
-
-	DEF							(	float,
-									self->y
-								);
-
-	DEF							(	float,
-									self->z
-								);
+	( self )->x				=	x;
+	( self )->y				=	y;
+	( self )->z				=	z;
 }
 
-HOWTO_CONSTRUCT					(	Vec3_t,
-									self,
-									float		x,
-									float		y,
-									float		z
-								)
+
+HOWTO_DEF					(	Vec3_t,			self	)
 {
+	NEW						(	Vec3_t,
+								self,
+								0.0f,
+								0.0f,
+								0.0f
+							);
 
-	NEW							(	float,
-									self->x,
-									x
-								);
-
-	NEW							(	float,
-									self->y,
-									y
-								);
-
-	NEW							(	float,
-									self->z,
-									z
-								);
+	RET						(	self	);
 }
 
-HOWTO_DESTRUCT					(	Vec3_t,	self	)
+HOWTO_FINI					(	Vec3_t,			self	)
 {
-
-	DEL							(	float,
-									self->x
-								);
-
-	DEL							(	float,
-									self->y
-								);
-
-	DEL							(	float,
-									self->z
-								);
 }
+
+
 
 /////////////////////////////////////////////////////////////////////////////////
-//		Dynamic Array Operations Implementation
+//					Iterator Ops Implementation
 /////////////////////////////////////////////////////////////////////////////////
 
 
-HOWTO_DEF					(	ARRAY	(	Vec2_t	),	self	)
+
+HOWTO_INIT					(	itr ( Vec2_t ),
+								self,
+								const Vec2_t		*ptr,
+								unsigned int		pos,
+								IterType_t			typ
+							)
 {
-
-	DEF						(	ARRAY	(	float	),
-								self->x
-							);
-
-	DEF						(	ARRAY	(	float	),
-								self->y
-							);
-	self->count				=	0;
-}
-
-HOWTO_DEF					(	ARRAY	(	Vec3_t	),	self	)
-{
-
-	DEF						(	ARRAY	(	float	),
-								self->x
-							);
-
-	DEF						(	ARRAY	(	float	),
-								self->y
-							);
-
-	DEF						(	ARRAY	(	float	),
-								self->z
-							);
-
-	self->count				=	0;
-}
-
-
-HOWTO_DESTRUCT				(	ARRAY	(	Vec2_t	),	self	)
-{
-
-	DEL						(	ARRAY	(	float	),
-								self->x
-							);
-
-	DEL						(	ARRAY	(	float	),
-								self->y
-							);
-
-	self->count				=	0;
-}
-
-HOWTO_DESTRUCT				(	ARRAY	(	Vec3_t	),	self	)
-{
-
-	DEL						(	ARRAY	(	float	),
-								self->x
-							);
-
-	DEL						(	ARRAY	(	float	),
-								self->y
-							);
-
-	DEL						(	ARRAY	(	float	),
-								self->y
-							);
-
-	self->count				=	0;
-}
-
-
-HOWTO_LD					(	Vec2_t,		ptr,	arr,	idx	)
-{
-
-	LD						(	float,
-								ptr->x,
-								arr->x,
-								idx
-							);
-
-	LD						(	float,
-								ptr->y,
-								arr->y,
-								idx
-							);
-}
-
-HOWTO_LD					(	Vec3_t,		ptr,	arr,	idx	)
-{
-
-	LD						(	float,
-								ptr->x,
-								arr->x,
-								idx
-							);
-
-	LD						(	float,
-								ptr->y,
-								arr->y,
-								idx
-							);
-
-	LD						(	float,
-								ptr->z,
-								arr->z,
-								idx
-							);
-}
-
-HOWTO_STR					(	Vec2_t,		ptr,	arr,	idx	)
-{
-
-	STR						(	float,
-								ptr->x,
-								arr->x,
-								idx
-							);
-
-	STR						(	float,
-								ptr->y,
-								arr->y,
-								idx
-							);
-}
-
-HOWTO_STR					(	Vec3_t,		ptr,	arr,	idx	)
-{
-
-	STR						(	float,
-								ptr->x,
-								arr->x,
-								idx
-							);
-
-	STR						(	float,
-								ptr->y,
-								arr->y,
-								idx
-							);
-
-	STR						(	float,
-								ptr->z,
-								arr->z,
-								idx
+	INITITR					(	Vec2_t,
+								self,
+								ptr,
+								pos,
+								typ 
 							);
 }
 
 
-HOWTO_PUSH					(	Vec2_t,		ptr,	arr	)
+HOWTO_INIT					(	itr ( Vec3_t ),
+								self,
+								const Vec3_t		*ptr,
+								unsigned int		pos,
+								IterType_t			typ
+							)
 {
-
-	PUSH					(	float,
-								ptr->x,
-								arr->x
-							);
-
-	PUSH					(	float,
-								ptr->y,
-								arr->y
-							);
-}
-
-HOWTO_PUSH					(	Vec3_t,		ptr,	arr	)
-{
-
-	PUSH					(	float,
-								ptr->x,
-								arr->x
-							);
-
-	PUSH					(	float,
-								ptr->y,
-								arr->y
-							);
-
-	PUSH					(	float,
-								ptr->z,
-								arr->z
+	INITITR					(	Vec3_t,
+								self,
+								ptr,
+								pos,
+								typ
 							);
 }
 
 
+HOWTO_DEF					(	itr ( Vec2_t ),		self	)
+{
+	NEW						(	itr ( Vec2_t ),
+								self,
+								NULL,
+								0,
+								MAX_ITER
+							);
+
+	RET						(	self	);
+}
+
+
+HOWTO_DEF					(	itr ( Vec3_t ),		self	)
+{
+	NEW						(	itr ( Vec3_t ),
+								self,
+								NULL,
+								0,
+								MAX_ITER
+							);
+
+	RET						(	self	);
+}
+
+
+HOWTO_FINI					(	itr ( Vec2_t ),		self	)
+{
+	FINIITR					(	Vec2_t,
+								self
+							);
+}
+
+HOWTO_FINI					(	itr ( Vec3_t ),		self	)
+{
+	FINIITR					(	Vec3_t,
+								self
+							);
+}
+
+HOWTO_CMP					(	itr ( Vec2_t ),		itr1,	itr2	)
+{
+	CMPITR					(	Vec2_t,
+								itr1,
+								itr2
+							);
+}
+
+HOWTO_CMP					(	itr ( Vec3_t ),		itr1,	itr2	)
+{
+	CMPITR					(	Vec3_t,
+								itr1,
+								itr2
+							);
+}
+
+
+HOWTO_INC					(	itr ( Vec2_t ),		self	)
+{
+	INCITR					(	Vec2_t,
+								self
+							);
+}
+
+HOWTO_INC					(	itr ( Vec3_t ),		self	)
+{
+	INCITR					(	Vec2_t,
+								self
+							);
+}
+
+
+HOWTO_DEC					(	itr ( Vec2_t ),		self	)
+{
+	DECITR					(	Vec2_t,
+								self
+							);
+}
+
+HOWTO_DEC					(	itr ( Vec3_t ),		self	)
+{
+	DECITR					(	Vec3_t,
+								self
+							);
+}
+
+
+/////////////////////////////////////////////////////////////////////////////////
+//					Dynamic Array Ops Implementation
+/////////////////////////////////////////////////////////////////////////////////
+
+
+HOWTO_INIT					(	arr ( Vec2_t ),
+								self,
+								const Vec2_t		*init_list,
+								unsigned int		count
+							)
+{
+	INITARR					(	Vec2_t,
+								self,
+								init_list,
+								count
+							);
+}
+
+HOWTO_INIT					(	arr ( Vec3_t ),
+								self,
+								const Vec3_t		*init_list,
+								unsigned int		count
+							)
+{
+	INITARR					(	Vec3_t,
+								self,
+								init_list,
+								count
+							);
+}
+
+
+HOWTO_DEF					(	arr ( Vec2_t ),		self	)
+{
+	NEW						(	arr ( Vec2_t ),
+								self,
+								NULL,
+								0
+							);
+
+	RET						(	self	);
+}
+
+HOWTO_DEF					(	arr ( Vec3_t ),		self	)
+{
+	NEW						(	arr ( Vec3_t ),
+								self,
+								NULL,
+								0
+							);
+
+	RET						(	self	);
+}
+
+
+HOWTO_FINI					(	arr ( Vec2_t ),		self	)
+{
+	FINIARR					(	Vec2_t,
+								self
+							);
+}
+
+HOWTO_FINI					(	arr ( Vec3_t ),		self	)
+{
+	FINIARR					(	Vec3_t,
+								self
+							);
+}
 
 
 HOWTO_CPY					(	Vec2_t,		to,		from	)
 {
-	CPY						(	float,
-								to->x,
-								from->x
-							);
-
-	CPY						(	float,
-								to->y,
-								from->y
-							);
+	( to )->x				=	( from )->x;
+	( to )->y				=	( from )->y;
 }
+
 
 HOWTO_CPY					(	Vec3_t,		to,		from	)
 {
-	CPY						(	float,
-								to->x,
-								from->x
-							);
-
-	CPY						(	float,
-								to->y,
-								from->y
-							);
-
-	CPY						(	float,
-								to->z,
-								from->z
-							);
+	( to )->x				=	( from )->x;
+	( to )->y				=	( from )->y;
+	( to )->z				=	( from )->z;
 }
 
 
 
 
 //////////////////////////////////////////////////////////////////////////////////
-//				Geomertic Operations Implementations
+//						Geomertic Ops Implementations
 //////////////////////////////////////////////////////////////////////////////////
 
 
@@ -356,26 +315,14 @@ rotate_vector_x				(	Vec3_t		*self,
 
 	//	X component remains same
 
-	CPY						(	float,
-								tmp->x,
-								self->x
-							);
+	( tmp )->x				=	( self )->x;
 
-	float						y	=	*self->y	*	cos(	angle	)
-									-	*self->z	*	sin(	angle	);
+	( tmp )->y				=	( self )->y		*	cos ( angle )
+							-	( self )->z		*	sin ( angle );
 
-	CPY						(	float,
-								tmp->y,
-								&y
-							);
+	( tmp )->z				=	( self )->z		*	cos ( angle	)
+							+	( self )->y		*	sin ( angle );
 
-	float						z	=	*self->z	*	cos(	angle	)
-									+	*self->y	*	sin(	angle	);
-
-	CPY						(	float,
-								tmp->z,
-								&z
-							);
 
 	CPY						(	Vec3_t,
 								self,
@@ -399,28 +346,16 @@ rotate_vector_y				(	Vec3_t		*self,
 								tmp
 							);
 
-	float						x	=	*self->x	*	cos(	angle	)
-									-	*self->z	*	sin(	angle	);
-
-	CPY						(	float,
-								tmp->x,
-								&x
-							);
+	( tmp )->x				=	( self )->x		*	cos ( angle )
+							-	( self )->z		*	sin ( angle );
 
 	//	Y component remains same
 
-	CPY						(	float,
-								tmp->y,
-								self->y
-							);
+	( tmp )->y				=	( self )->y;
 
-	float						z	=	*self->z	*	cos(	angle	)
-									+	*self->x	*	sin(	angle	);
+	( tmp )->z				=	( self )->z		*	cos ( angle )
+							+	( self )->x		*	sin ( angle );
 
-	CPY						(	float,
-								tmp->z,
-								&z
-							);
 
 	CPY						(	Vec3_t,
 								self,
@@ -445,28 +380,17 @@ rotate_vector_z				(	Vec3_t		*self,
 								tmp
 							);
 
-	float						x	=	*self->x	*	cos(	angle	)
-									-	*self->y	*	sin(	angle	);
+	( tmp )->x				=	( self )->x		*	cos ( angle )
+							-	( self )->y		*	sin ( angle );
 
-	CPY						(	float,
-								tmp->x,
-								&x
-							);
+	( tmp )->y				=	( self )->y		*	cos ( angle )
+							+	( self )->x		*	sin ( angle );
 
-	float						y	=	*self->y	*	cos(	angle	)
-									+	*self->x	*	sin(	angle	);
-
-	CPY						(	float,
-								tmp->y,
-								&y
-							);
 
 	//	Z component remains same
 
-	CPY						(	float,
-								tmp->z,
-								self->z
-							);
+	( tmp )->z				=	( self )->z;
+
 
 	CPY						(	Vec3_t,
 								self,
@@ -481,30 +405,24 @@ rotate_vector_z				(	Vec3_t		*self,
 
 HOWTO_ROT					(	Vec3_t,
 								self,
-								Vec3_t*		angle
+								Vec3_t		*angle
 							)
 {
-	assert					(	self	&&	angle	);
+	assert					(	self		&&	angle	);
 
-	if						(	*angle->x	)
+	if						(	( angle )->x	)
 	{
-		rotate_vector_x		(	self,
-								*angle->x
-							);
+		rotate_vector_x		(	self,		( angle )->x	);
 	}
 
-	if						(	*angle->y	)
+	if						(	( angle )->y	)
 	{
-		rotate_vector_y		(	self,
-								*angle->y
-							);
+		rotate_vector_y		(	self,		( angle )->y	);
 	}
 
-	if						(	*angle->z	!=	0	)
+	if						(	( angle )->z	)
 	{
-		rotate_vector_z		(	self,
-								*angle->z
-							);
+		rotate_vector_z		(	self,		( angle )->z	);
 	}
 }
 
@@ -515,36 +433,8 @@ static
 void
 project_orthographic		(	Vec2_t	*to,	Vec3_t	*from	)
 {
-	float						*x	=	NULL,
-								*y	=	NULL;
-	
-	NEW						(	float,
-								x,
-								fov_scale	*	*( from->x )
-							);
-
-	CPY						(	float,
-								to->x,
-								x
-							);
-	
-	NEW						(	float,
-								y,
-								fov_scale	*	*( from->y )
-							);
-
-	CPY						(	float,
-								to->y,
-								y
-							);
-
-	DEL						(	float,
-								x
-							);
-
-	DEL						(	float,
-								y
-							);
+	( to )->x				=	fov_scale	*	( from )->x;
+	( to )->y				=	fov_scale	*	( from )->y;
 }
 
 static
@@ -556,70 +446,54 @@ project_isometric			(	Vec2_t	*to,	Vec3_t	*from	)
 
 static
 void
-project_perspective			(	Vec2_t	*to,	Vec3_t	*from	)
+project_perspective			(	Vec2_t *to,		Vec3_t *from	)
 {
-	Vec3_t						*cam	=	NULL;
+	Vec3_t						*cam	=		NULL;
 
-	float						*z		=	NULL;
+	float						z		=		0.0f;
 
 	NEW						(	Vec3_t,
 								cam,
-								0.0,	0.0,	-5.0
+								0.0,
+								0.0,
+								-5.0
 							);
 
-	NEW						(	float,
-								z,
-								*from->z
-							);
-
-	SUB						(	float,
-								z,
-								from->z,
-								cam->z
-							);
-
-	float						x	=	((	*( from->x ) * fov_scale	) / *z	);
-
-	CPY						(	float,
-								to->x,
-								&x
-							);
-
-	float						y	=	((	*( from->y ) * fov_scale	) / *z	);
-
-	CPY						(	float,
-								to->y,
-								&y
-							);
+	z						=	( ( from )->z	-		( cam )->z	);
+	( to )->x				=	( ( from )->x	*		fov_scale ) / z;
+	( to )->y				=	( ( from )->y	*		fov_scale ) / z;
 
 	DEL						(	Vec3_t,
 								cam
 							);
+
 }
 
 
 
 
-HOWTO_PROJ					(	Vec2_t,				Vec3_t,
-								to,					from,
-								Projection_type_t	type	)
+HOWTO_PROJ					(	Vec2_t,					Vec3_t,
+								to,						frm,
+								Projection_type_t		typ
+							)
 {
-	assert					(	to &&	from	);
+	assert					(	to	);
+	assert					(	frm	);
 
-	switch					(	type	)
+	switch					(	typ	)
 	{
 		case				(	ORTHOGRAPHIC	):
-			project_orthographic	(	to,	from	);
+			project_orthographic(	to,	frm	);
 			break;
 		case				(	ISOMETRIC		):
-			project_isometric		(	to,	from	);
+			project_isometric(	to,	frm	);
 			break;
 		case				(	PERSPECTIVE		):
-			project_perspective		(	to,	from	);
+			project_perspective(	to,	frm	);
 			break;
 		default:
 			LOG				(	"Unsupported projection type: %d\n",
-								type
+								typ
 							);
 			break;
 	}
@@ -635,267 +509,113 @@ HOWTO_PROJ					(	Vec2_t,				Vec3_t,
 
 HOWTO_ADD					(	Vec2_t,	dst,	op1,	op2	)
 {
-	ADD						(	float,
-								dst->x,
-								op1->x,
-								op2->x
-							);
+	( dst )->x				=	( op1 )->x
+							+	( op2 )->x;
 
-	ADD						(	float,
-								dst->y,
-								op1->y,
-								op2->y
-							);
+	( dst )->y				=	( op1 )->y
+							+	( op2 )->y;
 }
+
 
 HOWTO_ADD					(	Vec3_t,	dst,	op1,	op2	)
 {
+	( dst )->x				=	( op1 )->x
+							+	( op2 )->x;
 
-	ADD						(	float,
-								dst->x,
-								op1->x,
-								op2->x
-							);
+	( dst )->y				=	( op1 )->y
+							+	( op2 )->y;
 
-	ADD						(	float,
-								dst->y,
-								op1->y,
-								op2->y
-							);
-
-	ADD						(	float,
-								dst->z,
-								op1->z,
-								op2->z
-							);
+	( dst )->z				=	( op1 )->z
+							+	( op2 )->z;
 }
 
 
 HOWTO_SUB					(	Vec2_t,	dst,	op1,	op2	)
 {
+	( dst )->x				=	( op1 )->x
+							-	( op2 )->x;
 
-	SUB						(	float,
-								dst->x,
-								op1->x,
-								op2->x
-							);
-
-	SUB						(	float,
-								dst->y,
-								op1->y,
-								op2->y
-							);
+	( dst )->y				=	( op1 )->y
+							-	( op2 )->y;
 }
+
 
 HOWTO_SUB					(	Vec3_t,	dst,	op1,	op2	)
 {
-
-	SUB						(	float,
-								dst->x,
-								op1->x,
-								op2->x
-							);
-
-	SUB						(	float,
-								dst->y,
-								op1->y,
-								op2->y
-							);
-
-	SUB						(	float,
-								dst->z,
-								op1->z,
-								op2->z
-							);
+	( dst )->x				=	( op1 )->x	-	( op2 )->x;
+	( dst )->y				=	( op1 )->y	-	( op2 )->y;
+	( dst )->z				=	( op1 )->z	-	( op2 )->z;
 }
 
 
-HOWTO_MUL					(	Vec2_t,	dst,	src,	factor	)
+HOWTO_MUL					(	Vec2_t,	dst,	src,	fac	)
 {
-
-	MUL						(	float,
-								dst->x,
-								src->x,
-								factor
-							);
-
-	MUL						(	float,
-								dst->y,
-								src->y,
-								factor
-							);
+	( dst )->x				=	( src )->x	*	fac;
+	( dst )->y				=	( src )->y	*	fac;
 }
 
-HOWTO_MUL					(	Vec3_t,	dst,	src,	factor	)
+
+HOWTO_MUL					(	Vec3_t,	dst,	src,	fac	)
 {
-
-	MUL						(	float,
-								dst->x,
-								src->x,
-								factor
-							);
-
-	MUL						(	float,
-								dst->y,
-								src->y,
-								factor
-							);
-
-	MUL						(	float,
-								dst->z,
-								src->z,
-								factor
-							);
+	( dst )->x				=	( src )->x	*	fac;
+	( dst )->y				=	( src )->y	*	fac;
+	( dst )->z				=	( src )->z	*	fac;
 }
 
 
-HOWTO_DIV					(	Vec2_t,	dst,	src,	factor	)
+HOWTO_DIV					(	Vec2_t,	dst,	src,	fac	)
 {
-
-	DIV						(	float,
-								dst->x,
-								src->x,
-								factor
-							);
-
-	DIV						(	float,
-								dst->y,
-								src->y,
-								factor
-							);
+	( dst )->x				=	( src )->x	/	fac;
+	( dst )->y				=	( src )->y	/	fac;
 }
 
-HOWTO_DIV					(	Vec3_t,	dst,	src,	factor	)
+
+HOWTO_DIV					(	Vec3_t,	dst,	src,	fac	)
 {
-
-	DIV						(	float,
-								dst->x,
-								src->x,
-								factor
-							);
-
-	DIV						(	float,
-								dst->y,
-								src->y,
-								factor
-							);
-
-	DIV						(	float,
-								dst->z,
-								src->z,
-								factor
-							);
+	( dst )->x				=	( src )->x	/	fac;
+	( dst )->y				=	( src )->y	/	fac;
+	( dst )->z				=	( src )->z	/	fac;
 }
-
-
 
 
 HOWTO_DOTP					(	Vec2_t,	dst,	src1,	src2	)
 {
-	//*dst					=	*( src1->x )	*	*( src2->x )
-	//						+	*( src1->y )	*	*( src2->y );
-
-	float						*tmp	=	NULL;
-
-	DEF						(	float,
-								tmp
-							);
-
-	MUL						(	float,
-								dst,
-								src1->x,
-								src2->x
-							);
-
-	MUL						(	float,
-								tmp,
-								src1->y,
-								src2->y
-							);
-
-	ADD						(	float,
-								dst,
-								dst,
-								tmp
-							);
-
-	DEL						(	float,
-								tmp
-							);
+	*( dst )				=	( src1 )->x	*	( src2 )->x
+							+	( src1 )->y	*	( src2 )->y;
 }
+
 
 HOWTO_DOTP					(	Vec3_t,	dst,	src1,	src2	)
 {
-	//*dst					=	*( src1->x )	*	*( src2->x )
-	//						+	*( src1->y )	*	*( src2->y )
-	//						+	*( src1->z )	*	*( src2->z );
-
-	float						*y12	=	NULL,
-								*z12	=	NULL;
-
-	MUL						(	float,
-								dst,
-								src1->x,
-								src2->x
-							);
-
-	MUL						(	float,
-								y12,
-								src1->y,
-								src2->y
-							);
-
-	ADD						(	float,
-								dst,
-								dst,
-								y12
-							);
-
-	MUL						(	float,
-								z12,
-								src1->z,
-								src2->z
-							);
-
-	ADD						(	float,
-								dst,
-								dst,
-								z12
-							);
-
-	DEL						(	float,
-								y12
-							);
-
-	DEL						(	float,
-								z12
-							);
+	*( dst )				=	( src1 )->x	*	( src2 )->x
+							+	( src1 )->y	*	( src2 )->y
+							+	( src1 )->z	*	( src2 )->z;
 }
 
 
 HOWTO_CROSP					(	Vec3_t,	dst,	src1,	src2	)
 {
-	*dst->x					=	*src1->y	*	*src2->z
-							-	*src2->y	*	*src1->z;
+	( dst )->x				=	( src1 )->y	*	( src2 )->z
+							-	( src2 )->y	*	( src1 )->z;
 
-	*dst->y					=	*src1->z	*	*src2->x
-							-	*src1->x	*	*src2->z;
+	( dst )->y				=	( src1 )->z	*	( src2 )->x
+							-	( src1 )->x	*	( src2 )->z;
 
-	*dst->z					=	*src1->x	*	*src2->y
-							-	*src1->y	*	*src2->x;
+	( dst )->z				=	( src1 )->x	*	( src2 )->y
+							-	( src1 )->y	*	( src2 )->x;
 }
 
 
 METHOD						(	Vec2_t,
 								get_max_abs_x_y,
 								self,
-								float		*out
+								float			*out
 							)
 {
 	assert					(	out	);
 
-	float						x	=	*self->x,
-								y	=	*self->y;
+	float						x	=	( self )->x,
+								y	=	( self )->y;
 
 	float						max_x_y	=	max( abs( x ), abs( y ) );
 
@@ -903,5 +623,7 @@ METHOD						(	Vec2_t,
 								out,
 								&max_x_y
 							);
+
+	RET						(	self	);
 }
 

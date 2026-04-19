@@ -6,33 +6,7 @@
 
 
 
-
-HOWTO_DEF						(	bool,	self	)
-{
-}
-
-HOWTO_DEF						(	char,	self	)
-{
-}
-
-HOWTO_DEF						(	int,	self	)
-{
-}
-
-HOWTO_DEF						(	long,	self	)
-{
-}
-
-HOWTO_DEF						(	float,	self	)
-{
-}
-
-HOWTO_DEF						(	double,	self	)
-{
-}
-
-
-HOWTO_CONSTRUCT					(	bool,
+HOWTO_INIT						(	bool,
 									self,
 									bool	b
 								)
@@ -40,7 +14,7 @@ HOWTO_CONSTRUCT					(	bool,
 	*self						=	b;
 }
 
-HOWTO_CONSTRUCT					(	char,
+HOWTO_INIT						(	char,
 									self,
 									char	c
 								)
@@ -48,7 +22,7 @@ HOWTO_CONSTRUCT					(	char,
 	*self						=	c;
 }
 
-HOWTO_CONSTRUCT					(	int,
+HOWTO_INIT						(	int,
 									self,
 									int		i
 								)
@@ -56,7 +30,7 @@ HOWTO_CONSTRUCT					(	int,
 	*self						=	i;
 }
 
-HOWTO_CONSTRUCT					(	long,
+HOWTO_INIT						(	long,
 									self,
 									long	l
 								)
@@ -64,7 +38,7 @@ HOWTO_CONSTRUCT					(	long,
 	*self						=	l;
 }
 
-HOWTO_CONSTRUCT					(	float,
+HOWTO_INIT						(	float,
 									self,
 									float	f
 								)
@@ -72,7 +46,7 @@ HOWTO_CONSTRUCT					(	float,
 	*self						=	f;
 }
 
-HOWTO_CONSTRUCT					(	double,
+HOWTO_INIT						(	double,
 									self,
 									double	d
 								)
@@ -80,57 +54,26 @@ HOWTO_CONSTRUCT					(	double,
 	*self						=	d;
 }
 
-HOWTO_DESTRUCT					(	bool,	self	)
+HOWTO_FINI						(	bool,	self	)
 {
 }
 
-HOWTO_DESTRUCT					(	char,	self	)
+HOWTO_FINI						(	char,	self	)
 {
 }
 
-HOWTO_DESTRUCT					(	int,	self	)
+HOWTO_FINI						(	int,	self	)
 {
 }
 
-HOWTO_DESTRUCT					(	long,	self	)
+HOWTO_FINI						(	long,	self	)
 {
 }
 
-HOWTO_DESTRUCT					(	float,	self	)
+HOWTO_FINI						(	float,	self	)
 {
 }
 
-HOWTO_DESTRUCT					(	double,	self	)
+HOWTO_FINI						(	double,	self	)
 {
-}
-
-
-HOWTO_CPY						(	bool,	to,	from	)
-{
-	*to							=	*from;
-}
-
-HOWTO_CPY						(	char,	to,	from	)
-{
-	*to							=	*from;
-}
-
-HOWTO_CPY						(	int,	to,	from	)
-{
-	*to							=	*from;
-}
-
-HOWTO_CPY						(	long,	to,	from	)
-{
-	*to							=	*from;
-}
-
-HOWTO_CPY						(	float,	to,	from	)
-{
-	*to							=	*from;
-}
-
-HOWTO_CPY						(	double,	to,	from	)
-{
-	*to							=	*from;
 }

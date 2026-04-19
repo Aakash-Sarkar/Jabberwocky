@@ -78,6 +78,34 @@
 
 
 
+#define LOG(...)						fprintf	(stderr,  __VA_ARGS__)
+
+//#define																		\
+//assert( cond )							do									\
+//										{								\
+//											if			(	!(cond)	)		\
+//											{								\
+//												LOG		(	"%s: %d\n",		\
+//														__FILE__, __LINE__	\
+//														);					\
+//												exit	(	1	);			\
+//											}								\
+//										}	while		(	0	)
+
+#define assert( x )						
+#define ASSERT(cond, ...)				do {								\
+												if	(!cond) {				\
+													LOG  (__VA_ARGS__);		\
+													exit (1);				\
+												}							\
+										}	while  (0)
+
+
+#define                                                                             \
+sametype( class, var )                  (   typeof( var ) == typeof( class )   )
+
+
+
 
 /////////////////////////////////////////////////////////////////////////////////
 //
@@ -160,32 +188,34 @@
 										}	while(0)
 
 
-#define MEM(class, x, n)				class x [ n ] = { 0 }
+#define																				\
+RSZ( class, ptr, size, new_size )		do											\
+										{											\
+											class			*old_ptr	=	ptr;	\
+																					\
+											assert		(	ptr	);					\
+																					\
+											ptr			=	( class * )				\
+															realloc	(	ptr,		\
+																	sizeof( class )	\
+																	* new_size		\
+																	);				\
+																					\
+											assert		(	ptr	);					\
+																					\
+											memset		(	ptr + size,				\
+															0,						\
+															( new_size - size )	*	\
+															sizeof ( class )		\
+														);							\
+																					\
+										}	while	(	0	)
 
 
 
 #define BITS_PER_BYTE					( 8 )
 #define BITS_TO_BYTES(n)				(( n ) /  ( BITS_PER_BYTE ))
 
-#define LOG(...)						fprintf	(stderr,  __VA_ARGS__)
 
-#define																		\
-assert( cond )							do									\
-										{								\
-											if			(	!(cond)	)		\
-											{								\
-												LOG		(	"%s: %d\n",		\
-														__FILE__, __LINE__	\
-														);					\
-												exit	(	1	);			\
-											}								\
-										}	while		(	0	)
-
-#define ASSERT(cond, ...)				do {								\
-												if	(!cond) {				\
-													LOG  (__VA_ARGS__);		\
-													exit (1);				\
-												}							\
-										}	while  (0)
 
 

@@ -4,377 +4,257 @@
 
 #pragma once
 
-#include "util.h"
-#include "object.h"
+#include "memory.h"
 
 
 
 
-#define																					\
-add( class )									concat3		(	add,	_,	class	)
-
-#define																					\
-HOWTO_ADD( class, dest, op1, op2 )				void add		(	class	)			\
-																(	class	*dest,		\
-																	class	*op1,		\
-																	class	*op2		\
-																)
-
-#define																					\
-_ADD( class, dest, op1, op2 )					do										\
-												{										\
-													assert		(	dest	);			\
-													assert		(	op1		);			\
-													assert		(	op2		);			\
-																						\
-													add			(	class	)			\
-																(	dest,				\
-																	op1,				\
-																	op2					\
-																);						\
-												}	while		(	0	)
 
 
-#define																					\
-ADD( class, dest, op1, op2 )					do										\
-												{										\
-													if			(	!dest	)			\
-														DEF		(	class,				\
-																	dest				\
-																);						\
-																						\
-													_ADD		(	class,				\
-																	dest,				\
-																	op1,				\
-																	op2					\
-																);						\
-												}	while		(	0	)
+#define																						\
+HOWTO_CMP( class, _item1, _item2 )				bool cmp ( class )	(	class	*_item1,	\
+																		class	*_item2		\
+																	)
 
+#define																						\
+CMP( class, _item1, _item2 )					cmp ( class )		(	( _item1 ),			\
+																		( _item2 )			\
+																	)
 
-#define																					\
-sub( class )									concat3			(	sub,	_,	class	)
+#define																						\
+HOWTO_ADD( class, _dst, _op1, _op2 )			void add ( class )	(	class	*_dst,		\
+																		class	*_op1,		\
+																		class	*_op2		\
+																	)
 
-#define																					\
-HOWTO_SUB( class, dest, op1, op2 )				void sub		(	class	)			\
-																(	class	*dest,		\
-																	class	*op1,		\
-																	class	*op2		\
-																)
-
-#define																					\
-_SUB( class, dest, op1, op2 )					do										\
-												{										\
-													assert		(	dest	);			\
-													assert		(	op1		);			\
-													assert		(	op2		);			\
-																						\
-													sub			(	class	)			\
-																(	dest,				\
-																	op1,				\
-																	op2					\
-																);						\
-												}	while		(	0	)
-
-
-#define																					\
-SUB( class, dest, op1, op2 )					do										\
-												{										\
-													if			(	!dest	)			\
-														DEF		(	class,				\
-																	dest				\
-																);						\
-																						\
-													_SUB		(	class,				\
-																	dest,				\
-																	op1,				\
-																	op2					\
-																);						\
-												}	while		(	0	)
-
-
-#define																					\
-INC( class, self, inc )							do										\
-												{										\
-													ADD			(	class,				\
-																	self,				\
-																	self,				\
-																	inc					\
-																);						\
-												}	while		(	0	)
-
-
-#define																					\
-DEC( class, self, dec )							do										\
-												{										\
-													SUB			(	class,				\
-																	self,				\
-																	self,				\
-																	dec					\
-																);						\
-												}	while		(	0	)
-
-
-#define																					\
-scaler_mul( class )								concat3			(	scaler_mul,			\
-																	_,					\
-																	class				\
-																)
-
-#define																					\
-HOWTO_MUL( class, dest, src, factor )			void									\
-												scaler_mul		(	class	)			\
-																(	class	*dest,		\
-																	class	*src,		\
-																	float	*factor		\
-																)
-
-#define																					\
-_MUL( class, dest, src, factor )				do										\
-												{										\
-													assert		(	dest	);			\
-													assert		(	src		);			\
-													assert		(	factor	);			\
-																						\
-													scaler_mul	(	class	)			\
-																(	dest,				\
-																	src,				\
-																	factor				\
-																);						\
-												}	while		(	0	)
-
-
-#define																					\
-MUL( class, dest, src, factor )					do										\
-												{										\
-													if			(	!dest	)			\
-														DEF		(	class,				\
-																	dest				\
-																);						\
-																						\
-													_MUL		(	class,				\
-																	dest,				\
-																	src,				\
-																	factor				\
-																);						\
-												}	while		(	0	)
+#define																						\
+ADD( class, _dst, _op1, _op2 )					do											\
+												{											\
+													assert			(	_dst	);			\
+													assert			(	_op1	);			\
+													assert			(	_op2	);			\
+																							\
+													add	( class )	(	( _dst ),			\
+																		( _op1 ),			\
+																		( _op2 )			\
+																	);						\
+																							\
+												}	while			(	0	)
 
 
 
-#define																					\
-scaler_div( class )								concat3			(	scaler_div,			\
-																	_,					\
-																	class				\
-																)
+#define																						\
+HOWTO_SUB( class, _dst, _op1, _op2 )			void sub ( class )	(	class	*_dst,		\
+																		class	*_op1,		\
+																		class	*_op2		\
+																	)
 
-#define																					\
-HOWTO_DIV( class, dest, src, factor )			void									\
-												scaler_div		(	class	)			\
-																(	class	*dest,		\
-																	class	*src,		\
-																	float	*factor		\
-																)
+#define																						\
+SUB( class, _dst, _op1, _op2 )					do											\
+												{											\
+													assert			(	_dst	);			\
+													assert			(	_op1	);			\
+													assert			(	_op2	);			\
+																							\
+													sub ( class )	(	( _dst ),			\
+																		( _op1 ),			\
+																		( _op2 )			\
+																	);						\
+																							\
+												}	while			(	0	)
 
-#define																					\
-_DIV( class, dest, src, factor )			do											\
-											{											\
-												assert			(	dest	);			\
-												assert			(	src		);			\
-																						\
-												scaler_div		(	class	)			\
-																(	dest,				\
-																	src,				\
-																	factor				\
-																);						\
-											}	while			(	0	)
+#define																						\
+HOWTO_INC( class, _self )						void inc ( class )	(	class	*_self	)
 
-#define																					\
-DIV(class, dest, src, factor)				do											\
-											{											\
-												if				(	!dest	)			\
-												{										\
-													DEF			(	class,				\
-																	dest				\
-																);						\
-												}										\
-																						\
-												_DIV			(	class,				\
-																	dest,				\
-																	src,				\
-																	factor				\
-																);						\
-										}	while				(	0	)
+#define																						\
+INC( class, _self )								inc ( class )		(	_self	)
 
 
 
-#define																					\
-dot_prod( class )								concat3			(	dotp,				\
-																	_,					\
-																	class				\
-																)
+#define																						\
+HOWTO_DEC( class, _self )						void dec ( class )	(	class	*_self	)
 
-#define																					\
-HOWTO_DOTP( class, dest, src1, src2 )			void									\
-												dot_prod		(	class	)			\
-																(	float	*dest,		\
-																	class	*src1,		\
-																	class	*src2		\
-																)
-
-#define																					\
-_DOTP( class, dest, src1, src2 )				do										\
-												{										\
-													assert		(	src1	);			\
-													assert		(	src2	);			\
-																						\
-													dot_prod	(	class	)			\
-																(	dest,				\
-																	src1,				\
-																	src2				\
-																);						\
-												}	while		(	0	)
+#define																						\
+DEC( class, _self, _dec )						dec ( class )		(	_self	)
 
 
-#define																					\
-DOTP( class, dest, src1, src2 )					do										\
-												{										\
-													if			(	!dest	)			\
-														DEF		(	float,				\
-																	dest				\
-																);						\
-																						\
-													_DOTP		(	class,				\
-																	dest,				\
-																	src1,				\
-																	src2				\
-																);						\
-												}	while		(	0	)
+#define																						\
+HOWTO_MUL( class, _dest, _src, _factor )		void										\
+												mul ( class )		(	class	*_dest,		\
+																		class	*_src,		\
+																		float	_factor		\
+																	)
+
+#define																						\
+MUL( class, _dest, _src, _factor )				do											\
+												{											\
+													assert			(	_dest	);			\
+													assert			(	_src	);			\
+													assert			(	_factor	);			\
+																							\
+													mul ( class )	(	( _dest ),			\
+																		( _src ),			\
+																		( _factor )			\
+																	);						\
+																							\
+												}	while			(	0	)
 
 
 
-#define																					\
-cross_prod( class )								concat3			(	crossp,				\
-																	_,					\
-																	class				\
-																)
-
-#define																					\
-HOWTO_CROSP( class, dest, src1, src2 )			void									\
-												cross_prod		(	class	)			\
-																(	class	*dest,		\
-																	class	*src1,		\
-																	class	*src2		\
-																)
-
-#define																					\
-_CROSP( class, dest, src1, src2 )				do										\
-												{										\
-													assert		(	dest	);			\
-													assert		(	src1	);			\
-													assert		(	src2	);			\
-																						\
-													cross_prod	(	class	)			\
-																(	dest,				\
-																	src1,				\
-																	src2				\
-																);						\
-												}	while		(	0	)
 
 
-#define																					\
-CROSP( class, dest, src1, src2 )				do										\
-												{										\
-													if			(	!dest	)			\
-														DEF		(	class,				\
-																	dest				\
-																);						\
-																						\
-													_CROSP		(	class,				\
-																	dest,				\
-																	src1,				\
-																	src2				\
-																);						\
-												}	while		(	0	)
+#define																						\
+HOWTO_DIV( class, _dest, _src, _factor )		void										\
+												div ( class )		(	class	*_dest,		\
+																		class	*_src,		\
+																		float	_factor		\
+																	)
+
+#define																						\
+DIV( class, _dest, _src, _factor )			do												\
+											{												\
+												assert				(	_dest	);			\
+												assert				(	_src	);			\
+																							\
+												div ( class )		(	( _dest ),			\
+																		( _src ),			\
+																		( _factor )			\
+																	);						\
+																							\
+											}	while				(	0	)
 
 
-#define																					\
-SWP( class, item1, item2 )						do										\
-												{										\
-													assert		(	item1	);			\
-													assert		(	item2	);			\
-																						\
-													class			*tmp	=	NULL;	\
-																						\
-													CPY			(	class,				\
-																	tmp,				\
-																	item1				\
-																);						\
-																						\
-													CPY			(	class,				\
-																	item1,				\
-																	item2				\
-																);						\
-																						\
-													CPY			(	class,				\
-																	item2,				\
-																	tmp					\
-																);						\
-																						\
-													DEL			(	class,				\
-																	tmp					\
-																);						\
+#define																						\
+HOWTO_DOTP( class, _dest, _src1, _src2 )		void										\
+												dotp ( class )		(	float	*_dest,		\
+																		class	*_src1,		\
+																		class	*_src2		\
+																	)
+
+#define																						\
+DOTP( class, _dest, _src1, _src2 )			do												\
+											{												\
+												assert				(	_dest	);			\
+												assert				(	_src1	);			\
+												assert				(	_src2	);			\
+																							\
+												dotp ( class )		(	( _dest ),			\
+																		( _src1 ),			\
+																		( _src2 )			\
+																	);						\
+																							\
+											}	while				(	0	)
+
+
+
+
+
+#define																						\
+HOWTO_CROSP( class, _dest, _src1, _src2 )		void										\
+												crosp ( class )		(	class	*_dest,		\
+																		class	*_src1,		\
+																		class	*_src2		\
+																	)
+
+#define																						\
+CROSP( class, _dest, _src1, _src2 )				do											\
+												{											\
+													assert			(	_dest	);			\
+													assert			(	_src1	);			\
+													assert			(	_src2	);			\
+																							\
+													crosp ( class )	(	( _dest ),			\
+																		( _src1 ),			\
+																		( _src2	)			\
+																	);						\
+																							\
+												}	while			(	0	)
+
+
+#define																						\
+SWP( class, _item1, _item2 )					do											\
+												{											\
+													assert		(	_item1	);				\
+													assert		(	_item2	);				\
+																							\
+													class			*tmp	=	NULL;		\
+																							\
+													DEF			(	class,					\
+																	( tmp )					\
+																);							\
+																							\
+													CPY			(	class,					\
+																	( tmp ),				\
+																	( _item1 )				\
+																);							\
+																							\
+													CPY			(	class,					\
+																	( _item1 ),				\
+																	( _item2 )				\
+																);							\
+																							\
+													CPY			(	class,					\
+																	( _item2 ),				\
+																	( tmp )					\
+																);							\
+																							\
+													DEL			(	class,					\
+																	( tmp )					\
+																);							\
+																							\
 												}	while		(	0	)
 
 
 
 
-HOWTO_ADD										(	char,	dest,	op1,	op2		);
+HOWTO_ADD										(	char,	dst,	op1,	op2		);
 
-HOWTO_ADD										(	int,	dest,	op1,	op2		);
+HOWTO_ADD										(	int,	dst,	op1,	op2		);
 
-HOWTO_ADD										(	long,	dest,	op1,	op2		);
+HOWTO_ADD										(	long,	dst,	op1,	op2		);
 
-HOWTO_ADD										(	float,	dest,	op1,	op2		);
+HOWTO_ADD										(	float,	dst,	op1,	op2		);
 
-HOWTO_ADD										(	double,	dest,	op1,	op2		);
-
-
-
-
-HOWTO_SUB										(	char,	dest,	op1,	op2		);
-
-HOWTO_SUB										(	int,	dest,	op1,	op2		);
-
-HOWTO_SUB										(	long,	dest,	op1,	op2		);
-
-HOWTO_SUB										(	float,	dest,	op1,	op2		);
-
-HOWTO_SUB										(	double,	dest,	op1,	op2		);
+HOWTO_ADD										(	double,	dst,	op1,	op2		);
 
 
 
 
-HOWTO_MUL										(	char,	dest,	src,	factor	);
+HOWTO_SUB										(	char,	dst,	op1,	op2		);
 
-HOWTO_MUL										(	int,	dest,	src,	factor	);
+HOWTO_SUB										(	int,	dst,	op1,	op2		);
 
-HOWTO_MUL										(	long,	dest,	src,	factor	);
+HOWTO_SUB										(	long,	dst,	op1,	op2		);
 
-HOWTO_MUL										(	float,	dest,	src,	factor	);
+HOWTO_SUB										(	float,	dst,	op1,	op2		);
 
-HOWTO_MUL										(	double,	dest,	src,	factor	);
-
-
+HOWTO_SUB										(	double,	dst,	op1,	op2		);
 
 
-HOWTO_DIV										(	char,	dest,	src,	factor	);
 
-HOWTO_DIV										(	int,	dest,	src,	factor	);
 
-HOWTO_DIV										(	long,	dest,	src,	factor	);
+HOWTO_MUL										(	char,	dst,	src,	fac	);
 
-HOWTO_DIV										(	float,	dest,	src,	factor	);
+HOWTO_MUL										(	int,	dst,	src,	fac	);
 
-HOWTO_DIV										(	double,	dest,	src,	factor	);
+HOWTO_MUL										(	long,	dst,	src,	fac	);
+
+HOWTO_MUL										(	float,	dst,	src,	fac	);
+
+HOWTO_MUL										(	double,	dst,	src,	fac	);
+
+
+
+
+HOWTO_DIV										(	char,	dst,	src,	fac	);
+
+HOWTO_DIV										(	int,	dst,	src,	fac	);
+
+HOWTO_DIV										(	long,	dst,	src,	fac	);
+
+HOWTO_DIV										(	float,	dst,	src,	fac	);
+
+HOWTO_DIV										(	double,	dst,	src,	fac	);
 
 
 

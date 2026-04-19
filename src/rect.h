@@ -8,7 +8,9 @@
 
 #include "color.h"
 #include "geometry.h"
-#include "util.h"
+#include "memory.h"
+
+
 
 /**
  * @brief Rect: A Rectangle
@@ -48,7 +50,7 @@ typedef						struct		Grid	{	int					width;
  * 
  * @return: true if the pixel is at the border, false otherwise
  */
-bool						pixel_at_border		(	Rect_t*				rect,
+bool						pixel_at_border		(	Rect_t				*rect,
 													int					posX,
 													int					posY,
 													int					border_len	);
@@ -59,27 +61,31 @@ bool						pixel_at_border		(	Rect_t*				rect,
  *
  * @return: SUCCESS if operation succeeds, FAIL otherwise
  */
+
+
 HOWTO_DRAW										(	Rect_t,
 													self,
-													Color_t*			color,
-													Color_buffer_t*		colorbuf	);
+													Color_t				*clr,
+													Color_buffer_t		*clrbuf
+												);
 
 
 HOWTO_DRAW										(	Grid_t,
 													grid,
-													Color_t*			color,
-													Color_buffer_t*		colorbuf	);
-
-
-HOWTO_CONSTRUCT									(	Rect_t,
-													self,
-													int				posx,
-													int				posY,
-													int				width,
-													int				height
+													Color_t				*clr,
+													Color_buffer_t		*clrbuf
 												);
 
-HOWTO_DESTRUCT									(	Rect_t,			self	);
+
+HOWTO_INIT										(	Rect_t,
+													self,
+													int					posx,
+													int					posY,
+													int					width,
+													int					height
+												);
+
+HOWTO_FINI										(	Rect_t,				self	);
 
 /**
  * Helper macro to iterate over all rectangles in a color buffer

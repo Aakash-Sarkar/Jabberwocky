@@ -6,43 +6,48 @@
 
 
 
-HOWTO_CONSTRUCT				(	Line_t,
+HOWTO_INIT					(	Line_t,
 								self,
 								Point2d_t	*p1,
-								Point2d_t	*p2		)
+								Point2d_t	*p2
+							)
 {
-	CPY						(	Point2d_t,
-								self->p1,
-								p1
+	MCPY					(	Point2d_t,
+								( self )->p1,
+								( p1 )
 							);
 
-	CPY						(	Point2d_t,
-								self->p2,
-								p2
+	MCPY					(	Point2d_t,
+								( self )->p2,
+								( p2 )
 							);
 }
 
-HOWTO_DESTRUCT				(	Line_t,		self	)
+
+HOWTO_FINI					(	Line_t,		self	)
 {
+
 	DEL						(	Point2d_t,
-								self->p1
+								( self )->p1
 							);
 
 	DEL						(	Point2d_t,
-								self->p2
+								( self )->p2
 							);
 }
 
-HOWTO_CPY					(	Line_t,		to,		from	)
+
+HOWTO_CPY					(	Line_t,		to,		frm	)
 {
+
 	CPY						(	Point2d_t,
-								to->p1,
-								from->p1
+								( to )->p1,
+								( frm )->p1
 							);
 
 	CPY						(	Point2d_t,
-								to->p2,
-								from->p2
+								( to )->p2,
+								( frm )->p2
 							);
 }
 
@@ -129,7 +134,7 @@ HOWTO_DRAW					(	Line_t,
 							)
 {
 
-	Point2d_t					*slope	=	NULL;
+	Point2d_t					*slope		=	NULL;
 
 	DEF						(	Point2d_t,
 								slope
@@ -141,7 +146,7 @@ HOWTO_DRAW					(	Line_t,
 								slope
 							);
 
-	float						*run	=	NULL;
+	float						*run		=	NULL;
 
 	DEF						(	float,
 								run
@@ -166,7 +171,7 @@ HOWTO_DRAW					(	Line_t,
 
 	CPY						(	Point2d_t,
 								point,
-								self->p1
+								( self )->p1
 							);
 
 	for						(	int i = 0;	i <= *run;	i++		)
@@ -181,14 +186,14 @@ HOWTO_DRAW					(	Line_t,
 		float					posX	=	0,
 								posY	=	0;
 
-		posX				=	*o_point->v->x;
-		posY				=	*o_point->v->y;
+		posX				=	( o_point )->v->x;
+		posY				=	( o_point )->v->y;
 
 		paint_color			(	color,
 								colorbuf,
 								PIXELFORMAT_ARGB8888,
-								round( 	posX ),
-								round(	posY ),
+								round( posX ),
+								round( posY ),
 								0
 							);
 
@@ -198,6 +203,50 @@ HOWTO_DRAW					(	Line_t,
 								slope
 							);
 	}
+
+	//int							x_start		=	0,
+	//							x_end		=	0;
+
+	//int							y_start		=	0,
+	//							y_end		=	0;
+
+	//int							x_inc1		=	0,
+	//							x_inc2		=	0;
+
+	//int							y_inc1		=	0,
+	//							y_inc2		=	0;
+
+	//int							origin_x	=	0,
+	//							origin_y	=	0;
+
+
+	//x_start					=	*self->p1->v->x;
+	//x_end					=	*self->p2->v->x;
+
+
+	//y_start					=	*self->p1->v->y;
+	//y_end					=	*self->p2->v->y;
+
+
+	//x_inc1					=	*slope->v->x;
+	//x_inc2					=	0;
+
+
+	//y_inc1					=	*slope->v->y;
+	//y_inc2					=	0;
+
+
+	//origin_x				=	*origin->v->x;
+	//origin_y				=	*origin->v->y;
+
+
+	//_FILL					(	x_start,	x_end,
+	//							y_start,	y_end,
+	//							x_inc1,		x_inc2,
+	//							y_inc1,		y_inc2,
+	//							origin_x,	origin_y,
+	//							color,		colorbuf
+	//						);
 
 	DEL						(	Point2d_t,
 								point
@@ -220,57 +269,67 @@ HOWTO_DRAW					(	Line_t,
 METHOD						(	Line_t,
 								get_run,
 								self,
-								float		*run
+								float			*run
 							)
 {
 
 	assert					(	run		);
 
-	//	[ p12 ]	=	[	vector from p1 --> p2	]
+	//	[ p12 ]		=	[	vector from p1 --> p2	]
 
 	Point2d_t					*p12	=	NULL;
 
+	DEF						(	Point2d_t,
+								p12
+							);
+
 	SUB						(	Point2d_t,
 								p12,
-								self->p2,
-								self->p1
+								( self )->p2,
+								( self )->p1
 							);
 
 	REQ						(	Point2d_t,
 								get_max_abs_x_y,
-								p12,
-								run
+								( p12 ),
+								( run )
 							);
+
+	DEL						(	Point2d_t,
+								p12
+							);
+
+	RET						(	self	);
 }
 
 
 METHOD						(	Line_t,
 								get_slope,
 								self,
-								Point2d_t	*slope
+								Point2d_t		*slope
 							)
 {
 
 	assert					(	slope	);
 
-	float						*run	=	NULL;
-
-	DEF						(	float,
-								run
-							);
+	float						run		=	0.0f;
 
 	Point2d_t					*p12	=	NULL;
 
+	DEF						(	Point2d_t,
+								p12
+							);
+
 	SUB						(	Point2d_t,
 								p12,
-								self->p2,
-								self->p1
+								( self )->p2,
+								( self )->p1
 							);
 
 	REQ						(	Line_t,
 								get_run,
-								self,
-								run
+								( self ),
+								( &run )
 							);
 
 	//////////////////////////////////////////////////////////////////////////////
@@ -282,9 +341,16 @@ METHOD						(	Line_t,
 	//////////////////////////////////////////////////////////////////////////////
 
 	DIV						(	Point2d_t,
-								slope,
-								p12,
-								run
+								( slope ),
+								( p12 ),
+								( run )
 							);
+
+	DEL						(	Point2d_t,
+								( p12 )
+							);
+
+	RET						(	self	);
+
 }
 

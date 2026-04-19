@@ -7,212 +7,309 @@
 
 
 
+ /////////////////////////////////////////////////////////////////////////////////
+ //						Memory Ops Implementation
+ //////////////////////////////////////////////////////////////////////////////////
 
-HOWTO_DEF						(	Point2d_t,	self	)
+
+HOWTO_DEF						(	Point2d_t,		self	)
 {
-
-	DEF							(	Vec2_t,
-									self->v
+	NEW							(	Point2d_t,
+									self,
+									0.0f,
+									0.0f
 								);
+
+	RET							(	self	);
 }
 
-HOWTO_CONSTRUCT					(	Point2d_t,
+HOWTO_INIT						(	Point2d_t,
 									self,
-									float		x,
-									float		y
+									float			x,
+									float			y
 								)
 {
-
 	NEW							(	Vec2_t,
-									self->v,
-									x,			y
+									( self )->v,
+									x,
+									y
 								);
 }
 
-HOWTO_DESTRUCT					(	Point2d_t,	self	)
+HOWTO_FINI						(	Point2d_t,		self	)
 {
-
-	DEL							(	Vec2_t,
-									self->v
+	DEL							(	Vec2_t,	
+									( self )->v
 								);
 }
 
-HOWTO_DEF						(	Point3d_t,	self	)
+HOWTO_DEF						(	Point3d_t,		self	)
 {
-
-	DEF							(	Vec3_t,
-									self->v
+	NEW							(	Point3d_t,
+									self ,
+									0.0f,
+									0.0f,
+									0.0f
 								);
+
+	RET							(	self	);
 }
 
-HOWTO_CONSTRUCT					(	Point3d_t,
+HOWTO_INIT						(	Point3d_t,
 									self,
-									float		x,
-									float		y,
-									float		z
+									float			x,
+									float			y,
+									float			z
 								)
 {
-
 	NEW							(	Vec3_t,
-									self->v,
+									( self )->v,
 									x,	y,	z
 								);
 }
 
-HOWTO_DESTRUCT					(	Point3d_t,	self	)
-{
 
+HOWTO_FINI						(	Point3d_t,		self	)
+{
 	DEL							(	Vec3_t,
-									self->v
+									( self )->v
 								);
 }
 
-HOWTO_DEF						(	ARRAY	(	Point2d_t	),	self	)
+
+HOWTO_CPY						(	Point2d_t,	to,		frm	)
+{
+	MCPY						(	Vec2_t,
+									( to )->v,
+									( frm )->v
+								);
+}
+
+HOWTO_CPY						(	Point3d_t,	to,		frm	)
 {
 
-	DEF							(	ARRAY	(	Vec2_t	),
-									self->v
+	MCPY						(	Vec3_t,
+									( to )->v,
+									( frm )->v
 								);
-
-	self->count					=	0;
-}
-
-HOWTO_DEF						(	ARRAY	(	Point3d_t	),	self	)
-{
-
-	DEF							(	ARRAY	(	Vec3_t	),
-									self->v
-								);
-
-	self->count					=	0;
 }
 
 
-HOWTO_DESTRUCT					(	ARRAY	(	Point2d_t	),	self	)
-{
-
-	DEL							(	ARRAY	(	Vec2_t	),
-									self->v
-								);
-
-	self->count				=	0;
-}
-
-HOWTO_DESTRUCT					(	ARRAY	(	Point3d_t	),	self	)
-{
-
-	DEL							(	ARRAY	(	Vec3_t	),
-									self->v
-								);
-
-	self->count				=	0;
-}
+/////////////////////////////////////////////////////////////////////////////////
+//						Iterator Ops Implementation
+//////////////////////////////////////////////////////////////////////////////////
 
 
-HOWTO_LD						(	Point2d_t,
-									ptr,
-									arr,
-									idx
+HOWTO_INIT						(	itr ( Point2d_t ),
+									self,
+									const Point2d_t			*ptr,
+									unsigned int			pos,
+									IterType_t				typ
 								)
 {
-
-	LD							(	Vec2_t,
-									ptr->v,
-									arr->v,
-									idx
+	INITITR						(	Point2d_t,
+									self,
+									ptr,
+									pos,
+									typ
 								);
 }
 
-HOWTO_LD						(	Point3d_t,
-									ptr,
-									arr,
-									idx
+HOWTO_INIT						(	itr ( Point3d_t ),
+									self,
+									const Point3d_t			*ptr,
+									unsigned int			pos,
+									IterType_t				typ
 								)
 {
-
-	LD							(	Vec3_t,
-									ptr->v,
-									arr->v,
-									idx
+	INITITR						(	Point3d_t,
+									self,
+									ptr,
+									pos,
+									typ
 								);
 }
 
-HOWTO_STR						(	Point2d_t,	ptr,	arr,	idx	)
+HOWTO_DEF						(	itr ( Point2d_t ),		self	)
+{
+	NEW							(	itr ( Point2d_t ),
+									self,
+									NULL,
+									0,
+									MAX_ITER
+								);
+
+	RET							(	self	);
+}
+
+
+HOWTO_DEF						(	itr ( Point3d_t ),		self	)
 {
 
-	STR							(	Vec2_t,
-									ptr->v,
-									arr->v,
-									idx
+	NEW							(	itr ( Point3d_t ),
+									self,
+									NULL,
+									0,
+									MAX_ITER
 								);
+
+	RET							(	self	);
 }
 
-HOWTO_STR						(	Point3d_t,	ptr,	arr,	idx	)
+
+HOWTO_FINI						(	itr ( Point2d_t ),		self	)
 {
-
-	STR							(	Vec3_t,
-									ptr->v,
-									arr->v,
-									idx
+	FINIITR						(	Point2d_t,
+									self
 								);
 }
 
-
-HOWTO_PUSH						(	Point2d_t,	ptr,	arr		)
+HOWTO_FINI						(	itr ( Point3d_t ),		self	)
 {
-
-	PUSH						(	Vec2_t,
-									ptr->v,
-									arr->v
+	FINIITR						(	Point3d_t,
+									self
 								);
 }
 
-HOWTO_PUSH						(	Point3d_t,	ptr,	arr		)
+
+HOWTO_CMP						(	itr ( Point2d_t ),		it1,	it2	)
 {
-
-	PUSH						(	Vec3_t,
-									ptr->v,
-									arr->v
+	CMPITR						(	Point2d_t,
+									it1,
+									it2
 								);
 }
 
-
-HOWTO_CPY						(	Point2d_t,	to,		from	)
+HOWTO_CMP						(	itr ( Point3d_t ),		it1,	it2	)
 {
-
-	CPY							(	Vec2_t,
-									to->v,
-									from->v
+	CMPITR						(	Point3d_t,
+									it1,
+									it2
 								);
 }
 
-HOWTO_CPY						(	Point3d_t,	to,		from	)
+
+HOWTO_INC						(	itr ( Point2d_t ),		self	)
 {
+	INCITR						(	Point2d_t,
+									self
+								);
+}
 
-	CPY							(	Vec3_t,
-									to->v,
-									from->v
+HOWTO_INC						(	itr ( Point3d_t ),		self	)
+{
+	INCITR						(	Point3d_t,
+									self
 								);
 }
 
 
+HOWTO_DEC						(	itr ( Point2d_t ),		self	)
+{
+	DECITR						(	Point2d_t,
+									( self )
+								);
+}
+
+HOWTO_DEC						(	itr ( Point3d_t ),		self	)
+{
+	DECITR						(	Point3d_t,
+									( self )
+								);
+}
+
+
+/////////////////////////////////////////////////////////////////////////////////
+//						Dynamic array Operations Implementation
+//////////////////////////////////////////////////////////////////////////////////
+
+
+HOWTO_INIT						(	arr ( Point2d_t ),
+									self,
+									const Point2d_t			*init_list,
+									unsigned int			count
+								)
+{
+	INITARR						(	Point2d_t,
+									self,
+									init_list,
+									count
+								);
+}
+
+HOWTO_INIT						(	arr ( Point3d_t ),
+									self,
+									const Point3d_t			*init_list,
+									unsigned int			count
+								)
+{
+	INITARR						(	Point3d_t,
+									self,
+									init_list,
+									count
+								);
+}
+
+
+HOWTO_DEF						(	arr ( Point2d_t ),		self	)
+{
+	NEW							(	arr ( Point2d_t ),
+									self,
+									NULL,
+									0
+								);
+
+	RET							(	self	);
+
+}
+
+HOWTO_DEF						(	arr ( Point3d_t ),		self	)
+{
+	NEW							(	arr ( Point3d_t ),
+									self,
+									NULL,
+									0
+								);
+
+	RET							(	self	);
+}
+
+
+HOWTO_FINI						(	arr ( Point2d_t ),		self	)
+{
+	FINIARR						(	Point2d_t,
+									( self )
+								);
+}
+
+HOWTO_FINI						(	arr ( Point3d_t ),		self	)
+{
+	FINIARR						(	Point3d_t,
+									( self )
+								);
+}
+
+
+/////////////////////////////////////////////////////////////////////////////////
+//						Geometric Operations Implementation
+//////////////////////////////////////////////////////////////////////////////////
 
 
 HOWTO_ROT						(	Point2d_t,
 									self,
-									Vec2_t				*angle
+									Vec2_t		*angle
 								)
 {
 }
 
 HOWTO_ROT						(	Point3d_t,
 									self,
-									Vec3_t				*angle
+									Vec3_t		*angle
 								)
 {
 
 	ROT							(	Vec3_t,	
-									self->v,
+									( self )->v,
 									angle
 								);
 }
@@ -223,13 +320,13 @@ HOWTO_ROT						(	Point3d_t,
 HOWTO_DRAW						(	Point2d_t,
 									self,
 									Point2d_t			*origin,
-									Color_t				*color,
-									Color_buffer_t		*colorbuf	)
+									Color_t				*clr,
+									Color_buffer_t		*clrbuf
+								)
 {
 
-	Rect_t							*rect		=	NULL;
-
-	Point2d_t						*o_point	=	NULL;
+	Rect_t							*rect		=		NULL;
+	Point2d_t						*o_point	=		NULL;
 
 	DEF							(	Point2d_t,
 									o_point
@@ -244,21 +341,20 @@ HOWTO_DRAW						(	Point2d_t,
 									origin
 								);
 
-	int								posX	=	*o_point->v->x,
-									posY	=	*o_point->v->y;
+	int								posX	=	( o_point )->v->x,
+									posY	=	( o_point )->v->y;
 
 	NEW							(	Rect_t,
 									rect,
 									posX,
 									posY,
-									4,
-									4
+									4,	4
 								);
 
 	DRAW						(	Rect_t,
 									rect,
-									color,
-									colorbuf
+									clr,
+									clrbuf
 								);
 
 	DEL							(	Rect_t,
@@ -270,173 +366,163 @@ HOWTO_DRAW						(	Point2d_t,
 								);
 }
 
-HOWTO_DRAW						(	Point3d_t,
-									self,
-									Point2d_t			*origin,
-									Color_t				*color,
-									Color_buffer_t		*colorbuf	)
+
+
+HOWTO_DRAW					(	Point3d_t,
+								self,
+								Point2d_t			*orig,
+								Color_t				*clr,
+								Color_buffer_t		*clrbuf
+							)
 {
 
-	Point2d_t						*proj	=	NULL;
+	Point2d_t					*prj	=	NULL;
 
-	DEF							(	Point2d_t,
-									proj
-								);
+	DEF						(	Point2d_t,
+								prj
+							);
 
-	PROJ						(	Point2d_t,		Point3d_t,
-									proj,			self,
-									PERSPECTIVE
-								);
+	PROJ					(	Point2d_t,			Point3d_t,
+								prj,				self,
+								PERSPECTIVE
+							);
 
-	DRAW						(	Point2d_t,
-									proj,
-									origin,
-									color,
-									colorbuf
-								);
+	DRAW					(	Point2d_t,
+								prj,
+								orig,
+								clr,
+								clrbuf
+							);
 
-	DEL							(	Point2d_t,
-									proj
-								);
+	DEL						(	Point2d_t,
+								prj
+							);
 }
 
 
 
 
-HOWTO_PROJ						(	Point2d_t,			Point3d_t,
-									to,					from,
-									Projection_type_t	type		)
+HOWTO_PROJ					(	Point2d_t,			Point3d_t,
+								to,					frm,
+								Projection_type_t	typ
+							)
 {
 
-	PROJ						(	Vec2_t,				Vec3_t,
-									to->v,				from->v,
-									type
-								);
+	PROJ					(	Vec2_t,				Vec3_t,
+								( to )->v,			( frm )->v,
+								typ
+							);
 }
-
-
 
 
 //////////////////////////////////////////////////////////////////////////////////
-//				Arithmetic Operations Implementation
+//						Arithmetic Operations Implementation
 //////////////////////////////////////////////////////////////////////////////////
 
 
 HOWTO_ADD					(	Point2d_t,	dst,	op1,	op2	)
 {
-
 	ADD						(	Vec2_t,
-								dst->v,
-								op1->v,
-								op2->v
+								( dst )->v,
+								( op1 )->v,
+								( op2 )->v
 							);
 }
 
 HOWTO_ADD					(	Point3d_t,	dst,	op1,	op2	)
 {
-
 	ADD						(	Vec3_t,
-								dst->v,
-								op1->v,
-								op2->v
+								( dst )->v,
+								( op1 )->v,
+								( op2 )->v
 							);
 }
 
 
 HOWTO_SUB					(	Point2d_t,	dst,	op1,	op2	)
 {
-
 	SUB						(	Vec2_t,
-								dst->v,
-								op1->v,	
-								op2->v
+								( dst )->v,
+								( op1 )->v,	
+								( op2 )->v
 							);
 }
 
 HOWTO_SUB					(	Point3d_t,	dst,	op1,	op2	)
 {
-
 	SUB						(	Vec3_t,
-								dst->v,
-								op1->v,
-								op2->v
+								( dst )->v,
+								( op1 )->v,
+								( op2 )->v
 							);
 }
 
 
-HOWTO_MUL					(	Point2d_t,	dst,	src,	factor	)
+HOWTO_MUL					(	Point2d_t,	dst,	src,	fac	)
 {
-
 	MUL						(	Vec2_t,
-								dst->v,
-								src->v,
-								factor
+								( dst )->v,
+								( src )->v,
+								( fac )
 							);
 
 }
 
-HOWTO_MUL					(	Point3d_t,	dst,	src,	factor	)
+HOWTO_MUL					(	Point3d_t,	dst,	src,	fac	)
 {
-
 	MUL						(	Vec3_t,
-								dst->v,
-								src->v,
-								factor
+								( dst )->v,
+								( src )->v,
+								( fac )
 							);
 }
 
 
-HOWTO_DIV					(	Point2d_t,	dst,	src,	factor	)
+HOWTO_DIV					(	Point2d_t,	dst,	src,	fac	)
 {
-
 	DIV						(	Vec2_t,
-								dst->v,
-								src->v,
-								factor
+								( dst )->v,
+								( src )->v,
+								( fac )
 							);
 
 }
 
-HOWTO_DIV					(	Point3d_t,	dst,	src,	factor	)
+HOWTO_DIV					(	Point3d_t,	dst,	src,	fac	)
 {
-
 	DIV						(	Vec3_t,
-								dst->v,
-								src->v,
-								factor
+								( dst )->v,
+								( src )->v,
+								( fac )
 							);
 }
 
 
 HOWTO_DOTP					(	Point2d_t,	dst,	src1,	src2	)
 {
-
 	DOTP					(	Vec2_t,
-								dst,
-								src1->v,
-								src2->v
+								( dst ),
+								( src1 )->v,
+								( src2 )->v
 							);
 }
 
-
 HOWTO_DOTP					(	Point3d_t,	dst,	src1,	src2	)
 {
-
 	DOTP					(	Vec3_t,
-								dst,
-								src1->v,
-								src2->v
+								( dst ),
+								( src1 )->v,
+								( src2 )->v
 							);
 }
 
 
 HOWTO_CROSP					(	Point3d_t,	dst,	src1,	src2	)
 {
-
 	CROSP					(	Vec3_t,
-								dst->v,
-								src1->v,
-								src2->v
+								( dst )->v,
+								( src1 )->v,
+								( src2 )->v
 							);
 }
 
@@ -444,14 +530,16 @@ HOWTO_CROSP					(	Point3d_t,	dst,	src1,	src2	)
 METHOD						(	Point2d_t,
 								get_max_abs_x_y,
 								self,
-								float		*out
+								float				*out
 							)
 {
 	assert					(	out	);
 
 	REQ						(	Vec2_t,
 								get_max_abs_x_y,
-								self->v,
-								out
+								( self )->v,
+								( out )
 							);
+
+	RET						(	self	);
 }

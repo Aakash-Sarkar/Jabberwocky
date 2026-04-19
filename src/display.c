@@ -3,12 +3,11 @@
  */
 
 #include "display.h"
-#include "cube.h"
 
 
 
 
-HOWTO_CONSTRUCT					(	Window_t,
+HOWTO_INIT						(	Window_t,
 									self,
 									void				*null
 								)
@@ -36,32 +35,32 @@ HOWTO_CONSTRUCT					(	Window_t,
 	//	mouse. But that is not in the scope of this function.
 
 
-	self->posX					=	SDL_WINDOWPOS_CENTERED;
-	self->posY					=	SDL_WINDOWPOS_CENTERED;
+	( self )->posX				=	SDL_WINDOWPOS_CENTERED;
+	( self )->posY				=	SDL_WINDOWPOS_CENTERED;
 
 	//	Setup Dimensions of the Window
 
-	self->width					=	mode.w;
-	self->height				=	mode.h;
+	( self )->width				=	( mode ).w;
+	( self )->height			=	( mode ).h;
 
 	//	This tells SDL not to add any visible border to our window */
 
-	self->flags					=	SDL_WINDOW_BORDERLESS;
+	( self )->flags				=	SDL_WINDOW_BORDERLESS;
 
 	//	Call SDL to create our window
 
-	CALL						(	self->sdl,
+	CALL						(	( self )->sdl,
 									SDL,
 									CreateWindow,
-									NULL,			// window name
-									self->posX,
-									self->posY,
-									self->width,	// 800
-									self->height,	// 600
-									self->flags
+									( NULL ),			// window name
+									( self )->posX,
+									( self )->posY,
+									( self )->width,	// 800
+									( self )->height,	// 600
+									( self )->flags
 								);
 
-	assert						(	self->sdl	);
+	assert						(	( self )->sdl	);
 
 	//	Set window to fullscreen
 
@@ -73,96 +72,95 @@ HOWTO_CONSTRUCT					(	Window_t,
 								);
 }
 
-HOWTO_DESTRUCT					(	Window_t,
+HOWTO_FINI						(	Window_t,
 									self
 								)
 {
 }
 
 
-HOWTO_CONSTRUCT					(	Renderer_t,
+HOWTO_INIT						(	Renderer_t,
 									self,
-									Window_t*			window
+									Window_t		*window
 								)
 {
-	assert						(	window && window->sdl	);
+	assert						(	window );
+
+	assert						(	( window )->sdl	);
 
 	//	This creates our renderer
 
-	CALL						(	self->sdl,
+	CALL						(	( self )->sdl,
 									SDL,
 									CreateRenderer,
-									window->sdl,
-									-1,
-									0
+									( window )->sdl,
+									( - 1 ),
+									( 0 )
 								);
 
-	assert						(	self->sdl	);
+	assert						(	( self )->sdl	);
 
 
-	DEF							(	ARRAY	( Triangle2d_t ),
-									self->triangles_to_draw
+	DEF							(	arr ( Triangle2d_t ),
+									( self )->triangles_to_draw
 								);
 
 	NEW							(	Mesh_t,
-									self->mesh,
+									( self )->mesh,
 									"assets/cube.obj"
 								);
 
-	assert						(	self->mesh	);
+	assert						(	( self )->mesh	);
 
 	//	Create a color buffer that we'll use to paint our image inside the game
 	//	loop.
 
 	NEW							(	Color_buffer_t,
-									self->buffer,
-									window->width,
-									window->height,
+									( self )->buffer,
+									( window )->width,
+									( window )->height,
 									PIXELFORMAT_ARGB8888
 								);
 
-	assert						(	self->buffer	);
+	assert						(	( self )->buffer	);
 
 	//	Create a texture for the color buffer
 
 	NEW							(	Texture_t,
-									self->texture,
-									self,
-									window->width,
-									window->height,
+									( self )->texture,
+									( self ),
+									( window )->width,
+									( window )->height,
 									PIXELFORMAT_ARGB8888
 								);
 
-	assert						(	self->texture	);
+	assert						(	( self )->texture	);
 
 	NEW							(	Choreographer_t,
-									self->c_grapher,
+									( self )->c_grapher,
 									NULL
 								);
 
-	assert						(	self->c_grapher	);
+	assert						(	( self )->c_grapher	);
 
-	DEF							(	Point2d_t,
-									self->origin
+	NEW							(	Point2d_t,
+									( self )->origin,
+									( window )->width  / ( float ) 2,
+									( window )->height / ( float ) 2
 								);
 
-	*( self->origin->v->x )		=	window->width  / (float) 2;
-	*( self->origin->v->y )		=	window->height / (float) 2;
-
-	self->window				=	window;
+	( self )->window				=	window;
 }
 
 //	TODO: Implement this
 
-HOWTO_DESTRUCT					(	Renderer_t,
-									self
-								)
+HOWTO_FINI						(	Renderer_t,		self	)
 {
 }
 
-HOWTO_CONSTRUCT					(	Texture_t,
+HOWTO_INIT						(	Texture_t,
 									self,
-									Renderer_t*			renderer,
+									Renderer_t			*renderer,
 									int					width,
 									int					height,
 									Format_type_t		format_type
@@ -175,49 +173,53 @@ HOWTO_CONSTRUCT					(	Texture_t,
 
 	assert						(	format	);
 
-	self->width					=	width;
-	self->height				=	height;
-	self->format_type			=	format_type;
+	( self )->width				=	width;
+	( self )->height			=	height;
+	( self )->format_type		=	format_type;
 
-	self->pitch					=	width *
+	( self )->pitch				=	width *
 									BITS_TO_BYTES	(	format->bpp		);
 
-	CALL						(	self->sdl,
+	CALL						(	( self )->sdl,
 									SDL,
 									CreateTexture,
-									renderer->sdl,
-									format->sdl_type,
+									( renderer )->sdl,
+									( format )->sdl_type,
 									SDL_TEXTUREACCESS_STREAMING,
-									self->width,
-									self->height
+									( self )->width,
+									( self )->height
 								);
 
-	assert						(	self->sdl	);
+	assert						(	( self )->sdl	);
 }
 
-HOWTO_DESTRUCT					(	Texture_t,
-									self
-								)
+HOWTO_FINI						(	Texture_t,	self	)
 {
 }
 
-HOWTO_CONSTRUCT					(	Choreographer_t,
+HOWTO_INIT						(	Choreographer_t,
 									self,
 									void				*null
 								)
 {
 
 
-	self->previous_ticks_ms		=	0;
+	( self )->previous_ticks_ms	=	0;
 
-	CALL						(	self->current_ticks,
+	CALL						(	( self )->current_ticks,
 									SDL,
 									GetTicks
 								);
 }
 
+
+HOWTO_FINI						(	Choreographer_t,	self	)
+{
+}
+
+
 bool
-render_color_buffer				(	Renderer_t*		renderer	)
+render_color_buffer				(	Renderer_t		*renderer	)
 {
 	Texture_t						*tex	=	NULL;
 	Color_buffer_t					*bo		=	NULL;

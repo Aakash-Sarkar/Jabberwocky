@@ -113,7 +113,7 @@ paint_rect						(	Rect_t				*rect,
 	return	SUCCESS;
 }
 
-HOWTO_CONSTRUCT					(	Rect_t,
+HOWTO_INIT						(	Rect_t,
 									self,
 									int				posX,
 									int				posY,
@@ -121,13 +121,13 @@ HOWTO_CONSTRUCT					(	Rect_t,
 									int				height
 								)
 {
-	self->posX					=	posX;
-	self->posY					=	posY;
-	self->width					=	width;
-	self->height				=	height;
+	( self )->posX				=	posX;
+	( self )->posY				=	posY;
+	( self )->width				=	width;
+	( self )->height			=	height;
 }
 
-HOWTO_DESTRUCT					(	Rect_t,	self	)
+HOWTO_FINI						(	Rect_t,	self	)
 {
 }
 
@@ -158,18 +158,18 @@ HOWTO_DRAW						(	Grid_t,
 	Rect_t							*rect	=	NULL;
 
 	NEW							(	Rect_t,
-									rect,
-									posX,
-									posY,
-									grid->width,
-									grid->height
+									( rect ),
+									( posX ),
+									( posY ),
+									( grid )->width,
+									( grid )->height
 								);
 
 	for_each_rect_in_buffer		(	n,		rect,	colorbuf	)
 		DRAW					(	Rect_t,
-									rect,
-									color,
-									colorbuf
+									( rect ),
+									( color ),
+									( colorbuf )
 								);
 
 	DEL							(	Rect_t,	rect	);
