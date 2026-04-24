@@ -246,8 +246,13 @@ HOWTO_FINI					(	arr ( Point2d_t ),		self	);
 HOWTO_FINI					(	arr ( Point3d_t ),		self	);
 
 
+HOWTO_CPY					(	arr ( Point2d_t ),	to,	from	);
+
+HOWTO_CPY					(	arr ( Point3d_t ),	to,	from	);
+
+
 //////////////////////////////////////////////////////////////////////////////////
-//								Geomertic Operations
+//							Geomertic Operations
 //////////////////////////////////////////////////////////////////////////////////
 
 

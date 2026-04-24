@@ -438,10 +438,8 @@ METHOD(class, name, self, ...)		class*											\
 
 
 #define																				\
-_REQ( class, name, self, ... )			(	self			=	method				\
-															(	class,	name	)	\
-															(	self,	__VA_ARGS__	\
-															)						\
+_REQ( class, name, self, ... )			(	method( class,	name )	( self,			\
+																	__VA_ARGS__ )	\
 										)	
 
 

@@ -78,11 +78,23 @@ HOWTO_DEF					(	Vec3_t,			self	)
 	RET						(	self	);
 }
 
-HOWTO_FINI					(	Vec3_t,			self	)
+HOWTO_FINI					(	Vec3_t,				self	)
 {
 }
 
+HOWTO_CPY					(	Vec2_t,		to,		from	)
+{
+	( to )->x				=	( from )->x;
+	( to )->y				=	( from )->y;
+}
 
+
+HOWTO_CPY					(	Vec3_t,		to,		from	)
+{
+	( to )->x				=	( from )->x;
+	( to )->y				=	( from )->y;
+	( to )->z				=	( from )->z;
+}
 
 /////////////////////////////////////////////////////////////////////////////////
 //					Iterator Ops Implementation
@@ -279,21 +291,21 @@ HOWTO_FINI					(	arr ( Vec3_t ),		self	)
 }
 
 
-HOWTO_CPY					(	Vec2_t,		to,		from	)
+HOWTO_CPY					(	arr ( Vec2_t ),		to,		frm	)
 {
-	( to )->x				=	( from )->x;
-	( to )->y				=	( from )->y;
+	CPYARR					(	Vec2_t,
+								to,
+								frm
+							);
 }
 
-
-HOWTO_CPY					(	Vec3_t,		to,		from	)
+HOWTO_CPY					(	arr ( Vec3_t ),		to,		frm	)
 {
-	( to )->x				=	( from )->x;
-	( to )->y				=	( from )->y;
-	( to )->z				=	( from )->z;
+	CPYARR					(	Vec3_t,
+								to,
+								frm
+							);
 }
-
-
 
 
 //////////////////////////////////////////////////////////////////////////////////
@@ -317,10 +329,12 @@ rotate_vector_x				(	Vec3_t		*self,
 
 	( tmp )->x				=	( self )->x;
 
+
 	( tmp )->y				=	( self )->y		*	cos ( angle )
 							-	( self )->z		*	sin ( angle );
 
-	( tmp )->z				=	( self )->z		*	cos ( angle	)
+
+	( tmp )->z				=	( self )->z		*	cos ( angle )
 							+	( self )->y		*	sin ( angle );
 
 
@@ -336,7 +350,7 @@ rotate_vector_x				(	Vec3_t		*self,
 
 static
 void
-rotate_vector_y				(	Vec3_t		*self,
+rotate_vector_y				(	Vec3_t		*v,
 								float		angle
 							)
 {
@@ -346,19 +360,20 @@ rotate_vector_y				(	Vec3_t		*self,
 								tmp
 							);
 
-	( tmp )->x				=	( self )->x		*	cos ( angle )
-							-	( self )->z		*	sin ( angle );
+	( tmp )->x				=	( v )->x	*	cos ( angle )
+							-	( v )->z	*	sin ( angle );
+
 
 	//	Y component remains same
 
-	( tmp )->y				=	( self )->y;
+	( tmp )->y				=	( v )->y;
 
-	( tmp )->z				=	( self )->z		*	cos ( angle )
-							+	( self )->x		*	sin ( angle );
 
+	( tmp )->z				=	( v )->z	*	cos ( angle )
+							+	( v )->x	*	sin ( angle );
 
 	CPY						(	Vec3_t,
-								self,
+								v,
 								tmp
 							);
 
@@ -370,7 +385,7 @@ rotate_vector_y				(	Vec3_t		*self,
 
 static
 void
-rotate_vector_z				(	Vec3_t		*self,
+rotate_vector_z				(	Vec3_t		*v,
 								float		angle
 							)
 {
@@ -380,20 +395,21 @@ rotate_vector_z				(	Vec3_t		*self,
 								tmp
 							);
 
-	( tmp )->x				=	( self )->x		*	cos ( angle )
-							-	( self )->y		*	sin ( angle );
 
-	( tmp )->y				=	( self )->y		*	cos ( angle )
-							+	( self )->x		*	sin ( angle );
+	( tmp )->x				=	( v )->x	*	cos ( angle )
+							-	( v )->y	*	sin ( angle );
 
+
+	( tmp )->y				=	( v )->y	*	cos ( angle )
+							+	( v )->x	*	sin ( angle );
 
 	//	Z component remains same
 
-	( tmp )->z				=	( self )->z;
+	( tmp )->z				=	( v )->z;
 
 
 	CPY						(	Vec3_t,
-								self,
+								v,
 								tmp
 							);
 
@@ -405,24 +421,25 @@ rotate_vector_z				(	Vec3_t		*self,
 
 HOWTO_ROT					(	Vec3_t,
 								self,
-								Vec3_t		*angle
+								Vec3_t				*angle
 							)
 {
-	assert					(	self		&&	angle	);
+	assert					(	self	);
+	assert					(	angle	);
 
 	if						(	( angle )->x	)
 	{
-		rotate_vector_x		(	self,		( angle )->x	);
+		rotate_vector_x		(	( self ),	( angle )->x	);
 	}
 
 	if						(	( angle )->y	)
 	{
-		rotate_vector_y		(	self,		( angle )->y	);
+		rotate_vector_y		(	( self ),	( angle )->y	);
 	}
 
 	if						(	( angle )->z	)
 	{
-		rotate_vector_z		(	self,		( angle )->z	);
+		rotate_vector_z		(	( self ),	( angle )->z	);
 	}
 }
 
@@ -431,22 +448,25 @@ HOWTO_ROT					(	Vec3_t,
 
 static
 void
-project_orthographic		(	Vec2_t	*to,	Vec3_t	*from	)
+project_orth				(	Vec2_t	*to,	Vec3_t	*from	)
 {
-	( to )->x				=	fov_scale	*	( from )->x;
-	( to )->y				=	fov_scale	*	( from )->y;
+	( to )->x				=	( from )->x
+							*	( fov_scale );
+
+	( to )->y				=	( from )->y
+							*	( fov_scale );
 }
 
 static
 void
-project_isometric			(	Vec2_t	*to,	Vec3_t	*from	)
+project_iso					(	Vec2_t	*to,	Vec3_t	*from	)
 {
 	// TODO: Implement this
 }
 
 static
 void
-project_perspective			(	Vec2_t *to,		Vec3_t *from	)
+project_pers				(	Vec2_t *to,		Vec3_t *frm	)
 {
 	Vec3_t						*cam	=		NULL;
 
@@ -459,9 +479,16 @@ project_perspective			(	Vec2_t *to,		Vec3_t *from	)
 								-5.0
 							);
 
-	z						=	( ( from )->z	-		( cam )->z	);
-	( to )->x				=	( ( from )->x	*		fov_scale ) / z;
-	( to )->y				=	( ( from )->y	*		fov_scale ) / z;
+	z						=	( frm )->z
+							-	( cam )->z;
+
+	( to )->x				=	( frm )->x
+							*	( fov_scale )
+							/	( z );
+
+	( to )->y				=	( frm )->y
+							*	( fov_scale )
+							/	( z );
 
 	DEL						(	Vec3_t,
 								cam
@@ -483,13 +510,19 @@ HOWTO_PROJ					(	Vec2_t,					Vec3_t,
 	switch					(	typ	)
 	{
 		case				(	ORTHOGRAPHIC	):
-			project_orthographic(	to,	frm	);
+			project_orth	(	to,
+								frm
+							);
 			break;
 		case				(	ISOMETRIC		):
-			project_isometric(	to,	frm	);
+			project_iso		(	to,
+								frm
+							);
 			break;
 		case				(	PERSPECTIVE		):
-			project_perspective(	to,	frm	);
+			project_pers	(	to,
+								frm
+							);
 			break;
 		default:
 			LOG				(	"Unsupported projection type: %d\n",
@@ -542,39 +575,60 @@ HOWTO_SUB					(	Vec2_t,	dst,	op1,	op2	)
 
 HOWTO_SUB					(	Vec3_t,	dst,	op1,	op2	)
 {
-	( dst )->x				=	( op1 )->x	-	( op2 )->x;
-	( dst )->y				=	( op1 )->y	-	( op2 )->y;
-	( dst )->z				=	( op1 )->z	-	( op2 )->z;
+	( dst )->x				=	( op1 )->x
+							-	( op2 )->x;
+
+	( dst )->y				=	( op1 )->y
+							-	( op2 )->y;
+
+	( dst )->z				=	( op1 )->z
+							-	( op2 )->z;
 }
 
 
 HOWTO_MUL					(	Vec2_t,	dst,	src,	fac	)
 {
-	( dst )->x				=	( src )->x	*	fac;
-	( dst )->y				=	( src )->y	*	fac;
+	( dst )->x				=	( src )->x
+							*	( fac );
+
+	( dst )->y				=	( src )->y
+							*	( fac );
 }
 
 
 HOWTO_MUL					(	Vec3_t,	dst,	src,	fac	)
 {
-	( dst )->x				=	( src )->x	*	fac;
-	( dst )->y				=	( src )->y	*	fac;
-	( dst )->z				=	( src )->z	*	fac;
+	( dst )->x				=	( src )->x
+							*	( fac );
+
+	( dst )->y				=	( src )->y
+							*	( fac );
+
+	( dst )->z				=	( src )->z
+							*	( fac );
 }
 
 
 HOWTO_DIV					(	Vec2_t,	dst,	src,	fac	)
 {
-	( dst )->x				=	( src )->x	/	fac;
-	( dst )->y				=	( src )->y	/	fac;
+	( dst )->x				=	( src )->x
+							/	( fac );
+
+	( dst )->y				=	( src )->y
+							/	( fac );
 }
 
 
 HOWTO_DIV					(	Vec3_t,	dst,	src,	fac	)
 {
-	( dst )->x				=	( src )->x	/	fac;
-	( dst )->y				=	( src )->y	/	fac;
-	( dst )->z				=	( src )->z	/	fac;
+	( dst )->x				=	( src )->x
+							/	( fac );
+
+	( dst )->y				=	( src )->y
+							/	( fac );
+
+	( dst )->z				=	( src )->z
+							/	( fac );
 }
 
 
@@ -598,8 +652,10 @@ HOWTO_CROSP					(	Vec3_t,	dst,	src1,	src2	)
 	( dst )->x				=	( src1 )->y	*	( src2 )->z
 							-	( src2 )->y	*	( src1 )->z;
 
+
 	( dst )->y				=	( src1 )->z	*	( src2 )->x
 							-	( src1 )->x	*	( src2 )->z;
+
 
 	( dst )->z				=	( src1 )->x	*	( src2 )->y
 							-	( src1 )->y	*	( src2 )->x;

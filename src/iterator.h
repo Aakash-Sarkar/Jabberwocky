@@ -29,11 +29,10 @@ DECL_ITER( class )                      typedef                                 
 
 
 #define                                                                             \
-isarriter( _iter )                      (	_iter->type == ARR_ITER     )
+isarriter( _itr )                      (	_itr->type == ARR_ITER     )
 
 #define                                                                             \
-islstiter( _iter )                      (	_iter->type == LST_ITER     )
-
+islstiter( _itr )                      (	_itr->type == LST_ITER     )
 
 //#define                                                                             \
 //DECL_CONT( class )                      typedef                                     \
@@ -53,12 +52,13 @@ islstiter( _iter )                      (	_iter->type == LST_ITER     )
 INITITR( class, _self, _ptr, _pos,_typ )    do                                              \
                                             {                                               \
                                                 assert          (   _self    );             \
-                                                assert          (   _pos >= 0    );         \
+                                                assert          (   _pos    >=  0  );       \
                                                 assert          (   _typ < MAX_ITER         \
                                                                 );                          \
                                                                                             \
                                                 GET             (   ( _self )->ptr,         \
-                                                                    _ptr                    \
+                                                                    ( _ptr )                \
+                                                                +   ( _pos )                \
                                                                 );                          \
                                                                                             \
                                                 ( _self )->pos  =   _pos;                   \
@@ -70,69 +70,72 @@ INITITR( class, _self, _ptr, _pos,_typ )    do                                  
 #define                                                                                     \
 FINIITR( class, _self )                 do                                                  \
                                         {                                                   \
-                                            PUT				 (	( _self )->ptr	);          \
+                                            PUT				    (	( _self )->ptr	);      \
                                                                                             \
-                                            ( _self )->pos   =   0;                         \
+                                            ( _self )->pos      =   0;                      \
                                                                                             \
-                                        }   while           (   0   )
-
-
-
-#define                                                                                    \
-HOWTO_ITR( class, _it, _arr )           void                                               \
-                                        iterate( class )        (   itr ( class )   *_it,  \
-                                                                    arr ( class )   *_arr  \
-                                                                )
-
-
-#define                                                                                    \
-INCITRARR( class, _iter )               do                                                 \
-                                        {                                                  \
-                                            ( _iter )->ptr++;                              \
-                                            ( _iter )->pos++;                              \
-                                        }   while               (   0   );
-
-#define                                                                                    \
-DECITRARR( class, _iter )               do                                                 \
-                                        {                                                  \
-                                            ( _iter )->ptr--;                              \
-                                            ( _iter )->pos--;                              \
-                                        }   while               (   0   );
-
-
-#define                                                                                    \
-CMPITR( class, _iter1, _iter2 )         return                                             \
-                                        (   ( _iter1 )->ptr == ( _iter2 )->ptr  )   &&     \
-                                        (   ( _iter1 )->pos == ( _iter2 )->pos  )
-
-
-#define                                                                                    \
-INCITRLST( class, _iter )               do                                                 \
-                                        {                                                  \
-                                            ( _iter )->ptr      =   ( _iter )->ptr;        \
-                                            ( _iter )->pos++;                              \
                                         }   while               (   0   )
 
 
 #define                                                                                    \
-DECITRLST( class, _iter )               do                                                 \
+INCITRARR( class, _itr )               do                                                  \
                                         {                                                  \
-                                            ( _iter )->ptr       =   ( _iter )->ptr;       \
-                                            ( _iter )->pos--;                              \
+                                            ( _itr )->ptr++;                               \
+                                            ( _itr )->pos++;                               \
+                                        }   while               (   0   );
+
+#define                                                                                    \
+DECITRARR( class, _itr )                do                                                 \
+                                        {                                                  \
+                                            ( _itr )->ptr--;                               \
+                                            ( _itr )->pos--;                               \
+                                        }   while               (   0   );
+
+
+#define                                                                                    \
+CMPITR( class, _itr1, _itr2 )           do                                                 \
+                                        {                                                  \
+                                            bool                    res =  false;          \
+                                                                                           \
+                                            res                 =   (   ( _itr1 )->ptr     \
+                                                                ==      ( _itr2 )->ptr     \
+                                                                    )                      \
+                                                                &&  (   ( _itr1 )->pos     \
+                                                                ==      ( _itr2 )->pos     \
+                                                                    );                     \
+                                                                                           \
+                                            RET                 (   res );                 \
+                                                                                           \
                                         }   while               (   0   )
 
 
 #define                                                                                    \
-INCITR( class, _iter )                  if                      (   isarriter( _iter ) )   \
+INCITRLST( class, _itr )                do                                                 \
+                                        {                                                  \
+                                            ( _itr )->ptr       =   ( _itr )->ptr;         \
+                                            ( _itr )->pos++;                               \
+                                        }   while               (   0   )
+
+
+#define                                                                                    \
+DECITRLST( class, _itr )                do                                                 \
+                                        {                                                  \
+                                            ( _itr )->ptr       =   ( _itr )->ptr;         \
+                                            ( _itr )->pos--;                               \
+                                        }   while               (   0   )
+
+
+#define                                                                                    \
+INCITR( class, _itr )                   if                      (   isarriter( _itr ) )    \
                                         {                                                  \
                                             INCITRARR           (   class,                 \
-                                                                    _iter                  \
+                                                                    _itr                   \
                                                                 );                         \
                                         }                                                  \
-                                        else if                 (   islstiter( _iter ) )   \
+                                        else if                 (   islstiter( _itr ) )    \
                                         {                                                  \
                                             INCITRLST           (   class,                 \
-                                                                    _iter                  \
+                                                                    _itr                   \
                                                                 );                         \
                                         }                                                  \
                                         else                                               \
@@ -142,22 +145,43 @@ INCITR( class, _iter )                  if                      (   isarriter( _
 
 
 #define                                                                                    \
-DECITR( class, _iter )                  if                      (   isarriter( _iter ) )   \
+DECITR( class, _itr )                   if                      (   isarriter( _itr ) )    \
                                         {                                                  \
                                             DECITRARR           (   class,                 \
-                                                                    _iter                  \
+                                                                    _itr                   \
                                                                 );                         \
                                         }                                                  \
-                                        else if                 (   islstiter( _iter ) )   \
+                                        else if                 (   islstiter( _itr ) )    \
                                         {                                                  \
                                             DECITRLST           (   class,                 \
-                                                                    _iter                  \
+                                                                    _itr                   \
                                                                 );                         \
                                         }                                                  \
                                         else                                               \
                                         {                                                  \
                                             /* Do Nothing */                               \
                                         }
+
+
+#define                                                                                     \
+for_each_item_in_cont( class, _itr, _this )                                                 \
+                                        for (   (   CP          (   itr ( class ),          \
+                                                                    ( _itr ),               \
+                                                                    ( _this )->begin        \
+                                                                )                           \
+                                                );                                          \
+                                                                                            \
+                                                (   !CMP        (   itr ( class ),          \
+                                                                    ( _itr ),               \
+                                                                    ( _this )->end          \
+                                                                )                           \
+                                                );                                          \
+                                                                                            \
+                                                (   INC         (   itr ( class ),          \
+                                                                    ( _itr )                \
+                                                                )                           \
+                                                )                                           \
+                                            )
 
 
 DECL_ITER                               (   bool    );
@@ -175,65 +199,65 @@ DECL_ITER                               (   double  );
 
 HOWTO_INIT  				            (	itr ( bool ),
 							            	self,
-							            	const bool		*ptr,
-                                            unsigned int    pos,
-                                            IterType_t      typ
+							            	const bool		        *ptr,
+                                            unsigned int            pos,
+                                            IterType_t              typ
 							            );
 
 HOWTO_INIT	    			            (	itr ( char ),
 							            	self,
-							            	const char		*ptr,
-                                            unsigned int    pos,
-                                            IterType_t      typ
+							            	const char		        *ptr,
+                                            unsigned int            pos,
+                                            IterType_t              typ
 							            );
 
 
 HOWTO_INIT  				            (	itr ( int ),
 							            	self,
-							            	const int		*ptr,
-                                            unsigned int    pos,
-                                            IterType_t      typ
+							            	const int		        *ptr,
+                                            unsigned int            pos,
+                                            IterType_t              typ
 							            );
 
 HOWTO_INIT				                (	itr ( float ),
 							            	self,
-							            	const float		*ptr,
-                                            unsigned int    pos,
-                                            IterType_t      typ
+							            	const float		        *ptr,
+                                            unsigned int            pos,
+                                            IterType_t              typ
 							            );
 
 HOWTO_INIT				                (	itr ( double ),
 							            	self,
-							            	const double	*ptr,
-                                            unsigned int    pos,
-                                            IterType_t      typ
+							            	const double	        *ptr,
+                                            unsigned int            pos,
+                                            IterType_t              typ
 							            );
 
 
-HOWTO_FINI                              (   itr ( bool ),   self    );
+HOWTO_FINI                              (   itr ( bool ),           self    );
 
-HOWTO_FINI                              (   itr ( char ),   self    );
+HOWTO_FINI                              (   itr ( char ),           self    );
 
-HOWTO_FINI                              (   itr ( int ),    self    );
+HOWTO_FINI                              (   itr ( int ),            self    );
 
-HOWTO_FINI                              (   itr ( long ),   self    );
+HOWTO_FINI                              (   itr ( long ),           self    );
 
-HOWTO_FINI                              (   itr ( float ),  self    );
+HOWTO_FINI                              (   itr ( float ),          self    );
 
-HOWTO_FINI                              (   itr ( double ), self    );
+HOWTO_FINI                              (   itr ( double ),         self    );
 
 
-HOWTO_DEF                               (   itr ( bool ),   self    );
+HOWTO_DEF                               (   itr ( bool ),           self    );
 
-HOWTO_DEF                               (   itr ( char ),   self    );
+HOWTO_DEF                               (   itr ( char ),           self    );
 
-HOWTO_DEF                               (   itr ( int ),    self    );
+HOWTO_DEF                               (   itr ( int ),            self    );
 
-HOWTO_DEF                               (   itr ( long ),   self   );
+HOWTO_DEF                               (   itr ( long ),           self   );
 
-HOWTO_DEF                               (   itr ( float ),  self    );
+HOWTO_DEF                               (   itr ( float ),          self    );
 
-HOWTO_DEF                               (   itr ( double ), self    );
+HOWTO_DEF                               (   itr ( double ),         self    );
 
 
 HOWTO_CMP                               (   itr ( bool ),   it1,    it2    );

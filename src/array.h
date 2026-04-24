@@ -41,32 +41,25 @@ LIST_INIT( class, self )                do  {                                   
 
 
 #define                                                                             \
-array_reset( class )                    concat3( array_reset, _, class )
-
-#define                                                                             \
-HOWTO_ARRAY_RESET( class, name )        void                                        \
-                                        array_reset ( class ) ( arr( class ) *name )
-
-#define                                                                             \
-ARRAY_RESET( class, name )              array_reset ( class ) ( name )
-
+for_each_item_in_arr( class, _itr, _this )     for_each_item_in_cont( class, _itr, _this )
 
 
 #define                                                                             \
 _LD( class, _ptr, _arr, _idx )          do                                          \
                                         {                                           \
-                                            class           *loc    =   NULL;       \
+                                            class           *_loc    =   NULL;      \
                                                                                     \
-                                            GET         (   loc,                    \
-                                                            ( _arr )->data  + _idx; \
+                                            GET         (   ( _loc ),               \
+                                                            ( _arr )->data  +       \
+                                                            ( _idx );               \
                                                         );                          \
                                                                                     \
                                             CPY         (   class,                  \
                                                           ( _ptr ),                 \
-                                                          ( loc )                   \
+                                                          ( _loc )                  \
                                                         );                          \
                                                                                     \
-                                            PUT         (   loc );                  \
+                                            PUT         (   _loc );                 \
                                                                                     \
                                         }   while       (   0   )
 
@@ -91,13 +84,14 @@ LD( class, _ptr, _arr, _idx )           do                                      
 #define                                                                             \
 _STR( class, _ptr, _arr, _idx )         do                                          \
                                         {                                           \
-                                            class           *loc    =   NULL;       \
+                                            class           *_loc    =   NULL;      \
                                                                                     \
-                                            loc         =   ( _arr )->data + _idx;  \
+                                            _loc        =   ( _arr )->data   +      \
+                                                            ( _idx );               \
                                                                                     \
                                             CPY         (   class,                  \
-                                                            loc,                    \
-                                                            _ptr                    \
+                                                            ( _loc ),               \
+                                                            ( _ptr )                \
                                                         );                          \
                                                                                     \
                                         }   while       (   0   )
@@ -120,7 +114,7 @@ STR( class, _ptr, _arr, _idx )          do                                      
 
 
 #define                                                                                 \
-PUSH_FIRST( class, _ptr, _arr )         do                                              \
+PUSH_FIRST( class, _arr, _ptr )         do                                              \
                                         {                                               \
                                                                                         \
                                             MCPY            (   class,                  \
@@ -151,16 +145,16 @@ PUSH_FIRST( class, _ptr, _arr )         do                                      
 
 
 #define                                                                                 \
-PUSH_FIXED( class, _ptr, _arr )         do                                              \
+PUSH_FIXED( class, _arr, _ptr )         do                                              \
                                         {                                               \
-                                            itr ( class )       *begin  =   NULL,       \
-                                                                *end    =   NULL;       \
+                                            itr ( class )       *_begin  =   NULL,      \
+                                                                *_end    =   NULL;      \
                                                                                         \
-                                            GET             (   ( begin ),              \
+                                            GET             (   ( _begin ),             \
                                                                 ( _arr )->begin         \
                                                             );                          \
                                                                                         \
-                                            GET             (   ( end ),                \
+                                            GET             (   ( _end ),               \
                                                                 ( _arr )->end           \
                                                             );                          \
                                                                                         \
@@ -173,34 +167,34 @@ PUSH_FIXED( class, _ptr, _arr )         do                                      
                                             ( _arr )->size++;                           \
                                                                                         \
                                             INC             (   itr ( class ),          \
-                                                                end                     \
+                                                                ( _end )                \
                                                             );                          \
                                                                                         \
-                                            PUT             (   begin   );              \
-                                            PUT             (   end     );              \
+                                            PUT             (   _begin   );             \
+                                            PUT             (   _end     );             \
                                                                                         \
                                         }   while           (   0    )
 
 
 #define                                                                                 \
-PUSH_RSZED( class, _ptr, _arr )         do                                              \
+PUSH_RSZED( class, _arr, _ptr )         do                                              \
                                         {                                               \
-                                            itr ( class )       *begin  =   NULL,       \
-                                                                *end    =   NULL;       \
+                                            itr ( class )       *_begin  =   NULL,      \
+                                                                *_end    =   NULL;      \
                                                                                         \
-                                            GET             (   ( begin ),              \
+                                            GET             (   ( _begin ),             \
                                                                 ( _arr  )->begin        \
                                                             );                          \
                                                                                         \
-                                            GET             (   ( end  ),               \
+                                            GET             (   ( _end ),               \
                                                                 ( _arr )->end           \
                                                             );                          \
                                                                                         \
                                                                                         \
                                             RSZ             (   class,                  \
-                                                              ( _arr )->data,           \
-                                                              ( _arr )->cap,            \
-                                                              ( _arr )->cap * 2         \
+                                                                ( _arr )->data,         \
+                                                                ( _arr )->cap,          \
+                                                                ( _arr )->cap   *   2   \
                                                             );                          \
                                                                                         \
                                             ( _arr )->cap   *=  2;                      \
@@ -214,32 +208,31 @@ PUSH_RSZED( class, _ptr, _arr )         do                                      
                                                                                         \
                                             INIT            (   itr ( class ),          \
                                                                 ( _arr )->end,          \
-                                                                ( _arr )->data  +       \
-                                                                ( _arr )->size,         \
+                                                                ( _arr )->data,         \
                                                                 ( _arr )->size,         \
                                                                 ( ARR_ITER )            \
                                                             );                          \
                                                                                         \
                                             PUSH_FIXED      (   class,                  \
-                                                                ( _ptr ),               \
-                                                                ( _arr )                \
+                                                                ( _arr ),               \
+                                                                ( _ptr )                \
                                                             );                          \
                                                                                         \
-                                            PUT             (   begin   );              \
-                                            PUT             (   end     );              \
+                                            PUT             (   _begin   );             \
+                                            PUT             (   _end     );             \
                                                                                         \
                                         }   while           (   0    )
 
 
 
 #define                                                                                 \
-_PUSH( class, _ptr, _arr )              do                                              \
+_PUSH( class, _arr, _ptr )              do                                              \
                                         {                                               \
                                             if              (   !( _arr )->data  )      \
                                             {                                           \
                                                 PUSH_FIRST  (   class,                  \
-                                                                ( _ptr ),               \
-                                                                ( _arr )                \
+                                                                ( _arr ),               \
+                                                                ( _ptr )                \
                                                             );                          \
                                             }                                           \
                                             else if         (   ( _arr )->size   <      \
@@ -247,125 +240,127 @@ _PUSH( class, _ptr, _arr )              do                                      
                                                             )                           \
                                             {                                           \
                                                 PUSH_FIXED  (   class,                  \
-                                                                ( _ptr ),               \
-                                                                ( _arr )                \
+                                                                ( _arr ),               \
+                                                                ( _ptr )                \
                                                             );                          \
                                             }                                           \
                                             else                                        \
                                             {                                           \
                                                 PUSH_RSZED  (   class,                  \
-                                                                ( _ptr ),               \
-                                                                ( _arr )                \
+                                                                ( _arr ),               \
+                                                                ( _ptr )                \
                                                             );                          \
                                             }                                           \
                                                                                         \
                                         }   while           (   0   )
 
 
-#define                                                                             \
-PUSH( class, _ptr, _arr )               do                                          \
-                                        {                                           \
-                                            assert          (   _ptr   );           \
-                                                                                    \
-                                            _PUSH           (   class,              \
-                                                                ( _ptr ),           \
-                                                                ( _arr )            \
-                                                            );                      \
-                                                                                    \
+#define                                                                                 \
+PUSH( class, _arr, _ptr )               do                                              \
+                                        {                                               \
+                                            assert          (   _arr   );               \
+                                            assert          (   _ptr   );               \
+                                                                                        \
+                                            _PUSH           (   class,                  \
+                                                                ( _arr ),               \
+                                                                ( _ptr )                \
+                                                            );                          \
+                                                                                        \
                                         }   while       (   0   )
 
 
 #define                                                                                     \
-INITARR( class, _self, _init_list, _count )                                                 \
+INITARR( class, _arr, _init_list, _count )                                                  \
                                         do                                                  \
                                         {                                                   \
-                                            ( _self )->size     =	0;                      \
-                                            ( _self )->cap	    =	0;                      \
+                                            ( _arr )->size      =	0;                      \
+                                            ( _arr )->cap	    =	0;                      \
                                                                                             \
-                                            ( _self )->data	    =	NULL;                   \
+                                            ( _arr )->data	    =	NULL;                   \
                                                                                             \
                                             if			        (	_init_list && _count )  \
                                             {                                               \
+                                            	const class	        *_it	=	_init_list; \
                                                                                             \
-                                            	const class	        *it		=	_init_list; \
+                                                ( _arr )->cap   =   _count;                 \
                                                                                             \
-                                                ( _self )->cap  =   _count;                 \
-                                                                                            \
-                                            	while		    (	( _self )->size !=      \
-                                                                    ( _self )->cap	)       \
+                                            	while		    (	( _arr )->size !=       \
+                                                                    ( _arr )->cap	)       \
                                             	{                                           \
                                             		PUSH	    (	class,                  \
-                                            					    ( it ),                 \
-                                            					    ( _self )               \
+                                            					    ( _arr ),               \
+                                            					    ( _it )                 \
                                             			        );                          \
                                                                                             \
-                                            		( _self )->size++;                      \
-                                                	it++;                                   \
+                                            		( _arr )->size++;                       \
+                                                	( _it )++;                              \
                                             	}                                           \
                                             }                                               \
-                                        }   while           (   0   )
+                                        }   while               (   0   )
 
 
 #define                                                                                     \
 FINIARR( class, _self )                 do                                                  \
                                         {                                                   \
-                                            ( _self )->size     =	0;                      \
-                                            ( _self )->cap	    =	0;                      \
+                                            ( _self )->size         =	0;                  \
+                                            ( _self )->cap	        =	0;                  \
                                                                                             \
-                                            DEL                 (   itr ( class ),          \
-                                                                    ( _self )->begin        \
-                                                                );                          \
+                                            DEL                     (   itr ( class ),      \
+                                                                        ( _self )->begin    \
+                                                                    );                      \
                                                                                             \
-                                            DEL                 (   itr ( class ),          \
-                                                                    ( _self )->end          \
-                                                                );                          \
+                                            DEL                     (   itr ( class ),      \
+                                                                        ( _self )->end      \
+                                                                    );                      \
                                                                                             \
-                                            DEALLOC             (   ( _self )->data         \
-                                                                );                          \
+                                            DEALLOC                 (   ( _self )->data     \
+                                                                    );                      \
                                                                                             \
-                                        }   while               (   0   )
-
-//#define                                                                             \
-//for_each_item_in_array( class, item, arr, idx )                                     \
-//                                        for (                                       \
-//                                                idx     =   0,                      \
-//                                                                                    \
-//                                                __LD    (   class,                  \
-//                                                            item,                   \
-//                                                            arr,                    \
-//                                                            idx                     \
-//                                                        );                          \
-//                                                                                    \
-//                                                idx     <   ( arr )->count;         \
-//                                                                                    \
-//                                                idx++,                              \
-//                                                __LD    (   class,                  \
-//                                                            item,                   \
-//                                                            arr,                    \
-//                                                            idx                     \
-//                                                        )                           \
-//                                            )
+                                        }   while                   (   0   )
 
 
 #define                                                                                     \
-for_each_item_in_array( class, _iter, _arr )                                                \
-                                        for (   (   CP          (   itr ( class ),          \
-                                                                    _iter,                  \
-                                                                    ( _arr )->begin         \
-                                                                )                           \
-                                                );                                          \
+CPYARR( class, _to, _frm )              do                                                  \
+                                        {                                                   \
+	                                        ( _to )->size			=	( _frm )->size;     \
+	                                        ( _to )->cap			=	( _frm )->cap;      \
                                                                                             \
-                                                (   !CMP        (   itr ( class ),          \
-                                                                    _iter,                  \
-                                                                  ( _arr )->end             \
-                                                                )                           \
-                                                );                                          \
+	                                        ALLOC_ZEROED		    (	class,              \
+									                                    ( _to )->data,      \
+									                                    ( _to )->cap        \
+								                                    );                      \
                                                                                             \
-                                                (   INC         (   itr ( class ),          \
-                                                                    _iter                   \
-                                                                )                           \
-                                                )                                           \
-                                            )
+	                                        itr ( class )		        it	=	{ 0 };      \
+                                                                                            \
+	                                        for_each_item_in_arr	(	class,	            \
+                                                                        &( it ),            \
+                                                                        ( _frm )            \
+                                                                	)                       \
+	                                        {                                               \
+		                                        CPY					(	class,              \
+									                                    ( _to )->data	    \
+                                                                    +	( it ).pos,         \
+									                                    ( _frm )->data	    \
+                                                                    +	( it ).pos          \
+								                                    );                      \
+	                                        }                                               \
+                                                                                            \
+	                                        NEW						(	itr ( class ),      \
+									                                    ( _to )->begin,     \
+									                                    ( _to )->data,      \
+									                                    ( 0 ),              \
+									                                    ( ARR_ITER )        \
+								                                    );                      \
+                                                                                            \
+	                                        NEW						(	itr ( class ),      \
+									                                    ( _to )->end,       \
+									                                    ( _to )->data,      \
+									                                    ( _to )->size,      \
+									                                    ( ARR_ITER )        \
+								                                    );                      \
+                                        }   while               (   0   )
+
+
 
 
 
@@ -385,63 +380,63 @@ DECL_ARRAY                              (   double  );
 
 HOWTO_INIT				                (	arr ( bool ),
 							            	self,
-							            	const bool		*init_list,
-							            	unsigned int	count
+							            	const bool		    *init_list,
+							            	unsigned int	    count
 							            );
 
 HOWTO_INIT				                (	arr ( char ),
 							            	self,
-							            	const char		*init_list,
-							            	unsigned int	count
+							            	const char		    *init_list,
+							            	unsigned int	    count
 							            );
 
 HOWTO_INIT				                (	arr ( int ),
 							            	self,
-							            	const int		*init_list,
-							            	unsigned int	count
+							            	const int		    *init_list,
+							            	unsigned int	    count
 							            );
 
 HOWTO_INIT					            (	arr ( long ),
 								            self,
-								            const long		*init_list,
-								            unsigned int	count
+								            const long		    *init_list,
+								            unsigned int	    count
 							            );
 
 HOWTO_INIT				                (	arr ( float ),
 							            	self,
-							            	const float		*init_list,
-							            	unsigned int	count
+							            	const float		    *init_list,
+							            	unsigned int	    count
 							            );
 
 HOWTO_INIT				                (	arr ( double ),
 							            	self,
-							            	const double	*init_list,
-							            	unsigned int	count
+							            	const double	    *init_list,
+							            	unsigned int	    count
 							            );
 
 
-HOWTO_DEF					            (	arr ( bool ),	self	);
+HOWTO_DEF					            (	arr ( bool ),	    self	);
 
-HOWTO_DEF					            (	arr ( char ),	self	);
+HOWTO_DEF					            (	arr ( char ),	    self	);
 
-HOWTO_DEF					            (	arr ( int ),	self	);
+HOWTO_DEF					            (	arr ( int ),	    self	);
 
-HOWTO_DEF					            (	arr ( long ),	self	);
+HOWTO_DEF					            (	arr ( long ),	    self	);
 
-HOWTO_DEF					            (	arr ( float ),	self	);
+HOWTO_DEF					            (	arr ( float ),	    self	);
 
-HOWTO_DEF					            (	arr( double ),	self	);
+HOWTO_DEF					            (	arr( double ),	    self	);
 
 
-HOWTO_FINI  				            (	arr ( bool ),	self	);
+HOWTO_FINI  				            (	arr ( bool ),	    self	);
 
-HOWTO_FINI				                (	arr ( char ),	self	);
+HOWTO_FINI				                (	arr ( char ),	    self	);
 
-HOWTO_FINI				                (	arr ( int ),	self	);
+HOWTO_FINI				                (	arr ( int ),	    self	);
 
-HOWTO_FINI				                (	arr ( long ),	self	);
+HOWTO_FINI				                (	arr ( long ),	    self	);
 
-HOWTO_FINI				                (	arr ( float ),	self	);
+HOWTO_FINI				                (	arr ( float ),	    self	);
 
-HOWTO_FINI				                (	arr ( double ),	self	);
+HOWTO_FINI				                (	arr ( double ),	    self	);
 

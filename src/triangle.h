@@ -78,14 +78,14 @@ typedef
 struct	Triangle3d				{	Point3d_t				*p1;
 									Point3d_t				*p2;
 									Point3d_t				*p3;
-								}							Triangle3d_t;
+								}									Triangle3d_t;
 
 
 typedef
 struct	Triangle2d				{	Point2d_t				*p1;
 									Point2d_t				*p2;
 									Point2d_t				*p3;
-								}							Triangle2d_t;
+								}									Triangle2d_t;
 
 
 DECL_ITER						(	Triangle2d_t	);
@@ -203,6 +203,10 @@ HOWTO_FINI						(	arr ( Triangle2d_t ),	self	);
 
 HOWTO_FINI						(	arr ( Triangle3d_t ),	self	);
 
+
+HOWTO_CPY						(	arr ( Triangle2d_t ),	to,	from	);
+
+HOWTO_CPY						(	arr ( Triangle3d_t ),	to,	from	);
 
 
 /////////////////////////////////////////////////////////////////////////////////

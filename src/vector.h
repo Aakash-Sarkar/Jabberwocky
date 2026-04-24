@@ -18,32 +18,30 @@
 
 
 typedef
-struct							Vec2	{	float		x;
-											float		y;
-										}						Vec2_t;
+struct				Vec2	{	float		x;
+								float		y;	}	Vec2_t;
 
 typedef	
-struct							Vec3	{	float		x;
-											float		y;
-											float		z;
-										}						Vec3_t;
+struct				Vec3	{	float		x;
+								float		y;
+								float		z;	}	Vec3_t;
 
 typedef
-struct							Vec4	{	float		x;
-											float		y;
-											float		z;
-											float		w;
-										}						Vec4_t;
-
+struct				Vec4	{	float		x;
+								float		y;
+								float		z;
+								float		w;	}	Vec4_t;
 
 
 DECL_ITER					(	Vec2_t	);
 
 DECL_ARRAY					(	Vec2_t	);
 
+
 DECL_ITER					(	Vec3_t	);
 
 DECL_ARRAY					(	Vec3_t	);
+
 
 DECL_ITER					(	Vec4_t	);
 
@@ -94,10 +92,10 @@ DECL_ARRAY					(	Vec4_t	);
 /////////////////////////////////////////////////////////////////////////////////
 
 
-typedef					enum	Projection_type	{	ORTHOGRAPHIC = 0,
-													ISOMETRIC,
-													PERSPECTIVE
-												}				Projection_type_t;
+typedef					enum	Projection_type		{	ORTHOGRAPHIC = 0,
+														ISOMETRIC,
+														PERSPECTIVE
+													}	Projection_type_t;
 
 
 
@@ -129,9 +127,9 @@ HOWTO_INIT							(	Vec3_t,
 HOWTO_FINI							(	Vec3_t,		self	);
 
 
-HOWTO_CPY							(	Vec2_t,		to,	from	);
+HOWTO_CPY							(	Vec2_t,		to,		from	);
 
-HOWTO_CPY							(	Vec3_t,		to,	from	);
+HOWTO_CPY							(	Vec3_t,		to,		from	);
 
 
 /////////////////////////////////////////////////////////////////////////////////
@@ -207,6 +205,10 @@ HOWTO_FINI							(	arr ( Vec2_t ),		self	);
 HOWTO_FINI							(	arr ( Vec3_t ),		self	);
 
 
+HOWTO_CPY							(	arr ( Vec2_t ),		to,		frm	);
+
+HOWTO_CPY							(	arr ( Vec3_t ),		to,		frm	);
+
 
 /////////////////////////////////////////////////////////////////////////////////
 //						Geomertic Operations
@@ -215,12 +217,13 @@ HOWTO_FINI							(	arr ( Vec3_t ),		self	);
 
 HOWTO_ROT							(	Vec3_t,
 										self,
-										Vec3_t				*angle
+										Vec3_t					*angle
 									);
 
-HOWTO_PROJ							(	Vec2_t,				Vec3_t,
-										to,					frm,
-										Projection_type_t	typ
+
+HOWTO_PROJ							(	Vec2_t,					Vec3_t,
+										to,						frm,
+										Projection_type_t		typ
 									);
 
 
@@ -259,5 +262,5 @@ HOWTO_CROSP							(	Vec3_t,	dst,	src1,	src2	);
 METHOD								(	Vec2_t,
 										get_max_abs_x_y,
 										self,
-										float			*out
+										float					*out
 									);

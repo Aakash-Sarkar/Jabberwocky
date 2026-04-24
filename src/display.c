@@ -64,12 +64,12 @@ HOWTO_INIT						(	Window_t,
 
 	//	Set window to fullscreen
 
-	CALL						(	ret,
-									SDL,
-									SetWindowFullscreen,
-									self->sdl,
-									SDL_WINDOW_FULLSCREEN
-								);
+	//CALL						(	ret,
+	//								SDL,
+	//								SetWindowFullscreen,
+	//								self->sdl,
+	//								SDL_WINDOW_FULLSCREEN
+	//							);
 }
 
 HOWTO_FINI						(	Window_t,

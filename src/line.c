@@ -277,14 +277,14 @@ METHOD						(	Line_t,
 
 	//	[ p12 ]		=	[	vector from p1 --> p2	]
 
-	Point2d_t					*p12	=	NULL;
+	Point2d_t					*p12		=	NULL;
 
 	DEF						(	Point2d_t,
 								p12
 							);
 
 	SUB						(	Point2d_t,
-								p12,
+								( p12 ),
 								( self )->p2,
 								( self )->p1
 							);

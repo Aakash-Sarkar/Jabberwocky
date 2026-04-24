@@ -100,9 +100,9 @@ HOWTO_FINI					(	Face_t,		self	);
 HOWTO_FINI					(	Mesh_t,		self	);
 
 
-HOWTO_CPY					(	Face_t,		to,	from	);
+HOWTO_CPY					(	Face_t,		to,	frm	);
 
-HOWTO_CPY					(	Mesh_t,		to,	from	);
+HOWTO_CPY					(	Mesh_t,		to,	frm	);
 
 
 
@@ -160,31 +160,36 @@ HOWTO_DEF					(	arr	( Face_t ),		self	);
 HOWTO_DEF					(	arr	( Mesh_t ),		self	);
 
 
+HOWTO_CPY					(	arr ( Face_t ),		to,	from	);
+
+HOWTO_CPY					(	arr ( Mesh_t ),		to,	from	);
+
+
 HOWTO_ROT					(	Mesh_t,
 								self,
-								Vec3_t			*angle
+								Vec3_t				*angle
 							);
 
 METHOD						(	Mesh_t,
 								create_triangle_from_face,
 								self,
-								Face_t			*face,
-								Triangle3d_t	*out
+								Face_t				*face,
+								Triangle3d_t		*out
 							);
 
 
 
 
 #define																							\
-for_each_face_in_mesh( face,	mesh )			for_each_item_in_array	(	Face_t,				\
-																			( face ),			\
-																			( mesh )->faces		\
-																		)
+for_each_face_in_mesh( face,	mesh )			for_each_item_in_arr(	Face_t,					\
+																		( face ),				\
+																		( mesh )->faces			\
+																	)
 
 
 #define																							\
-for_each_triangle_in_mesh( tr, mesh )			for_each_item_in_array	(	Triangle3d_t,		\
-																			( tr ),				\
-																			( mesh )->triangles	\
-																		)
+for_each_triangle_in_mesh( tr, mesh )			for_each_item_in_arr(	Triangle3d_t,			\
+																		( tr ),					\
+																		( mesh )->triangles		\
+																	)
 

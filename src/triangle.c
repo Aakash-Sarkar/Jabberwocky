@@ -34,9 +34,7 @@ HOWTO_DEF						(	Triangle2d_t,	self	)
 
 	NEW							(	Triangle2d_t,
 									self,
-									p1,
-									p2,
-									p3
+									p1,		p2,		p3
 								);
 
 
@@ -117,9 +115,10 @@ HOWTO_DEF						(	Triangle3d_t,	self	)
 									p3
 								);
 
+
 	NEW							(	Triangle3d_t,
 									self,
-									p1,		p2,		p3
+									( p1 ),		( p2 ),		( p3 )
 								);
 
 
@@ -258,14 +257,14 @@ HOWTO_INIT						(	itr ( Triangle3d_t ),
 HOWTO_FINI						(	itr ( Triangle2d_t ),	self	)
 {
 	FINIITR						(	Triangle2d_t,
-									( self )
+									self
 								);
 }
 
 HOWTO_FINI						(	itr ( Triangle3d_t ),	self	)
 {
 	FINIITR						(	Triangle3d_t,
-									( self )
+									self
 								);
 }
 
@@ -273,10 +272,10 @@ HOWTO_FINI						(	itr ( Triangle3d_t ),	self	)
 HOWTO_DEF						(	itr ( Triangle2d_t ),	self	)
 {
 	NEW							(	itr ( Triangle2d_t ),
-									( self ),
-									( NULL ),
-									( 0 ),
-									( MAX_ITER )
+									self,
+									NULL,
+									0,
+									MAX_ITER
 								);
 
 	RET							(	self	);
@@ -297,47 +296,53 @@ HOWTO_DEF						(	itr ( Triangle3d_t ),	self	)
 
 HOWTO_CMP						(	itr ( Triangle2d_t ),	it1,	it2		)
 {
+
 	CMPITR						(	Triangle2d_t,
-									( it1 ),
-									( it2 )
+									it1,
+									it2
 								);
 }
 
 HOWTO_CMP						(	itr ( Triangle3d_t ),	it1,	it2		)
 {
+
 	CMPITR						(	Triangle3d_t,
-									( it1 ),
-									( it2 )
+									it1,
+									it2
 								);
 }
 
 
 HOWTO_INC						(	itr ( Triangle2d_t ),	self		)
 {
+
 	INCITR						(	Triangle2d_t,
-									( self )
+									self
 								);
 }
 
 HOWTO_INC						(	itr ( Triangle3d_t ),	self		)
 {
+
 	INCITR						(	Triangle3d_t,
-									( self )
+									self
 								);
 }
 
 
 HOWTO_DEC						(	itr ( Triangle2d_t ),	self		)
 {
+
 	DECITR						(	Triangle2d_t,
-									( self )
+									self
 								);
 }
 
 HOWTO_DEC						(	itr ( Triangle3d_t ),	self		)
 {
+
 	DECITR						(	Triangle3d_t,
-									( self )
+									self
 								);
 }
 
@@ -377,9 +382,9 @@ HOWTO_INIT						(	arr ( Triangle3d_t ),
 HOWTO_DEF						(	arr	( Triangle2d_t ),	self	)
 {
 	NEW							(	arr ( Triangle2d_t ),
-									( self ),
-									( NULL ),
-									( 0 )
+									self,
+									NULL,
+									0
 								);
 
 	RET							(	self	);
@@ -389,9 +394,9 @@ HOWTO_DEF						(	arr	( Triangle2d_t ),	self	)
 HOWTO_DEF						(	arr ( Triangle3d_t ),	self	)
 {
 	NEW							(	arr ( Triangle3d_t ),
-									( self ),
-									( NULL ),
-									( 0 )
+									self,
+									NULL,
+									0
 								);
 
 	RET							(	self	);
@@ -401,14 +406,31 @@ HOWTO_DEF						(	arr ( Triangle3d_t ),	self	)
 HOWTO_FINI						(	arr ( Triangle2d_t ),	self	)
 {
 	FINIARR						(	Triangle2d_t,
-									( self )
+									self
 								);
 }
 
 HOWTO_FINI						(	arr	( Triangle3d_t ),	self	)
 {
 	FINIARR						(	Triangle3d_t,
-									( self )
+									self
+								);
+}
+
+
+HOWTO_CPY						(	arr ( Triangle2d_t ),	to,	from	)
+{
+	CPYARR						(	Triangle2d_t,
+									to,
+									from
+								);
+}
+
+HOWTO_CPY						(	arr ( Triangle3d_t ),	to,	from	)
+{
+	CPYARR						(	Triangle3d_t,
+									to,
+									from
 								);
 }
 
@@ -420,14 +442,14 @@ HOWTO_FINI						(	arr	( Triangle3d_t ),	self	)
 
 HOWTO_ROT						(	Triangle2d_t,
 									self,
-									Vec2_t			*angle
+									Vec2_t					*angle
 								)
 {
 }
 
 HOWTO_ROT						(	Triangle3d_t,
 									self,
-									Vec3_t			*angle
+									Vec3_t					*angle
 								)
 {
 
@@ -452,15 +474,15 @@ HOWTO_ROT						(	Triangle3d_t,
 
 HOWTO_DRAW						(	Triangle2d_t,
 									self,
-									Point2d_t			*origin,
-									Color_t				*color,
-									Color_buffer_t		*colorbuf
+									Point2d_t				*origin,
+									Color_t					*color,
+									Color_buffer_t			*colorbuf
 								)
 {
 
-	Line_t							*line1		=	NULL,
-									*line2		=	NULL,
-									*line3		=	NULL;
+	Line_t							*line1	=	NULL,
+									*line2	=	NULL,
+									*line3	=	NULL;
 
 
 	NEW							(	Line_t,
@@ -612,30 +634,29 @@ HOWTO_FILL						(	Triangle2d_t,
 								)
 {
 
-	Triangle2d_t					*top		=		NULL,
-									*bot		=		NULL;
+	Triangle2d_t					*top		=	NULL,
+									*bot		=	NULL;
 
-	Point2d_t						*slope1		=		NULL,
-									*slope2		=		NULL;
+	Point2d_t						*slope1		=	NULL,
+									*slope2		=	NULL;
 
-	Line_t							*edge1		=		NULL,
-									*edge2		=		NULL;
+	Line_t							*edge1		=	NULL,
+									*edge2		=	NULL;
 
-	float							x_start		=		0,
-									x_end		=		0;
+	float							x_start		=	0,
+									x_end		=	0;
 
-	float							y_start		=		0,
-									y_end		=		0;
+	float							y_start		=	0,
+									y_end		=	0;
 
-	float							x_inc1		=		0,
-									x_inc2		=		0;
+	float							x_inc1		=	0,
+									x_inc2		=	0;
 
-	float							y_inc1		=		0,
-									y_inc2		=		0;
+	float							y_inc1		=	0,
+									y_inc2		=	0;
 
-	float							origin_x	=		0,
-									origin_y	=		0;
-
+	float							origin_x	=	0,
+									origin_y	=	0;
 
 	DEF							(	Triangle2d_t,
 									top
@@ -661,13 +682,13 @@ HOWTO_FILL						(	Triangle2d_t,
 								);
 
 	NEW							(	Line_t,
-									edge1,
+									( edge1 ),
 									( top )->p1,
 									( top )->p2
 								);
 
 	NEW							(	Line_t,
-									edge2,
+									( edge2 ),
 									( top )->p1,
 									( top )->p3
 								);

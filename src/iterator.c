@@ -160,9 +160,9 @@ HOWTO_DEF                   (   itr ( char ),   self    )
 {
 	NEW						(	itr ( char ),
 								self,
-								NULL,
-								0,
-								MAX_ITER
+								( NULL ),
+								( 0 ),
+								( MAX_ITER )
 							);
 
 	RET						(	self	);

@@ -8,116 +8,119 @@
 
 
 
-#define																				\
-HOWTO_DEF( class, _self )					class* def ( class ) ( class *self )
+
 
 #define																				\
-_DEF( class, self )							(	self			=	def ( class )	\
-																		( self )	\
+HOWTO_DEF( class, _self )					class* def ( class ) ( class *_self )
+
+#define																				\
+_DEF( class, _self )						(	_self			=	def ( class )	\
+																		( _self )	\
 											)
 #define																				\
-DEF( class, self )							do										\
+DEF( class, _self )							do										\
 											{										\
-												assert			(	!(self)	);		\
+												assert			(	!_self	);		\
 																					\
 												_DEF			(	class,			\
-																	self			\
+																	_self			\
 																);					\
 																					\
 											} while				(	0	)
 
 #define																				\
-NEW( class, self, ... )						do										\
+NEW( class, _self, ... )					do										\
 											{										\
-												assert			(	!(self)	);		\
+												assert			(	!_self	);		\
 																					\
 												ALLOC_ZEROED	(	class,			\
-																	self,			\
+																	_self,			\
 																	1				\
 																);					\
 																					\
-																					\
-												assert			(	self	);		\
+												assert			(	_self	);		\
 																					\
 												INIT			(	class,			\
-																	self,			\
+																	_self,			\
 																__VA_ARGS__			\
 																);					\
 											}	while			(	0	)
 
 #define																				\
-DEL( class, self )							do										\
+DEL( class, _self )							do										\
 											{										\
-												assert			(	self	);		\
+												assert			(	_self	);		\
 																					\
 												FINI			(	class,			\
-																	self			\
+																	_self			\
 																);					\
 																					\
-												DEALLOC			(	self	);		\
+												DEALLOC			(	_self	);		\
 																					\
 											}	while			(	0	)
 
 //	Shallow Copy
 
 #define																				\
-CP( class, to, from )						(										\
-												*( to )			=	*( from )		\
+CP( class, _to, _frm )						(										\
+												*( _to )			=	*( _frm )	\
 											)
 
 #define																				\
-HOWTO_CPY( class, to, from )				void									\
-											copy ( class )		(	class* to,		\
-																	class* from		\
+HOWTO_CPY( class, _to, _frm )				void									\
+											copy ( class )		(	class* _to,		\
+																	class* _frm		\
 																)
 
 #define																				\
-_CPY( class, to , from )					(	copy ( class )	(	to,	from	)	)
-
+_CPY( class, _to , _frm )					(	copy ( class )	(	_to,			\
+																	_frm			\
+																)					\
+											)
 
 #define																				\
-CPY( class, to , from )						do										\
+CPY( class, _to , _frm )					do										\
 											{										\
-												assert			(	to	);			\
-												assert			(	from	);		\
+												assert			(	_to		);		\
+												assert			(	_frm	);		\
 																					\
 												_CPY			(	class,			\
-																	to,				\
-																	from			\
+																	_to,			\
+																	_frm			\
 																);					\
 																					\
 											}	while			(	0	)
 
 
 #define																				\
-MCPY( class, to, from )						do										\
+MCPY( class, _to, _frm )					do										\
 											{										\
-												if				(	!to	)			\
+												if				(	!_to	)		\
 												{									\
 													DEF			(	class,			\
-																	to				\
+																	_to				\
 																);					\
 																					\
 												}									\
 																					\
 												CPY				(	class,			\
-																	to,				\
-																	from			\
+																	_to,			\
+																	_frm			\
 																);					\
 											}	while			(	0	)
 
 
 
 #define																				\
-MOV( class, to, from )						do										\
+MOV( class, _to, _frm )						do										\
 											{										\
 												CPY				(	class,			\
-																	to,				\
-																	from			\
+																	_to,			\
+																	_frm			\
 																);					\
 																					\
 												DEL				(	class,			\
-																	from			\
+																	_frm			\
 																);					\
 																					\
 											}	while			(	0	)

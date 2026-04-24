@@ -122,8 +122,7 @@ setup							(	void	)
 	//	Initialze SDL
 
 	if							(	yo_sdl_init_everything ( )
-									!= SUCCESS
-								)
+								!=	SUCCESS		)
 		RET						(	NULL	);
 
 	//	Create a new window
@@ -171,7 +170,9 @@ process_input					(	void	)
 
 		// Escape key
 		case					(	SDL_KEYDOWN	):
-			if					(	event.key.keysym.sym == SDLK_ESCAPE	)
+			if					(	event.key.keysym.sym
+								==	SDLK_ESCAPE
+								)
 				LOOP_BREAK		(	GAME	);
 			break;
 		default:
@@ -185,54 +186,54 @@ update							(	Renderer_t	*renderer	)
 {
 	Mesh_t							*mesh	=	NULL;
 
-	itr ( Triangle3d_t )			it		=	{ 0 };
-	Triangle2d_t					*prj	=	NULL;
-
-	Triangle2d_t					*top	=	NULL,
+	Triangle2d_t					*prj	=	NULL,
+									*top	=	NULL,
 									*bot	=	NULL;
 
 	Vec3_t							*rot	=	NULL;
 
 
 	DEF							(	Triangle2d_t,
-									( prj )
+									prj
 								);
 
 	DEF							(	Triangle2d_t,
-									( top )
+									top
 								);
 
 	DEF							(	Triangle2d_t,
-									( bot )
+									bot
 								);
 
 	DEF							(	arr ( Triangle2d_t ),
-									renderer->triangles_to_draw
+									( renderer )->triangles_to_draw
 								);
 
 	NEW							(	Vec3_t,
-									( rot ),
-									( 0.01f ),
-									( 0.01f ),
-									( 0.01f )
+									rot,
+									0.01f,
+									0.01f,
+									0.01f
 								);
 
 
-	GET							(	( mesh ),
+	GET							(	mesh,
 									( renderer )->mesh
 								);
 
 	ROT							(	Mesh_t,
-									( mesh ),
-									( rot )
+									mesh,
+									rot
 								);
 
-	for_each_triangle_in_mesh	(	&it,		mesh	)
+	itr ( Triangle3d_t )			it		=	{ 0 };
+
+	for_each_triangle_in_mesh	(	&( it ),	mesh	)
 	{
 		bool						cull	=	false;
 
 		LD						(	bool,
-									( &cull ),
+									&( cull ),
 									( mesh )->cull,
 									( it ).pos
 								);
@@ -244,22 +245,25 @@ update							(	Renderer_t	*renderer	)
 
 		PROJ					(	Triangle2d_t,			Triangle3d_t,
 									( prj ),				( it ).ptr,
-									PERSPECTIVE
+									( PERSPECTIVE )
 								);
 
 		REQ						(	Triangle2d_t,
 									get_flat_top_bottom,
-									( prj ),
-									( top ),
-									( bot )
+									prj,
+									top,
+									bot
 								);
 
 		PUSH					(	Triangle2d_t,
-									( prj ),
-									( renderer )->triangles_to_draw
+									( renderer )->triangles_to_draw,
+									( prj )
 								);
 
-		assert					(	top		&&		bot		);
+
+		assert					(	top	);
+		assert					(	bot	);
+
 
 		//PUSH					(	Triangle2d_t,
 		//							top,
@@ -307,14 +311,14 @@ render							(	Renderer_t*		renderer	)
 	itr ( Triangle2d_t )			tr		=	{ 0 };
 
 	NEW							(	Color_t,
-									( green ),
-									( 0x00 ),
-									( 0xFF ),
-									( 0x00 ),
-									( 0xFF )
+									green,
+									0x00,
+									0xFF,
+									0x00,
+									0xFF
 								);
 
-	for_each_item_in_array		(	Triangle2d_t,	&tr,	( renderer )->triangles_to_draw	)
+	for_each_item_in_arr		(	Triangle2d_t,	&( tr ),	( renderer )->triangles_to_draw	)
 	{
 		DRAW					(	Triangle2d_t,
 									( tr ).ptr,
@@ -328,7 +332,7 @@ render							(	Renderer_t*		renderer	)
 
 
 	DEL							(	arr	( Triangle2d_t ),
-									renderer->triangles_to_draw
+									( renderer )->triangles_to_draw
 								);
 
 	ret							=	render_color_buffer	(	renderer	);
@@ -356,11 +360,13 @@ render							(	Renderer_t*		renderer	)
 
 
 int
-main							(	int argc, char** argv	)
+main							(	int	argc,		char**	argv	)
 {
+
 	Renderer_t						*renderer	=	NULL;
 
 	renderer					=	setup	(	);
+
 	if							(	!renderer	)
 	{
 		LOG						(	"Setup failed\n"	);
@@ -370,7 +376,9 @@ main							(	int argc, char** argv	)
 	LOOP						(	GAME	)
 	{
 		process_input			(	);
+
 		update					(	renderer	);
+
 		render					(	renderer	);
 	}
 
