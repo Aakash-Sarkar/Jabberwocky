@@ -231,6 +231,12 @@ HOWTO_PROJ							(	Vec2_t,					Vec3_t,
 //				Arithmetic Operations
 /////////////////////////////////////////////////////////////////////////////////
 
+
+HOWTO_CMP							(	Vec2_t,	v1,	v2	);
+
+HOWTO_CMP							(	Vec3_t,	v1,	v2	);
+
+
 HOWTO_ADD							(	Vec2_t,	dst,	op1,	op2		);
 
 HOWTO_ADD							(	Vec3_t,	dst,	op1,	op2		);
@@ -257,10 +263,3 @@ HOWTO_DOTP							(	Vec3_t, dst,	src1,	src2	);
 
 
 HOWTO_CROSP							(	Vec3_t,	dst,	src1,	src2	);
-
-
-METHOD								(	Vec2_t,
-										get_max_abs_x_y,
-										self,
-										float					*out
-									);

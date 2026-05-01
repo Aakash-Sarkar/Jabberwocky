@@ -252,7 +252,7 @@ HOWTO_CPY					(	arr ( Point3d_t ),	to,	from	);
 
 
 //////////////////////////////////////////////////////////////////////////////////
-//							Geomertic Operations
+//							Geometric Operations
 //////////////////////////////////////////////////////////////////////////////////
 
 
@@ -296,6 +296,11 @@ HOWTO_PROJ					(	Point2d_t,			Point3d_t,
 //////////////////////////////////////////////////////////////////////////////////
 
 
+HOWTO_CMP					(	Point2d_t,	p1,	p2	);
+
+HOWTO_CMP					(	Point3d_t,	p1,	p2	);
+
+
 HOWTO_ADD					(	Point2d_t,	dst,	op1,	op2		);
 
 HOWTO_ADD					(	Point3d_t,	dst,	op1,	op2		);
@@ -323,11 +328,5 @@ HOWTO_DOTP					(	Point3d_t,	dst,	src1,	src2	);
 
 HOWTO_CROSP					(	Point3d_t,	dst,	src1,	src2	);
 
-
-METHOD						(	Point2d_t,
-								get_max_abs_x_y,
-								self,
-								float		*out
-							);
 
 

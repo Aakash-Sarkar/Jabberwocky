@@ -20,7 +20,7 @@ _DEF( class, _self )						(	_self			=	def ( class )	\
 #define																				\
 DEF( class, _self )							do										\
 											{										\
-												assert			(	!_self	);		\
+												assert			(	!(_self)	);	\
 																					\
 												_DEF			(	class,			\
 																	_self			\

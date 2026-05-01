@@ -8,9 +8,6 @@
 
 
 
-
-
-
 #define																						\
 HOWTO_CMP( class, _item1, _item2 )				bool cmp ( class )	(	class	*_item1,	\
 																		class	*_item2		\
@@ -115,6 +112,7 @@ DIV( class, _dest, _src, _factor )			do												\
 											{												\
 												assert				(	_dest	);			\
 												assert				(	_src	);			\
+												assert				(	_factor	);			\
 																							\
 												div ( class )		(	( _dest ),			\
 																		( _src ),			\

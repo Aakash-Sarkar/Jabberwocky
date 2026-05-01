@@ -20,10 +20,13 @@ lst( class )								concat3 ( class, _, lst )
 #define                                                                             \
 cont( class )								concat3 ( class, _, cont )
 
+#define																				\
+ref( class )								concat3 ( class, _, ref )
+
 
 
 #define																				\
-init( class )								concat3 ( init,	_, class )
+init( class )								concat3 ( init, _, class )								
 
 #define																				\
 fini( class )								concat3 ( fini, _, class )
@@ -70,6 +73,11 @@ dotp( class )								concat3 ( dotp,	_, class )
 crosp( class )								concat3 ( crosp,_, class )
 
 
+#define																				\
+rotate( class )								concat3	( rotate, _, class )
+
+#define																					\
+project( class1, class2 )					concat5 ( proj, _, class2, _to_, class1 )
 
 #define																				\
-iterate( class )							concat3(	itr,	_,	class	)
+draw( class )								concat3	( draw, _, class )

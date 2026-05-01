@@ -286,7 +286,7 @@ HOWTO_FINI						(	arr ( Point2d_t ),		self	)
 {
 
 	FINIARR						(	Point2d_t,
-									( self )
+									self
 								);
 }
 
@@ -294,7 +294,7 @@ HOWTO_FINI						(	arr ( Point3d_t ),		self	)
 {
 
 	FINIARR						(	Point3d_t,
-									( self )
+									self
 								);
 }
 
@@ -369,15 +369,15 @@ HOWTO_DRAW						(	Point2d_t,
 								);
 
 
-	int								posX	=	( o_point )->v->x,
-									posY	=	( o_point )->v->y;
+	int								posX	=	round( ( o_point )->v->x ),
+									posY	=	round( ( o_point )->v->y );
 
 
 	NEW							(	Rect_t,
 									rect,
 									posX,
 									posY,
-									4,	4
+									2,	2
 								);
 
 	DRAW						(	Rect_t,
@@ -438,8 +438,8 @@ HOWTO_PROJ					(	Point2d_t,			Point3d_t,
 {
 
 	PROJ					(	Vec2_t,				Vec3_t,
-								( to )->v,			( frm )->v,
-								typ
+								( to  )->v,			( frm )->v,
+								( typ )
 							);
 }
 
@@ -447,6 +447,37 @@ HOWTO_PROJ					(	Point2d_t,			Point3d_t,
 //////////////////////////////////////////////////////////////////////////////////
 //						Arithmetic Operations Implementation
 //////////////////////////////////////////////////////////////////////////////////
+
+
+HOWTO_CMP					(	Point2d_t,	p1,	p2	)
+{
+	assert					(	p1	);
+	assert					(	p2	);
+
+	bool						res		=	false;
+
+	res						=	CMP		(	Vec2_t,
+											( p1 )->v,
+											( p2 )->v
+										);
+
+	RET						(	res	);
+}
+
+HOWTO_CMP					(	Point3d_t,	p1,	p2	)
+{
+	assert					(	p1	);
+	assert					(	p2	);
+
+	bool						res		=	false;
+
+	res						=	CMP		(	Vec3_t,
+											( p1 )->v,
+											( p2 )->v
+										);
+
+	RET						(	res	);
+}
 
 
 HOWTO_ADD					(	Point2d_t,	dst,	op1,	op2	)
@@ -563,22 +594,4 @@ HOWTO_CROSP					(	Point3d_t,	dst,	src1,	src2	)
 								( src1 )->v,
 								( src2 )->v
 							);
-}
-
-
-METHOD						(	Point2d_t,
-								get_max_abs_x_y,
-								self,
-								float				*out
-							)
-{
-	assert					(	out	);
-
-	REQ						(	Vec2_t,
-								get_max_abs_x_y,
-								( self )->v,
-								out
-							);
-
-	RET						(	self	);
 }

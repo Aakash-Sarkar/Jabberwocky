@@ -19,7 +19,6 @@ HOWTO_DEF						(	Triangle2d_t,	self	)
 									*p2		=	NULL,
 									*p3		=	NULL;
 
-
 	DEF							(	Point2d_t,
 									p1
 								);
@@ -487,20 +486,20 @@ HOWTO_DRAW						(	Triangle2d_t,
 
 	NEW							(	Line_t,
 									( line1 ),
-									( self )->p2,
-									( self )->p1
-								);
-
-	NEW							(	Line_t,
-									( line2 ),
-									( self )->p3,
+									( self )->p1,
 									( self )->p2
 								);
 
 	NEW							(	Line_t,
-									( line3 ),
-									( self )->p1,
+									( line2 ),
+									( self )->p2,
 									( self )->p3
+								);
+
+	NEW							(	Line_t,
+									( line3 ),
+									( self )->p3,
+									( self )->p1
 								);
 
 	//	Draw the edges
@@ -549,13 +548,6 @@ HOWTO_DRAW						(	Triangle2d_t,
 									colorbuf
 								);
 
-	//FILL						(	Triangle2d_t,
-	//								self,
-	//								origin,
-	//								color,
-	//								colorbuf
-	//							);
-
 	DEL							(	Line_t,
 									line1
 								);
@@ -568,6 +560,7 @@ HOWTO_DRAW						(	Triangle2d_t,
 									line3
 								);
 }
+
 
 HOWTO_DRAW						(	Triangle3d_t,
 									self,
@@ -611,20 +604,379 @@ HOWTO_PROJ						(	Triangle2d_t,		Triangle3d_t,
 
 	PROJ						(	Point2d_t,			Point3d_t,
 									( to )->p1,			( from )->p1,
-									type
+									( type )
 								);
 
 	PROJ						(	Point2d_t,			Point3d_t,
 									( to )->p2,			( from )->p2,
-									type
+									( type )
 								);
 
 	PROJ						(	Point2d_t,			Point3d_t,
 									( to )->p3,			( from )->p3,
-									type
+									( type )
 								);
 }
 
+
+//////////////////////////////////////////////////////////////////////////////
+//						Fill Flat Bottom Triangle:
+//////////////////////////////////////////////////////////////////////////////
+//
+//
+//		After the vertex processing stage of the pipeline ( rotation,
+//		scaling, projection to 2D surface etc. ), our next step is to
+//		fill color into our triangles. The inputs to our fill function
+//		are the integer co-ordinates for the three vertices on screen
+//		(x1, y1), (x2, y2) and (x3, y3) as well as the color value to
+//		use.
+// 
+//
+//			+ - + - + - + - + - + - + - + - + - + - + - +	
+//			:	:	:	:	:	:  (x1, y1)	:	:	:	:
+//			+ - + - + - + - + - + - +---+ - + - + - + - +
+//			:	:	:	:	:	:	|||||	:	:	:	:	--> y_start
+//			+ - + - + - + - + - +---+---+---+ - + - + - +
+//			:	:	:	:	:	|||||	|||||	:	:	:
+//			+ - + - + - + - +---+---+ - +---+ - + - + - +
+//			:	:	:	:	|||||	:	|||||	:	:	:
+//			+ - + - + - +---+---+ - + - +---+---+ - + - +
+//			:	:	:	|||||	:	:	:	|||||	:	:
+//			+ - + - +---+---+ - + - + - + - +---+ - + - +
+//			:	:	|||||	:	:	:	:	|||||	:	:	--> y_end
+//			+ - + - +---+ - + - + - + - + - +---+ - + - +
+//			:	: (x2, y2)	:	:	:	:  (x3, y3) :	:
+//			+ - + - + - + - + - + - + - + - + - + - + - +
+//			:	:	:	:	:	:	:	:	:	:	:	:
+//			+ - + - + - + - + - + - + - + - + - + - + - +
+// 
+// 
+//		Since our triangles are guranteed to have a flat bottom; our job
+//		of filling the triangles is much simpler. We start from the top
+//		row y_start and fill color row by row ( aka. in scanline order )
+//		until we reach the bottom row y_end.
+//
+// 
+//		Here, our y_start and y_end represent the vertical boundaries of
+//		the triangle on the screen. The scanline algorithm will iterate
+//		from y_start to y_end, filling pixels between the left and right
+//		edges of the triangle for each row. Since our vertices are sorted
+//		based on increasing y order (y1 <= y2 <= y3), finding y_start and
+//		y_end is straightforward.
+// 
+// 
+//		[ y_start ]		=		[ y1 ]					( top row )
+// 
+//		[ y_end ]		=		[ y2 ]	=	[ y3 ]		( bottom row )
+//
+// 
+//		Our next step is: for each row select the start and end points of
+//		the scanline ( x_start and x_end ) and fill the pixels in-between.
+//
+//			+ - + - + - + - + - + - + - + - + - + - + - +	
+//			:	:	:	:	:	:  (x1, y1)	:	:	:	:
+//			+ - + - + - + - + - + - +---+ - + - + - + - +
+//			:	:	:	:	:	:	|||||	:	:	:	:	--> y_start
+//			+ - + - + - + - + - +---+---+---+ - + - + - +
+//			:	:	:	:	:	|||||||||||||	:	:	:
+//			+ - + - + - + - +---+---+---+---+ - + - + - +
+//			: [x_start] ->  ||||||||||||||||| <- [x_end]:
+//			+ - + - + - +---+---+---+---+---+---+ - + - +
+//			:	:	:	|||||	:	:	:	|||||	:	:	:
+//			+ - + - +---+---+ - + - + - + - +---+ - + - +
+//			:	:	|||||	:	:	:	:	|||||	:	:	--> y_end
+//			+ - + - +---+ - + - + - + - + - +---+ - + - +
+//			:	: (x2, y2)	:	:	:	:  (x3, y3) :	:
+//			+ - + - + - + - + - + - + - + - + - + - + - +
+//			:	:	:	:	:	:	:	:	:	:	:	:
+//			+ - + - + - + - + - + - + - + - + - + - + - +
+//
+//
+//		In order to find the x_start and x_end for a given row index ( y
+//		value) we use the inverse of the slopes of the lines L12 = ((x1,
+//		y1) -> (x2, y2)) and L13 = ((x1, y1) -> (x3, y3)) in order to find
+//		the corresponding movement in column index ( x value ).
+//
+//		In other words, for a unit increment in y from y1 how much do we
+//		need to increment / decrement from x1 such that our pixel (x, y)
+//		remains on the line L12 / L13. This way we can obtain our x_start
+//		and x_end.
+//
+//
+//		[ x_start ]		=	[ x1 ]
+//
+//		[ x_end ]		=	[ x1 ]
+//
+//
+//		[ x_start ]		=	[ x_start ] + ( inv ( slope ( L12 ) ) )
+//
+//		[ x_end ]		=	[ x_end ]	+ ( inv ( slope ( L13 ) ) )
+//
+//
+//		Next, with x_start, x_end, y_start and y_end at our disposal, we
+//		can proceed to fill the pixels between x_start and x_end for each
+//		row from y_start to y_end. This gives us our filled triangle.
+//
+//
+//			+ - + - + - + - + - + - + - + - + - + - + - +	
+//			:	:	:	:	:	:  (x1, y1)	:	:	:	:
+//			+ - + - + - + - + - + - +---+ - + - + - + - +
+//			:	:	:	:	:	:	|||||	:	:	:	:	--> y_start
+//			+ - + - + - + - + - +---+---+---+ - + - + - +
+//			:	:	:	:	:	|||||||||||||	:	:	:
+//			+ - + - + - + - +---+---+---+---+ - + - + - +
+//			:	:	:	:	:|||||||||||||||||	:	:	:
+//			+ - + - + - +---+---+---+---+---+---+ - + - +
+//			:	:	:	|||||||||||||||||||||||||	:	:
+//			+ - + - +---+---+---+---+---+---+---+ - + - +
+//			:	:	|||||||||||||||||||||||||||||	:	:	--> y_end
+//			+ - + - +---+---+---+---+---+---+---+ - + - +
+//			:	: (x2, y2)	:	:	:	:  (x3, y3) :	:
+//			+ - + - + - + - + - + - + - + - + - + - + - +
+//			:	:	:	:	:	:	:	:	:	:	:	:
+//			+ - + - + - + - + - + - + - + - + - + - + - +
+//
+//
+//////////////////////////////////////////////////////////////////////////////
+
+
+static
+void
+fill_flat_bot					(	Triangle2d_t		*tr,
+									Point2d_t			*origin,
+									Color_t				*color,
+									Color_buffer_t		*colorbuf
+								)
+{
+	float							x_start	=	0,
+									x_end	=	0,
+									y_start	=	0,
+									y_end	=	0;
+
+
+	Line_t							*line12	=	NULL,
+									*line13	=	NULL;
+
+	NEW							(	Line_t,
+									line12,
+									( tr )->p1,
+									( tr )->p2
+								);
+
+	NEW							(	Line_t,
+									line13,
+									( tr )->p1,
+									( tr )->p3
+								);
+
+	y_start						=	round( ( tr )->p1->v->y );
+	y_end						=	round( ( tr )->p2->v->y );
+
+	x_start						=	round( ( tr )->p1->v->x );
+	x_end						=	round( ( tr )->p1->v->x );
+
+	float							slope1	=	( line12 )->inv_slope->v->x,
+									slope2	=	( line13 )->inv_slope->v->x;
+
+
+	for							(	int posY	=	y_start;
+										posY	<=	y_end;
+										posY++
+								)
+	{
+		FILL_SCANLINE			(	x_start,
+									x_end,
+									posY,
+									origin,
+									color,
+									colorbuf
+								);
+
+		x_start					=	x_start
+								+	slope1;
+
+		x_end					=	x_end
+								+	slope2;
+	}
+
+	DEL							(	Line_t,
+									line12
+								);
+
+	DEL							(	Line_t,
+									line13
+								);
+}
+
+
+//////////////////////////////////////////////////////////////////////////////
+//						Fill Flat Top Triangle:
+//////////////////////////////////////////////////////////////////////////////
+//
+//
+//		Fill flat top algorithm follows the same logic as the fill flat
+//		bottom algorithm; except now our triangle is upside down
+// 
+//
+//			+ - + - + - + - + - + - + - + - + - + - + - +	
+//			:	: (x1, y1)	:	:	:	: (x2, y2)	:	:
+//			+ - + - +---+ - + - + - + - + - +---+ - + - +
+//			:	:	|||||	:	:	:	:	|||||	:	:	--> y_end
+//			+ - + - +---+---+ - + - + - + - +---+ - + - +
+//			:	:	:	|||||	:	:	:	|||||	:	:
+//			+ - + - + - +---+---+ - + - +---+---+ - + - +
+//			:	:	:	:	|||||	:	|||||	:	:	:
+//			+ - + - + - + - +---+---+ - +---+ - + - + - +
+//			:	:	:	:	:	|||||	|||||	:	:	:
+//			+ - + - + - + - + - +---+---+---+ - + - + - +
+//			:	:	:	:	:	:	|||||	:	:	:	:	--> y_start
+//			+ - + - + - + - + - + - +---+ - + - + - + - +
+//			:	:	:	:	:	: (x3, y3)	:	:	:	:
+//			+ - + - + - + - + - + - + - + - + - + - + - +
+//			:	:	:	:	:	:	:	:	:	:	:	:
+//			+ - + - + - + - + - + - + - + - + - + - + - +
+// 
+// 
+//		We start off at the bottom row (x3, y3) and work our way up,
+//		filling color scanline by scanline, until we reach the top row
+//		(x1, y1).
+//
+//
+//		[ y_start ]		=		[ y3 ]					( bottom row )
+// 
+//		[ y_end ]		=		[ y1 ]	=	[ y2 ]		( top row )
+//
+// 
+//		The logic for calculating x_start and x_end remains the same
+//		except, this time our line vectors are pointing upwards (x3, y3)
+//		-> (x1, y1) and (x3, y3) -> (x2, y2). 
+//
+//
+//			+ - + - + - + - + - + - + - + - + - + - + - +	
+//			:	: (x1, y1)	:	:	:	: (x2, y2)	:	:
+//			+ - + - +---+ - + - + - + - + - +---+ - + - +
+//			:	:	|||||	:	:	:	:	|||||	:	:	--> y_end
+//			+ - + - +---+---+---+---+---+---+---+ - + - +
+//		[ x_start ] ->	||||||||||||||||||||||||| <-:[ x_end ]
+//			+ - + - + - +---+---+---+---+---+---+ - + - +
+//			:	:	:	:	|||||||||||||||||	:	:	:
+//			+ - + - + - + - +---+---+---+---+ - + - + - +
+//			:	:	:	:	:	|||||||||||||	:	:	:
+//			+ - + - + - + - + - +---+---+---+ - + - + - +
+//			:	:	:	:	:	:	|||||	:	:	:	:	--> y_start
+//			+ - + - + - + - + - + - +---+ - + - + - + - +
+//			:	:	:	:	:	: (x3, y3)	:	:	:	:
+//			+ - + - + - + - + - + - + - + - + - + - + - +
+//			:	:	:	:	:	:	:	:	:	:	:	:
+//			+ - + - + - + - + - + - + - + - + - + - + - +
+//
+//
+//		Our method of calculating x_start and x_end remains the same as
+//		before.
+//
+//		[ x_start ]		=	[ x3 ]
+//
+//		[ x_end ]		=	[ x3 ]
+//
+//		[ x_start ]		=	[ x_start ] + ( inv ( slope ( L31 ) ) )
+//
+//		[ x_end ]		=	[ x_end ]	+ ( inv ( slope ( L32 ) ) )
+//
+//
+//		Next, with x_start, x_end, y_start and y_end at our disposal, we
+//		can proceed to fill the pixels between x_start and x_end for each
+//		row from y_start to y_end. This gives us our filled triangle.
+//
+//
+//			+ - + - + - + - + - + - + - + - + - + - + - +	
+//			:	: (x1, y1)	:	:	:	: (x2, y2)	:	:
+//			+ - + - +---+---+---+---+---+---+---+ - + - +
+//			:	:	|||||||||||||||||||||||||||||	:	:	--> y_end
+//			+ - + - +---+---+---+---+---+---+---+ - + - +
+//			:	:	:	|||||||||||||||||||||||||	:	:
+//			+ - + - + - +---+---+---+---+---+---+ - + - +
+//			:	:	:	:	|||||||||||||||||	:	:	:
+//			+ - + - + - + - +---+---+---+---+ - + - + - +
+//			:	:	:	:	:	|||||||||||||	:	:	:
+//			+ - + - + - + - + - +---+---+---+ - + - + - +
+//			:	:	:	:	:	:	|||||	:	:	:	:	--> y_start
+//			+ - + - + - + - + - + - +---+ - + - + - + - +
+//			:	:	:	:	:	: (x3, y3)	:	:	:	:
+//			+ - + - + - + - + - + - + - + - + - + - + - +
+//			:	:	:	:	:	:	:	:	:	:	:	:
+//			+ - + - + - + - + - + - + - + - + - + - + - +
+//
+//
+//////////////////////////////////////////////////////////////////////////////
+
+
+static
+void
+fill_flat_top					(	Triangle2d_t		*tr,
+									Point2d_t			*origin,
+									Color_t				*color,
+									Color_buffer_t		*colorbuf
+								)
+{
+	float							x_start	=	0,
+									x_end	=	0,
+									y_start	=	0,
+									y_end	=	0;
+
+
+	Line_t							*line31	=	NULL,
+									*line32	=	NULL;
+
+	NEW							(	Line_t,
+									line31,
+									( tr )->p3,
+									( tr )->p1
+								);
+
+	NEW							(	Line_t,
+									line32,
+									( tr )->p3,
+									( tr )->p2
+								);
+
+	y_start						=	round(( tr )->p3->v->y);
+	y_end						=	round(( tr )->p1->v->y);
+
+	x_start						=	round(( tr )->p3->v->x);
+	x_end						=	round(( tr )->p3->v->x);
+
+	float							slope1	=	( line31 )->inv_slope->v->x,
+									slope2	=	( line32 )->inv_slope->v->x;
+
+
+	for							(	int posY	=	y_start;
+										posY	>=	y_end;
+										posY--
+								)
+	{
+		FILL_SCANLINE			(	x_start,
+									x_end,
+									posY,
+									origin,
+									color,
+									colorbuf
+								);
+
+		x_start					=	x_start
+								+	slope1;
+
+		x_end					=	x_end
+								+	slope2;
+	}
+
+	DEL							(	Line_t,
+									line31
+								);
+
+	DEL							(	Line_t,
+									line32
+								);
+}
 
 HOWTO_FILL						(	Triangle2d_t,
 									self,
@@ -634,101 +986,64 @@ HOWTO_FILL						(	Triangle2d_t,
 								)
 {
 
-	Triangle2d_t					*top		=	NULL,
-									*bot		=	NULL;
+	if							(	self->p2->v->y == self->p3->v->y	)
+	{
+		fill_flat_bot			(	self,
+									origin,
+									color,
+									colorbuf
+								);
+	}
+	else if						(	self->p1->v->y == self->p2->v->y	)
+	{
+		fill_flat_top			(	self,
+									origin,
+									color,
+									colorbuf
+								);
+	}
+	else
+	{
+		Triangle2d_t				*flat_top	=	NULL,
+									*flat_bot	=	NULL;
 
-	Point2d_t						*slope1		=	NULL,
-									*slope2		=	NULL;
-
-	Line_t							*edge1		=	NULL,
-									*edge2		=	NULL;
-
-	float							x_start		=	0,
-									x_end		=	0;
-
-	float							y_start		=	0,
-									y_end		=	0;
-
-	float							x_inc1		=	0,
-									x_inc2		=	0;
-
-	float							y_inc1		=	0,
-									y_inc2		=	0;
-
-	float							origin_x	=	0,
-									origin_y	=	0;
-
-	DEF							(	Triangle2d_t,
-									top
+		DEF						(	Triangle2d_t,
+									flat_top
 								);
 
-	DEF							(	Triangle2d_t,
-									bot
+		DEF						(	Triangle2d_t,
+									flat_bot
 								);
 
-	DEF							(	Point2d_t,
-									slope1
-								);
-
-	DEF							(	Point2d_t,
-									slope2
-								);
-
-	REQ							(	Triangle2d_t,
+		REQ						(	Triangle2d_t,
 									get_flat_top_bottom,
 									self,
-									top,
-									bot
+									flat_bot,
+									flat_top
 								);
 
-	NEW							(	Line_t,
-									( edge1 ),
-									( top )->p1,
-									( top )->p2
+		fill_flat_bot			(	flat_bot,
+									origin,
+									color,
+									colorbuf
 								);
 
-	NEW							(	Line_t,
-									( edge2 ),
-									( top )->p1,
-									( top )->p3
+		fill_flat_top			(	flat_top,
+									origin,
+									color,
+									colorbuf
 								);
 
-	REQ							(	Line_t,
-									get_slope,
-									edge1,
-									slope1
+		DEL						(	Triangle2d_t,
+									flat_top
 								);
 
-	REQ							(	Line_t,
-									get_slope,
-									edge2,
-									slope2
+		DEL						(	Triangle2d_t,
+									flat_bot
 								);
 
-	y_start						=	( top )->p1->v->y;
-	y_end						=	( top )->p2->v->y;
-
-	x_start						=	( top )->p1->v->x;
-	x_end						=	( top )->p1->v->x;
-
-	x_inc1						=	( slope1 )->v->x;
-	x_inc2						=	( slope2 )->v->x;
-
-	origin_x					=	( origin )->v->x;
-	origin_y					=	( origin )->v->y;
-
-
-	_FILL						(	x_start,		x_end,
-									y_start,		y_end,
-									x_inc1,			x_inc2,
-									y_inc1,			y_inc2,
-									origin_x,		origin_y,
-									color,			colorbuf
-								);
+	}
 }
-
-
-
 
 
 
@@ -997,7 +1312,7 @@ METHOD							(	Triangle3d_t,
 
 	NEW							(	Point3d_t,
 									cam,
-									0.00f,	0.00f,	-5.00f
+									( 0.00f ),	( 0.00f ),	( -5.00f )
 								);
 
 	SUB							(	Point3d_t,
@@ -1017,7 +1332,7 @@ METHOD							(	Triangle3d_t,
 	assert						(	dotp	);
 
 	*out						=	(	*dotp	<	0	)
-								?	true	:	false;
+								?	( true ) : ( false );
 
 	DEL							(	float,
 									dotp
@@ -1044,41 +1359,61 @@ METHOD							(	Triangle2d_t,
 {
 
 	assert						(	out_top		);
+
 	assert						(	out_bot		);
 
 	Point2d_t						*midp	=	NULL;
 
-	//	Sort triangles based on increasing y co-ordinate
+	Point2d_t						*p1		=	NULL,
+									*p2		=	NULL,
+									*p3		=	NULL;
 
-	if							(	( self )->p1->v->y > ( self )->p2->v->y	)
-	{
-
-		SWP						(	Point2d_t,
-									( self )->p1,
+	MCPY						(	Point2d_t,
+									( p1 ),
+									( self )->p1
+								);
+								
+	MCPY						(	Point2d_t,
+									( p2 ),
 									( self )->p2
 								);
-	}
-
-	if							(	( self )->p2->v->y > ( self )->p3->v->y	)
-	{
-
-		SWP						(	Point2d_t,
-									( self )->p2,
+								
+	MCPY						(	Point2d_t,
+									( p3 ),
 									( self )->p3
 								);
-	}
 
-	if							(	( self )->p1->v->y > ( self )->p2->v->y	)
+	//	Sort triangles based on increasing y co-ordinate
+
+	if							(	( p1 )->v->y > ( p2 )->v->y	)
 	{
 
 		SWP						(	Point2d_t,
-									( self )->p1,
-									( self )->p2
+									p1,
+									p2
 								);
 	}
 
-	assert						(	( self )->p1->v->y <= ( self )->p2->v->y	);
-	assert						(	( self )->p2->v->y <= ( self )->p3->v->y	);
+	if							(	( p2 )->v->y > ( p3 )->v->y	)
+	{
+
+		SWP						(	Point2d_t,
+									p2,
+									p3
+								);
+	}
+
+	if							(	( p1 )->v->y > ( p2 )->v->y	)
+	{
+
+		SWP						(	Point2d_t,
+									p1,
+									p2
+								);
+	}
+
+	assert						(	( p1 )->v->y	<=	( p2 )->v->y	);
+	assert						(	( p2 )->v->y	<=	( p3 )->v->y	);
 
 
 
@@ -1087,8 +1422,11 @@ METHOD							(	Triangle2d_t,
 	//////////////////////////////////////////////////////////////////////////////
 	//
 	//
-	//		Lat's assume we have a triangle with three vetices p1 = ( x1, y1 ),
-	//		p2 = ( x2, y2 ), p3 = ( x3, y3 ). 
+	//		Lat's assume we have a triangle with three vetices:
+	// 
+	//		p1 = ( x1, y1 ),
+	//		p2 = ( x2, y2 ),
+	//		p3 = ( x3, y3 ). 
 	// 
 	//
 	//					Y
@@ -1140,17 +1478,16 @@ METHOD							(	Triangle2d_t,
 	float							midx	=	0.0f,
 									midy	=	0.0f;
 
-	float							x1	=	( self )->p1->v->x,
-									y1	=	( self )->p1->v->y;
+	float							x1		=	( p1 )->v->x,
+									y1		=	( p1 )->v->y;
 
+	float							x2		=	( p2 )->v->x,
+									y2		=	( p2 )->v->y;
 
-	float							x2	=	( self )->p2->v->x,
-									y2	=	( self )->p2->v->y;
+	float							x3		=	( p3 )->v->x,
+									y3		=	( p3 )->v->y;
 
-	float							x3	=	( self )->p3->v->x,
-									y3	=	( self )->p3->v->y;
-
-	midy						=	y1;
+	midy						=	y2;
 
 	midx						=	x1	+	(
 										(	y2	-	y1	)
@@ -1169,34 +1506,38 @@ METHOD							(	Triangle2d_t,
 
 	NEW							(	Triangle2d_t,
 									top,
-									( self )->p1,
-									( self )->p2,
-									( midp )
+									( p1 ),		( p2 ),		( midp )
 								);
 
 	NEW							(	Triangle2d_t,
 									bot,
-									( self )->p2,
-									( midp ),
-									( self )->p3
+									( p2 ),		( midp ),	( p3 )
 								);
 
-	CPY							(	Triangle2d_t,
+	CP							(	Triangle2d_t,
 									out_top,
 									top
 								);
 
-	CPY							(	Triangle2d_t,
+	CP							(	Triangle2d_t,
 									out_bot,
 									bot
 								);
 
-	DEL							(	Triangle2d_t,
-									top
+	DEL							(	Point2d_t,
+									midp
 								);
 
-	DEL							(	Triangle2d_t,
-									bot
+	DEL							(	Point2d_t,
+									p1
+								);
+	
+	DEL							(	Point2d_t,
+									p2
+								);
+
+	DEL							(	Point2d_t,
+									p3
 								);
 
 	RET							(	self	);

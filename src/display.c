@@ -23,7 +23,7 @@ HOWTO_INIT						(	Window_t,
 									SDL,
 									GetCurrentDisplayMode,
 									0,
-									&mode
+									&( mode )
 								);
 
 	assert						(	!ret	);
@@ -72,9 +72,7 @@ HOWTO_INIT						(	Window_t,
 	//							);
 }
 
-HOWTO_FINI						(	Window_t,
-									self
-								)
+HOWTO_FINI						(	Window_t,	self	)
 {
 }
 
@@ -101,9 +99,9 @@ HOWTO_INIT						(	Renderer_t,
 	assert						(	( self )->sdl	);
 
 
-	DEF							(	arr ( Triangle2d_t ),
-									( self )->triangles_to_draw
-								);
+	//DEF							(	arr ( Triangle2d_t ),
+	//								( self )->triangles_to_draw
+	//							);
 
 	NEW							(	Mesh_t,
 									( self )->mesh,
@@ -145,11 +143,13 @@ HOWTO_INIT						(	Renderer_t,
 
 	NEW							(	Point2d_t,
 									( self )->origin,
-									( window )->width  / ( float ) 2,
-									( window )->height / ( float ) 2
+									( window )->width 
+								/	( float ) 2,
+									( window )->height
+								/	( float ) 2
 								);
 
-	( self )->window				=	window;
+	( self )->window			=	window;
 }
 
 //	TODO: Implement this

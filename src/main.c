@@ -185,24 +185,12 @@ bool
 update							(	Renderer_t	*renderer	)
 {
 	Mesh_t							*mesh	=	NULL;
-
-	Triangle2d_t					*prj	=	NULL,
-									*top	=	NULL,
-									*bot	=	NULL;
-
+	Triangle2d_t					*prj	=	NULL;
 	Vec3_t							*rot	=	NULL;
 
 
 	DEF							(	Triangle2d_t,
 									prj
-								);
-
-	DEF							(	Triangle2d_t,
-									top
-								);
-
-	DEF							(	Triangle2d_t,
-									bot
 								);
 
 	DEF							(	arr ( Triangle2d_t ),
@@ -230,6 +218,7 @@ update							(	Renderer_t	*renderer	)
 
 	for_each_triangle_in_mesh	(	&( it ),	mesh	)
 	{
+
 		bool						cull	=	false;
 
 		LD						(	bool,
@@ -248,44 +237,14 @@ update							(	Renderer_t	*renderer	)
 									( PERSPECTIVE )
 								);
 
-		REQ						(	Triangle2d_t,
-									get_flat_top_bottom,
-									prj,
-									top,
-									bot
-								);
-
 		PUSH					(	Triangle2d_t,
 									( renderer )->triangles_to_draw,
 									( prj )
 								);
-
-
-		assert					(	top	);
-		assert					(	bot	);
-
-
-		//PUSH					(	Triangle2d_t,
-		//							top,
-		//							renderer->triangles_to_draw
-		//						);
-
-		//PUSH					(	Triangle2d_t,
-		//							bot,
-		//							renderer->triangles_to_draw
-		//						);
 	}
 
 	DEL							(	Vec3_t,
 									rot
-								);
-
-	DEL							(	Triangle2d_t,
-									top
-								);
-
-	DEL							(	Triangle2d_t,
-									bot
 								);
 
 	PUT							(	mesh	);
@@ -303,33 +262,54 @@ bool
 render							(	Renderer_t*		renderer	)
 {
 
-	int								ret		=	-1,
-									idx		=	0;
-
-	Color_t							*green	=	NULL;
-
-	itr ( Triangle2d_t )			tr		=	{ 0 };
+	int								ret		=	-1;
+	Color_t							*purple	=	NULL,
+									*black	=	NULL;
 
 	NEW							(	Color_t,
-									green,
+									purple,
+									0x80,
 									0x00,
-									0xFF,
+									0x80,
+									0xFF
+								);
+
+	NEW							(	Color_t,
+									black,
+									0x00,
+									0x00,
 									0x00,
 									0xFF
 								);
 
-	for_each_item_in_arr		(	Triangle2d_t,	&( tr ),	( renderer )->triangles_to_draw	)
+	ITR							(	Triangle2d_t,	tr,		( renderer )->triangles_to_draw	)
 	{
-		DRAW					(	Triangle2d_t,
+
+		FILL					(	Triangle2d_t,
 									( tr ).ptr,
 									( renderer )->origin,
-									( green ),
+									( purple ),
 									( renderer )->buffer
 								);
 
-		//LOG						(	"idx: %d\n", idx	);
+		DRAW					(	Triangle2d_t,
+									( tr ).ptr,
+									( renderer )->origin,
+									( black ),
+									( renderer )->buffer
+								);
+
+		//LOG						(	"idx: %d\n", (tr).pos	);
 	}
 
+
+	DEL							(	Color_t,
+									purple
+								);
+
+	DEL							(	Color_t,
+									black
+								);
 
 	DEL							(	arr	( Triangle2d_t ),
 									( renderer )->triangles_to_draw
@@ -376,9 +356,7 @@ main							(	int	argc,		char**	argv	)
 	LOOP						(	GAME	)
 	{
 		process_input			(	);
-
 		update					(	renderer	);
-
 		render					(	renderer	);
 	}
 

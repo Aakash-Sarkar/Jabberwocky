@@ -88,6 +88,11 @@ HOWTO_INIT                          (   Color_t,
     ( self )->rgba.a                =   alpha;
 }
 
+HOWTO_FINI                          (   Color_t,
+                                        self
+                                    )
+{
+}
 
 
 static

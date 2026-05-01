@@ -8,10 +8,16 @@
 
 HOWTO_INIT					(	Line_t,
 								self,
-								Point2d_t	*p1,
-								Point2d_t	*p2
+								Point2d_t		*p1,
+								Point2d_t		*p2
 							)
 {
+
+	float						del_x	=	0.0f,
+								del_y	=	0.0f;
+
+	Point2d_t					*p12	=	NULL;
+
 	MCPY					(	Point2d_t,
 								( self )->p1,
 								( p1 )
@@ -20,6 +26,64 @@ HOWTO_INIT					(	Line_t,
 	MCPY					(	Point2d_t,
 								( self )->p2,
 								( p2 )
+							);
+
+	//////////////////////////////////////////////////////////////////////////////////
+	//
+	//		We initialize our slope and inverse slope vectors as unit vectors
+	//		( 1, 0 ) and ( 0, 1 ) along the X and Y co-ordinate axes. These
+	//		values act as the default slope value if our line is vertical or
+	//		horizontal and we need to avoid division by zero.
+	// 
+	//////////////////////////////////////////////////////////////////////////////////
+
+	NEW						(	Point2d_t,
+								( self )->slope,
+								( 1.0f ),
+								( 0.0f )
+							);
+
+	NEW						(	Point2d_t,
+								( self )->inv_slope,
+								( 0.0f ),
+								( 1.0f )
+							);
+
+
+	DEF						(	Point2d_t,
+								p12
+							);
+
+	SUB						(	Point2d_t,
+								( p12 ),
+								( self )->p2,
+								( self )->p1
+							);
+
+	del_x					=	abs ( ( p12 )->v->x );
+	del_y					=	abs ( ( p12 )->v->y );
+
+
+	if						(	del_x != 0	)
+	{
+		DIV					(	Point2d_t,
+								( self )->slope,
+								( p12 ),
+								( del_x )
+							);
+	}
+
+	if						(	del_y != 0	)
+	{
+		DIV					(	Point2d_t,
+								( self )->inv_slope,
+								( p12 ),
+								( del_y )
+							);
+	}
+
+	DEL						(	Point2d_t,
+								p12
 							);
 }
 
@@ -33,6 +97,14 @@ HOWTO_FINI					(	Line_t,		self	)
 
 	DEL						(	Point2d_t,
 								( self )->p2
+							);
+
+	DEL						(	Point2d_t,
+								( self )->slope
+							);
+
+	DEL						(	Point2d_t,
+								( self )->inv_slope
 							);
 }
 
@@ -127,230 +199,102 @@ HOWTO_CPY					(	Line_t,		to,		frm	)
 
 
 HOWTO_DRAW					(	Line_t,
-								self,
+								line,
 								Point2d_t			*origin,
 								Color_t				*color, 
 								Color_buffer_t		*colorbuf
 							)
 {
+	Point2d_t					*slope	=	NULL,
+								*tmp	=	NULL;
 
-	Point2d_t					*slope		=	NULL;
-
-	DEF						(	Point2d_t,
-								slope
+	MCPY					(	Point2d_t,
+								( tmp ),
+								( line )->p1
 							);
 
-	REQ						(	Line_t,
-								get_slope,
-								self,
-								slope
-							);
+	int							x_start	=	round ( ( line )->p1->v->x ),
+								y_start	=	round ( ( line )->p1->v->y );
 
-	float						*run		=	NULL;
+	int							x_end	=	round ( ( line )->p2->v->x ),
+								y_end	=	round ( ( line )->p2->v->y );
 
-	DEF						(	float,
-								run
-							);
+	int							start	=	0,
+								end		=	0;
 
-	REQ						(	Line_t,
-								get_run,
-								self,
-								run
-							);
-
-	Point2d_t					*point		=	NULL,
-								*o_point	=	NULL;
-
-	DEF						(	Point2d_t,
-								point
-							);
-
-	DEF						(	Point2d_t,
-								o_point
-							);
-
-	CPY						(	Point2d_t,
-								point,
-								( self )->p1
-							);
-
-	for						(	int i = 0;	i <= *run;	i++		)
+	if						(	x_start == x_end	)
 	{
+		GET					(	slope,	( line )->inv_slope	);
 
-		ADD					(	Point2d_t,
-								o_point,
-								point,
-								origin
-							);
+		start				=	( y_start < y_end )
+							?	( y_start )
+							:	( y_end );
 
-		float					posX	=	0,
-								posY	=	0;
-
-		posX				=	( o_point )->v->x;
-		posY				=	( o_point )->v->y;
-
-		paint_color			(	color,
-								colorbuf,
-								PIXELFORMAT_ARGB8888,
-								round( posX ),
-								round( posY ),
-								0
-							);
-
-		ADD					(	Point2d_t,
-								point,
-								point,
-								slope
-							);
+		end					=	( y_start < y_end )
+							?	( y_end )
+							:	( y_start );
 	}
 
-	//int							x_start		=	0,
-	//							x_end		=	0;
+	else if					(	y_start == y_end	)
+	{
+		GET					(	slope,	( line )->slope	);
 
-	//int							y_start		=	0,
-	//							y_end		=	0;
+		start				=	( x_start < x_end )
+							?	( x_start )
+							:	( x_end );
 
-	//int							x_inc1		=	0,
-	//							x_inc2		=	0;
+		end					=	( x_start < x_end )
+							?	( x_end )
+							:	( x_start );
+	}
 
-	//int							y_inc1		=	0,
-	//							y_inc2		=	0;
+	else if					(	abs ( ( line )->slope->v->y ) < 1	)
+	{
+		GET					(	slope,	( line )->slope	);
 
-	//int							origin_x	=	0,
-	//							origin_y	=	0;
+		start				=	( x_start < x_end )
+							?	( x_start )
+							:	( x_end );
 
+		end					=	( x_start < x_end )
+							?	( x_end )
+							:	( x_start );
+	}
 
-	//x_start					=	*self->p1->v->x;
-	//x_end					=	*self->p2->v->x;
+	else
+	{
+		GET					(	slope,	( line )->inv_slope	);
 
+		start				=	( y_start < y_end )
+							?	( y_start )
+							:	( y_end );
 
-	//y_start					=	*self->p1->v->y;
-	//y_end					=	*self->p2->v->y;
+		end					=	( y_start < y_end )
+							?	( y_end )
+							:	( y_start );
+	}
 
-
-	//x_inc1					=	*slope->v->x;
-	//x_inc2					=	0;
-
-
-	//y_inc1					=	*slope->v->y;
-	//y_inc2					=	0;
-
-
-	//origin_x				=	*origin->v->x;
-	//origin_y				=	*origin->v->y;
-
-
-	//_FILL					(	x_start,	x_end,
-	//							y_start,	y_end,
-	//							x_inc1,		x_inc2,
-	//							y_inc1,		y_inc2,
-	//							origin_x,	origin_y,
-	//							color,		colorbuf
-	//						);
-
-	DEL						(	Point2d_t,
-								point
+	while					(	start <= end	)
+	{
+		DRAW				(	Point2d_t,
+								tmp,
+								origin,
+								color,
+								colorbuf
 							);
 
-	DEL						(	Point2d_t,
-								o_point
-							);
-
-	DEL						(	float,
-								run
-							);
-
-	DEL						(	Point2d_t,
+		ADD					(	Point2d_t,
+								tmp,
+								tmp,
 								slope
 							);
-}
 
-
-METHOD						(	Line_t,
-								get_run,
-								self,
-								float			*run
-							)
-{
-
-	assert					(	run		);
-
-	//	[ p12 ]		=	[	vector from p1 --> p2	]
-
-	Point2d_t					*p12		=	NULL;
-
-	DEF						(	Point2d_t,
-								p12
-							);
-
-	SUB						(	Point2d_t,
-								( p12 ),
-								( self )->p2,
-								( self )->p1
-							);
-
-	REQ						(	Point2d_t,
-								get_max_abs_x_y,
-								( p12 ),
-								( run )
-							);
+		start++;
+	}
 
 	DEL						(	Point2d_t,
-								p12
+								tmp
 							);
-
-	RET						(	self	);
 }
 
-
-METHOD						(	Line_t,
-								get_slope,
-								self,
-								Point2d_t		*slope
-							)
-{
-
-	assert					(	slope	);
-
-	float						run		=	0.0f;
-
-	Point2d_t					*p12	=	NULL;
-
-	DEF						(	Point2d_t,
-								p12
-							);
-
-	SUB						(	Point2d_t,
-								p12,
-								( self )->p2,
-								( self )->p1
-							);
-
-	REQ						(	Line_t,
-								get_run,
-								( self ),
-								( &run )
-							);
-
-	//////////////////////////////////////////////////////////////////////////////
-	//
-	//		Depending on which component becomes our run, our slope vector
-	//		will have one of the component as (run/run) = 1, and the other
-	//		as (rise/run) = slope
-	//
-	//////////////////////////////////////////////////////////////////////////////
-
-	DIV						(	Point2d_t,
-								( slope ),
-								( p12 ),
-								( run )
-							);
-
-	DEL						(	Point2d_t,
-								( p12 )
-							);
-
-	RET						(	self	);
-
-}
 

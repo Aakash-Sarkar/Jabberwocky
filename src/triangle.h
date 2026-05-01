@@ -275,6 +275,7 @@ METHOD							(	Triangle2d_t,
 								);
 
 
-
+#define																	\
+is_a_triangle( t )				(	)
 
 

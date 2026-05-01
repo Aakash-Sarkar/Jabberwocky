@@ -520,13 +520,11 @@ METHOD							(	Mesh_t,
 									Triangle3d_t		*out
 								)
 {
-	Point3d_t						p1		=	{ 0 },
-									p2		=	{ 0 },
-									p3		=	{ 0 };
+	Point3d_t						p1	=	{ 0 },
+									p2	=	{ 0 },
+									p3	=	{ 0 };
 
-
-	Triangle3d_t					*tr		=	NULL;
-
+	Triangle3d_t					*tr	=	NULL;
 
 	assert						(	face	);
 
@@ -550,9 +548,7 @@ METHOD							(	Mesh_t,
 
 	NEW							(	Triangle3d_t,
 									tr,
-									&( p1 ),
-									&( p2 ),
-									&( p3 )
+									&( p1 ),	&( p2 ),	&( p3 )
 								);
 
 	MOV							(	Triangle3d_t,

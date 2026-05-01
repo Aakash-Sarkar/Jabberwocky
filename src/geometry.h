@@ -4,15 +4,9 @@
 
 #pragma once
 
-#include "util.h"
-#include "color.h"
+#include "generics.h"
 
 
-
-
-
-#define																					\
-rotate( class )								concat3			(	rotate, _, class	)
 
 #define																					\
 HOWTO_ROT( class, self, ... )				void										\
@@ -22,18 +16,18 @@ HOWTO_ROT( class, self, ... )				void										\
 															)
 
 #define																					\
-__ROT( class, self, angle )					rotate			(	class	)				\
+_ROT( class, self, angle )					rotate			(	class	)				\
 															(	self,					\
 																angle					\
 															)
 
 #define																					\
-_ROT( class, self, angle )				do												\
+ROT( class, self, angle )					do											\
 											{											\
 												assert		(	self	);				\
 												assert		(	angle	);				\
 																						\
-												__ROT		(	class,					\
+												_ROT		(	class,					\
 																self,					\
 																angle					\
 															);							\
@@ -41,20 +35,6 @@ _ROT( class, self, angle )				do												\
 											}	while		(	0	)
 
 
-#define																					\
-ROT( class, self, angle )				do												\
-											{											\
-												_ROT		(	class,					\
-																self,					\
-																angle					\
-															);							\
-											}	while		(	0	)
-
-
-
-
-#define																					\
-project( class1, class2 )					project_##class2##_to_##class1
 
 #define																					\
 HOWTO_PROJ( class1, class2, to, from, ... )	void										\
@@ -94,8 +74,6 @@ PROJ( class1, class2, to, from, ... )		do											\
 															);							\
 											}	while		(	0	)
 
-#define																					\
-draw( class )									concat3		(	draw, _, class	)
 
 #define																					\
 HOWTO_DRAW( class, self, ... )					void									\
@@ -125,55 +103,101 @@ HOWTO_FILL( class, self, ... )					void									\
 																__VA_ARGS__				\
 															)
 
+//////////////////////////////////////////////////////////////////////////////////
+//							FILL SCANLINE:
+//////////////////////////////////////////////////////////////////////////////////
+//
+//
+//		A scanline here represents a horizontal line segment on the 2D grid of
+//		pixels on the screen that will be filled with a specific color in the
+//		color buffer.
+//
+//							x_start				x_end
+// 
+//							^					^
+//							|					|
+//				+ - + - + - + - + - + - + - + - + - + - + - +	
+//				:	:	:	:	:	:	:	:	:	:	:	:
+//				+ - + - + - + - + - + - + - + - + - + - + - +
+//				:	:	:	:	:	:	:	:	:	:	:	:
+//				+ - + - + - + - + - + - + - + - + - + - + - +
+//				:	:	:	:	:	:	:	:	:	:	:	:
+//				+ - + - + - +---+---+---+---+---+ - + - + - +
+//				:	:	:	|||||||||||||||||||||	:	:	:	->	posY
+//				+ - + - + - +---+---+---+---+---+ - + - + - +
+//				:	:	:	:	scanline		:	:	:	:
+//				+ - + - + - + - + - + - + - + - + - + - + - +
+//				:	:	:	:	:	:	:	:	:	:	:	:
+//				+ - + - + - + - + - + - + - + - + - + - + - +
+//				:	:	:	:	:	:	:	:	:	:	:	:
+//				+ - + - + - + - + - + - + - + - + - + - + - +
+//
+//
+//		A scanline is defined with the following parameters:
+//
+//		posY:		The y-coordinate of the scanline
+//		x_start:	The starting x-coordinate of the scanline
+//		x_end:		The ending x-coordinate of the scanline
+//
+//
+//////////////////////////////////////////////////////////////////////////////////
+
 #define																					\
-_FILL(	x_start,	x_end,																\
-		y_start,	y_end,																\
-		x_inc,		x_inc2,																\
-		y_inc,		y_inc2,																\
-		origin_x,	origin_y,															\
-		color,		colorbuf	)				do										\
+FILL_SCANLINE( _x_start, _x_end, _posY,													\
+				_origin, _clr, _clrbuf )		do										\
 												{										\
-													int			posX	=	0,			\
-																posY	=	0;			\
+													Point2d_t		*_p1	=	NULL,	\
+																	*_p2	=	NULL;	\
 																						\
+													Line_t			*_scanline	=	NULL;	\
 																						\
-													x_start	=	x_start	+	origin_x;	\
-													x_end	=	x_end	+	origin_x;	\
+													NEW			(	Point2d_t,			\
+																	_p1,				\
+																	_x_start,			\
+																	_posY				\
+																);						\
 																						\
-													y_start	=	y_start	+	origin_y;	\
-													y_end	=	y_end	+	origin_y;	\
+													NEW			(	Point2d_t,			\
+																	_p2,				\
+																	_x_end,				\
+																	_posY				\
+																);						\
 																						\
+													NEW			(	Line_t,				\
+																	_scanline,			\
+																	_p1,				\
+																	_p2					\
+																);						\
 																						\
-													for		(	posY	=	y_start;	\
-																posY	<=	y_end;		\
-																posY	+=	y_inc		\
-															)							\
-													{									\
-														for (	posX	=	x_start;	\
-																posX	<=	x_end;		\
-																posX	+=	x_inc		\
-															)							\
-														{								\
-															paint_color	(	color,		\
-																			colorbuf,	\
-																			PIXELFORMAT_ARGB8888,	\
-																			posX,		\
-																			posY,		\
-																			0			\
-																		);				\
-														}								\
+													DRAW		(	Line_t,				\
+																	_scanline,			\
+																	_origin,			\
+																	_clr,				\
+																	_clrbuf				\
+																);						\
 																						\
-													}									\
+													DEL			(	Line_t,				\
+																	_scanline			\
+																);						\
+																						\
+													DEL			(	Point2d_t,			\
+																	_p1					\
+																);						\
+																						\
+													DEL			(	Point2d_t,			\
+																	_p2					\
+																);						\
+																						\
 												}	while	(	0	)
 
 
 #define																					\
-FILL( class, self, ... )						do										\
+FILL( class, _self, ... )						do										\
 												{										\
-													assert	(	self	);				\
+													assert	(	_self	);				\
 																						\
 													fill	(	class	)				\
-															(	self,					\
+															(	_self,					\
 																__VA_ARGS__				\
 															);							\
 												}	while	(	0	)

@@ -540,6 +540,33 @@ HOWTO_PROJ					(	Vec2_t,					Vec3_t,
 //////////////////////////////////////////////////////////////////////////////////
 
 
+HOWTO_CMP					(	Vec2_t,	v1,	v2	)
+{
+	assert					(	v1	);
+	assert					(	v2	);
+
+	bool						res		=	false;
+
+	res						=	(	( v1 )->x == ( v2 )->x	)
+							&&	(	( v1 )->y == ( v2 )->y	);
+
+	RET						(	res	);
+}
+
+HOWTO_CMP					(	Vec3_t,	v1,	v2	)
+{
+	assert					(	v1	);
+	assert					(	v2	);
+
+	bool						res		=	false;
+
+	res						=	(	( v1 )->x == ( v2 )->x	)
+							&&	(	( v1 )->y == ( v2 )->y	)
+							&&	(	( v1 )->z == ( v2 )->z	);
+
+	RET						(	res	);
+}
+
 HOWTO_ADD					(	Vec2_t,	dst,	op1,	op2	)
 {
 	( dst )->x				=	( op1 )->x
@@ -634,52 +661,31 @@ HOWTO_DIV					(	Vec3_t,	dst,	src,	fac	)
 
 HOWTO_DOTP					(	Vec2_t,	dst,	src1,	src2	)
 {
-	*( dst )				=	( src1 )->x	*	( src2 )->x
-							+	( src1 )->y	*	( src2 )->y;
+	*( dst )				=	( src1 )->x		*	( src2 )->x
+							+	( src1 )->y		*	( src2 )->y;
 }
 
 
 HOWTO_DOTP					(	Vec3_t,	dst,	src1,	src2	)
 {
-	*( dst )				=	( src1 )->x	*	( src2 )->x
-							+	( src1 )->y	*	( src2 )->y
-							+	( src1 )->z	*	( src2 )->z;
+	*( dst )				=	( src1 )->x		*	( src2 )->x
+							+	( src1 )->y		*	( src2 )->y
+							+	( src1 )->z		*	( src2 )->z;
 }
 
 
 HOWTO_CROSP					(	Vec3_t,	dst,	src1,	src2	)
 {
-	( dst )->x				=	( src1 )->y	*	( src2 )->z
-							-	( src2 )->y	*	( src1 )->z;
+	( dst )->x				=	( src1 )->y		*	( src2 )->z
+							-	( src2 )->y		*	( src1 )->z;
 
 
-	( dst )->y				=	( src1 )->z	*	( src2 )->x
-							-	( src1 )->x	*	( src2 )->z;
+	( dst )->y				=	( src1 )->z		*	( src2 )->x
+							-	( src1 )->x		*	( src2 )->z;
 
 
-	( dst )->z				=	( src1 )->x	*	( src2 )->y
-							-	( src1 )->y	*	( src2 )->x;
+	( dst )->z				=	( src1 )->x		*	( src2 )->y
+							-	( src1 )->y		*	( src2 )->x;
 }
 
-
-METHOD						(	Vec2_t,
-								get_max_abs_x_y,
-								self,
-								float			*out
-							)
-{
-	assert					(	out	);
-
-	float						x	=	( self )->x,
-								y	=	( self )->y;
-
-	float						max_x_y	=	max( abs( x ), abs( y ) );
-
-	CPY						(	float,
-								out,
-								&max_x_y
-							);
-
-	RET						(	self	);
-}
 

@@ -46,7 +46,7 @@
 #define concat2(a, b)					a##b
 #define concat3(a, b, c)				a##b##c
 #define concat4(a, b, c, d)				a##b##c##d
-#define concat5(a, b, c, d,e)			a##b##c##d#e
+#define concat5(a, b, c, d,e)			a##b##c##d##e
 
 #define str(label)						#label
 
@@ -69,6 +69,7 @@
 //
 /////////////////////////////////////////////////////////////////////////////////
 
+
 #define CALL(retval, who, why, ...)		retval = concat3(who, _, why)(__VA_ARGS__)
 
 
@@ -80,19 +81,19 @@
 
 #define LOG(...)						fprintf	(stderr,  __VA_ARGS__)
 
-//#define																		\
-//assert( cond )							do									\
-//										{								\
-//											if			(	!(cond)	)		\
-//											{								\
-//												LOG		(	"%s: %d\n",		\
-//														__FILE__, __LINE__	\
-//														);					\
-//												exit	(	1	);			\
-//											}								\
-//										}	while		(	0	)
+#define																		\
+assert( cond )							do									\
+										{									\
+											if			(	!(cond)	)		\
+											{								\
+												LOG		(	"%s: %d\n",		\
+														__FILE__, __LINE__	\
+														);					\
+												exit	(	1	);			\
+											}								\
+										}	while		(	0	)
 
-#define assert( x )						
+//#define assert( x )						
 #define ASSERT(cond, ...)				do {								\
 												if	(!cond) {				\
 													LOG  (__VA_ARGS__);		\

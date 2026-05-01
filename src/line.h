@@ -11,10 +11,10 @@
 
 
 
-typedef			struct Line		{	Point2d_t	*p1;
-									Point2d_t	*p2;
-									Point2d_t	*slope;
-									Point2d_t	*inv_slope;
+typedef			struct Line		{	Point2d_t				*p1;
+									Point2d_t				*p2;
+									Point2d_t				*slope;
+									Point2d_t				*inv_slope;
 								}	Line_t;
 
 
@@ -31,22 +31,11 @@ HOWTO_FINI						(	Line_t,		self	);
 HOWTO_CPY						(	Line_t,		to,		frm	);
 
 HOWTO_DRAW						(	Line_t,
-									self,
+									line,
 									Point2d_t			*origin,
 									Color_t				*color, 
 									Color_buffer_t		*colorbuf
 								);
 
-METHOD							(	Line_t,
-									get_slope,
-									self,
-									Point2d_t			*slope
-								);
-
-METHOD							(	Line_t,
-									get_run,
-									self,
-									float				*run
-								);
 
 

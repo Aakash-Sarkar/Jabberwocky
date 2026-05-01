@@ -183,6 +183,11 @@ for_each_item_in_cont( class, _itr, _this )                                     
                                                 )                                           \
                                             )
 
+#define                                                                                     \
+ITR( class, _itr, _this )                   itr ( class )           _itr = { 0 };           \
+                                                                                            \
+                                            for_each_item_in_cont( class, &(_itr), _this )
+
 
 DECL_ITER                               (   bool    );
 
